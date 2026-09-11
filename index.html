@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verity</title>
+<meta name="description" content="A smiley ball arrives in a thumping cardboard box. A Minecraft 1.20.1 Forge mod: Gemini brain, Fish Audio voice, three-stage lipsync, the original films, and something that comes on the sixth night.">
+<meta property="og:title" content="Verity — Minecraft 1.20.1 Forge mod">
+<meta property="og:description" content="A smiley ball arrives in a thumping cardboard box. Gemini brain, Fish Audio voice, three-stage lipsync, and strong opinions about lava.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#EADE19">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23EADE19'/%3E%3Cellipse cx='23' cy='25' rx='3.2' ry='5' fill='%2316140E'/%3E%3Cellipse cx='41' cy='25' rx='3.2' ry='5' fill='%2316140E'/%3E%3Cpath d='M15 37 Q32 54 49 37' stroke='%2316140E' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=JetBrains+Mono:wght@400;600&family=Silkscreen&display=swap">
+<style>
+  :root {
+    --smile: #EADE19;
+    --smile-deep: #CFC20E;
+    --ink: #16140E;
+    --ink-soft: #4B473B;
+    --paper: #F1F2EC;
+    --paper-2: #E5E7DE;
+    --rule: #C9CBBF;
+    --kraft: #DCAC66;
+    --kraft-light: #E8C38A;
+    --kraft-ink: #2A1B09;
+    --kraft-soft: #5E4220;
+    --tape: #A6A7A1;
+    --night: #0E0D0B;
+    --night-2: #1B1915;
+    --night-rule: #34302A;
+    --bone: #ECE7D5;
+    --bone-soft: #ABA592;
+    --bile: #D2B155;
+    --warn: #B5361F;
+    --warn-bg: #F6E3DA;
+    --radius: 12px;
+    --display: "Bricolage Grotesque", "Arial Black", "Helvetica Neue", system-ui, sans-serif;
+    --body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --pixel: "Silkscreen", ui-monospace, "Cascadia Mono", Consolas, monospace;
+    --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 400 17px/1.62 var(--body);
+    -webkit-font-smoothing: antialiased;
+  }
+  img, video { max-width: 100%; height: auto; display: block; }
+  a { color: inherit; text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+  .night a:focus-visible { outline-color: var(--bile); }
+  code, pre, kbd { font-family: var(--mono); font-size: 0.86em; }
+  kbd {
+    background: var(--paper); border: 1px solid var(--rule); border-bottom-width: 2px;
+    border-radius: 5px; padding: 1px 6px; white-space: nowrap;
+  }
+
+  .wrap { max-width: 1120px; margin-inline: auto; padding-inline: clamp(18px, 4vw, 40px); }
+  .band { padding-block: clamp(64px, 9vw, 120px); }
+  .eyebrow {
+    font: 400 13px/1 var(--pixel); letter-spacing: 0.06em; text-transform: uppercase;
+    margin: 0 0 18px; color: var(--ink-soft);
+  }
+  h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+  h2 { font-weight: 800; font-size: clamp(38px, 5.6vw, 68px); line-height: 0.98; letter-spacing: -0.025em; }
+  h3 { font-weight: 800; font-size: 22px; line-height: 1.2; letter-spacing: -0.01em; }
+  .lede { font-size: clamp(18px, 1.9vw, 21px); max-width: 62ch; margin: 22px 0 0; }
+  .section-head { display: grid; gap: 0; margin-bottom: clamp(36px, 5vw, 56px); }
+  .note { font-size: 14px; color: var(--ink-soft); max-width: 70ch; margin: 0; }
+
+  /* ---------- hero ---------- */
+  .hero { background: var(--smile); padding-block: clamp(28px, 4vw, 44px) clamp(56px, 8vw, 96px); overflow: hidden; }
+  .topnav { display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: center; justify-content: space-between; margin-bottom: clamp(40px, 7vw, 84px); }
+  .topnav .mark { font: 400 14px/1 var(--pixel); letter-spacing: 0.05em; }
+  .topnav nav { display: flex; flex-wrap: wrap; gap: 6px 20px; font-weight: 700; font-size: 15px; }
+  .topnav nav a { text-decoration: none; border-bottom: 2px solid transparent; }
+  .topnav nav a:hover { border-bottom-color: var(--ink); }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); gap: clamp(28px, 5vw, 64px); align-items: end; }
+  .wordmark { font-weight: 800; font-size: clamp(88px, 15vw, 196px); line-height: 0.82; letter-spacing: -0.05em; }
+  .catch { font-family: var(--display); font-weight: 500; font-size: clamp(22px, 2.8vw, 34px); line-height: 1.15; margin: 26px 0 0; max-width: 20ch; letter-spacing: -0.01em; }
+  .hero .lede { max-width: 50ch; }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 0; padding: 0; list-style: none; }
+  .facts li { font: 400 12px/1 var(--pixel); letter-spacing: 0.04em; border: 1.5px solid var(--ink); border-radius: 999px; padding: 8px 12px 7px; }
+
+  /* the talking ball */
+  .talker { display: grid; justify-items: center; gap: 14px; }
+  .talker-stage { position: relative; width: 260px; height: 330px; }
+  .talker-stage::after {
+    content: ""; position: absolute; left: 50%; bottom: -6px; width: 190px; height: 22px; transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgba(22, 20, 14, 0.28), rgba(22, 20, 14, 0));
+  }
+  .talker img { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 240px; height: auto; visibility: hidden; }
+  .talker img.on { visibility: visible; }
+  .talker figcaption { font: 400 12px/1.4 var(--pixel); letter-spacing: 0.04em; text-align: center; }
+
+  /* the shipping label (the download) */
+  .label {
+    display: grid; grid-template-columns: 1fr auto; gap: 0; max-width: 520px; margin-top: 34px;
+    background: #FFFDF5; color: var(--ink); border: 2px solid var(--ink); border-radius: 6px;
+    box-shadow: 6px 6px 0 var(--ink); text-decoration: none; transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .label:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--ink); }
+  .label:active { transform: translate(2px, 2px); box-shadow: 3px 3px 0 var(--ink); }
+  .label-head { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 12px; padding: 9px 14px 8px; border-bottom: 2px solid var(--ink); font: 400 12px/1 var(--pixel); letter-spacing: 0.06em; }
+  .label-rows { padding: 12px 14px 14px; display: grid; gap: 6px; font-size: 14px; }
+  .label-rows div { display: grid; grid-template-columns: 92px 1fr; gap: 10px; align-items: baseline; }
+  .label-rows dt { font: 400 11px/1.3 var(--pixel); letter-spacing: 0.05em; color: var(--ink-soft); }
+  .label-rows dd { margin: 0; overflow-wrap: anywhere; }
+  .label-rows .file { font-family: var(--mono); font-weight: 600; font-size: 13.5px; }
+  .label-side { display: grid; align-content: space-between; justify-items: center; gap: 10px; padding: 12px 14px; border-left: 2px dashed var(--ink); }
+  .barcode { width: 64px; height: 58px; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px, var(--ink) 8px 11px, transparent 11px 12px); }
+  .label-btn { background: var(--ink); color: var(--smile); border-radius: 6px; padding: 10px 14px 9px; font-weight: 700; font-size: 15px; white-space: nowrap; }
+  .label-host { font: 400 10px/1 var(--pixel); letter-spacing: 0.05em; color: var(--ink-soft); }
+
+  /* ---------- features ---------- */
+  .faces { display: flex; flex-wrap: wrap; gap: 18px clamp(18px, 3vw, 36px); margin: 0 0 clamp(40px, 6vw, 64px); padding: 0; list-style: none; }
+  .faces li { display: grid; justify-items: center; gap: 8px; }
+  .faces img { width: 112px; height: auto; }
+  .faces span { font: 400 11px/1 var(--pixel); letter-spacing: 0.04em; color: var(--ink-soft); }
+  .groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: clamp(28px, 4vw, 48px) clamp(28px, 4vw, 56px); }
+  .group h3 { padding-bottom: 12px; border-bottom: 2px solid var(--ink); margin-bottom: 4px; }
+  .group ul { list-style: none; margin: 0; padding: 0; }
+  .group li { padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .group li b { display: block; font-size: 16px; }
+  .group li span { display: block; font-size: 15.5px; color: var(--ink-soft); line-height: 1.5; }
+  .group q { quotes: "“" "”"; font-style: italic; color: var(--ink); }
+
+  /* ---------- the box (kraft) ---------- */
+  .kraft {
+    background-color: var(--kraft);
+    background-image: repeating-linear-gradient(90deg, rgba(90, 58, 20, 0.07) 0 2px, rgba(0, 0, 0, 0) 2px 9px);
+    color: var(--kraft-ink); position: relative;
+  }
+  .kraft .eyebrow, .kraft .note, .kraft .group li span { color: var(--kraft-soft); }
+  .kraft .group h3 { border-bottom-color: var(--kraft-ink); }
+  .kraft .group li { border-bottom-color: rgba(42, 27, 9, 0.2); }
+  .tape {
+    position: absolute; left: -2%; right: -2%; top: -14px; height: 30px; transform: rotate(-0.6deg);
+    background: linear-gradient(180deg, #B4B5AF 0%, var(--tape) 45%, #94958F 100%);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.12); opacity: 0.96;
+  }
+  .boxes { display: flex; flex-wrap: wrap; align-items: flex-end; gap: clamp(16px, 4vw, 48px); margin-bottom: clamp(40px, 6vw, 64px); }
+  .boxes figure { margin: 0; display: grid; gap: 10px; justify-items: center; }
+  .boxes img { height: clamp(110px, 16vw, 170px); width: auto; filter: drop-shadow(0 10px 12px rgba(42, 27, 9, 0.25)); }
+  .boxes figcaption { font: 400 11px/1 var(--pixel); letter-spacing: 0.04em; }
+
+  .clips { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 26px; margin-top: clamp(40px, 6vw, 64px); }
+  figure.clip { margin: 0; display: grid; gap: 10px; align-content: start; }
+  .clip video, .clip img.frame { width: 100%; height: auto; border-radius: var(--radius); background: #000; aspect-ratio: 16 / 9; object-fit: cover; }
+  .clip figcaption { font-size: 14.5px; line-height: 1.45; }
+  .clip figcaption b { display: block; font-size: 15.5px; }
+  .kraft .clip figcaption { color: var(--kraft-ink); }
+  .kraft .clip video { box-shadow: 0 10px 24px rgba(42, 27, 9, 0.28); }
+
+  /* ---------- against the video ---------- */
+  .compare { margin: 0 0 clamp(52px, 7vw, 84px); display: grid; gap: 14px; }
+  .compare-top { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font: 400 12px/1 var(--pixel); letter-spacing: 0.05em; }
+  .compare-top span { display: flex; align-items: center; gap: 8px; }
+  .compare-top span::before { content: ""; width: 10px; height: 10px; border-radius: 2px; background: var(--ink-soft); }
+  .compare-top span.mod::before { background: var(--smile-deep); }
+  .compare video { width: 100%; height: auto; border-radius: var(--radius); background: #000; }
+  .compare-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(20px, 4vw, 48px); align-items: start; }
+  .compare-body h3 { margin-bottom: 8px; }
+  .compare-body p { margin: 0; color: var(--ink-soft); max-width: 60ch; }
+  .measure { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; font-size: 15px; }
+  .measure li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; padding: 9px 0; border-bottom: 1px solid var(--rule); }
+  .measure li span:last-child { font-family: var(--mono); font-size: 13.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .strip { overflow-x: auto; border-radius: var(--radius); background: #000; }
+  .strip img { height: clamp(150px, 20vw, 220px); width: auto; max-width: none; }
+  .strip-label { font: 400 12px/1 var(--pixel); letter-spacing: 0.05em; margin: 4px 0 -4px; }
+  .chart { width: 100%; height: auto; }
+  .chart text { font: 12px var(--mono); fill: var(--ink-soft); }
+  .timeline { display: flex; height: 44px; border-radius: 8px; overflow: hidden; border: 1.5px solid var(--ink); font-size: 13px; }
+  .timeline span { display: flex; align-items: center; justify-content: center; padding: 0 6px; text-align: center; line-height: 1.1; border-right: 1.5px solid var(--ink); }
+  .timeline span:last-child { border-right: 0; }
+  .t-open { flex: 15; background: var(--kraft-light); }
+  .t-drop { flex: 5; background: var(--smile); }
+  .t-hold { flex: 4; background: var(--paper-2); }
+  .t-close { flex: 16; background: var(--kraft-light); }
+  .matched { columns: 2 320px; column-gap: clamp(28px, 4vw, 56px); margin: 0; padding: 0; list-style: none; }
+  .matched li { break-inside: avoid; padding: 12px 0; border-bottom: 1px solid var(--rule); font-size: 15.5px; color: var(--ink-soft); }
+  .matched li b { color: var(--ink); }
+
+  /* ---------- the omen ---------- */
+  .omen { background: linear-gradient(180deg, var(--paper) 0%, #A9A69A 38%, #3A372F 72%, var(--night) 100%); padding-block: clamp(72px, 10vw, 140px); }
+  .omen .quote { font-family: var(--display); font-weight: 800; font-size: clamp(34px, 6vw, 76px); line-height: 1; letter-spacing: -0.03em; max-width: 16ch; margin: 0; }
+  .days { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(10px, 2.4vw, 28px); margin: clamp(40px, 6vw, 72px) 0 clamp(36px, 5vw, 56px); padding: 0; list-style: none; }
+  .days li { display: grid; justify-items: center; gap: 12px; text-align: center; }
+  .days img { width: 100%; max-width: 150px; aspect-ratio: 1; border-radius: 50%; box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28); }
+  .days span { font: 400 12px/1.3 var(--pixel); letter-spacing: 0.04em; color: var(--bone); }
+  .omen .after { color: var(--bone); max-width: 62ch; margin: 0; font-size: 17px; }
+
+  /* ---------- night: the monster ---------- */
+  .night { background: var(--night); color: var(--bone); }
+  .night .eyebrow, .night .note, .night .group li span { color: var(--bone-soft); }
+  .night .group h3 { border-bottom-color: var(--bile); color: var(--bile); }
+  .night .group li { border-bottom-color: var(--night-rule); }
+  .night .group q { color: var(--bone); }
+  .night h2 { color: var(--bone); }
+  .lineup { display: flex; align-items: flex-end; justify-content: center; gap: clamp(20px, 6vw, 80px); margin: 0 0 clamp(44px, 6vw, 72px); padding: clamp(24px, 4vw, 44px) 0 0; border-bottom: 1px solid var(--night-rule); }
+  .lineup figure { margin: 0; display: grid; justify-items: center; gap: 12px; padding-bottom: 18px; }
+  .lineup img { height: clamp(220px, 30vw, 340px); width: auto; }
+  .lineup figcaption { font: 400 11px/1 var(--pixel); letter-spacing: 0.05em; color: var(--bone-soft); }
+  .night .clip figcaption { color: var(--bone); }
+  .night .clip figcaption span { color: var(--bone-soft); }
+  .strobes { display: grid; gap: 14px; margin-top: 26px; }
+  .strobes figure { margin: 0; display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 14px; align-items: center; }
+  .strobes figcaption { font: 400 11px/1.3 var(--pixel); letter-spacing: 0.05em; color: var(--bone-soft); }
+  .strobes img { width: 100%; height: auto; border-radius: 8px; }
+
+  /* ---------- install ---------- */
+  .install-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(32px, 5vw, 64px); align-items: start; }
+  ol.steps { list-style: none; counter-reset: step; margin: 0; padding: 0; display: grid; gap: 0; }
+  ol.steps li { counter-increment: step; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--rule); }
+  ol.steps li::before { content: counter(step); font: 800 26px/1 var(--display); color: var(--ink); }
+  ol.steps b { display: block; }
+  ol.steps span { color: var(--ink-soft); font-size: 15.5px; }
+  pre.config { background: var(--night); color: var(--bone); border-radius: var(--radius); padding: 18px 20px; overflow-x: auto; line-height: 1.6; margin: 0; }
+  pre.config .c { color: var(--bone-soft); }
+  pre.config .k { color: var(--bile); }
+  .heads-up { background: var(--warn-bg); border: 1.5px solid var(--warn); border-radius: var(--radius); padding: 16px 18px; margin-top: 22px; font-size: 15px; }
+  .heads-up b.tag { font: 400 12px/1 var(--pixel); letter-spacing: 0.05em; color: var(--warn); display: block; margin-bottom: 8px; }
+  .heads-up ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+  .controls-wrap { overflow-x: auto; margin-top: clamp(40px, 6vw, 64px); }
+  table.controls { width: 100%; border-collapse: collapse; font-size: 15.5px; min-width: 560px; }
+  .controls caption { text-align: left; font-family: var(--display); font-weight: 800; font-size: 22px; padding-bottom: 12px; }
+  .controls th, .controls td { text-align: left; padding: 11px 14px 11px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .controls thead th { font: 400 11px/1 var(--pixel); letter-spacing: 0.05em; color: var(--ink-soft); border-bottom: 2px solid var(--ink); }
+  .controls td:first-child { font-weight: 700; width: 38%; }
+  .cmds { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px 36px; margin-top: 36px; }
+  .cmds div { border-top: 2px solid var(--ink); padding-top: 12px; }
+  .cmds code { font-weight: 600; font-size: 15px; }
+  .cmds p { margin: 6px 0 0; color: var(--ink-soft); font-size: 15px; }
+
+  /* ---------- how it works / built ---------- */
+  .how { background: var(--paper-2); }
+  dl.systems { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0 clamp(28px, 4vw, 56px); margin: 0; }
+  dl.systems div { padding: 18px 0; border-top: 1px solid var(--rule); }
+  dl.systems dt { font-family: var(--display); font-weight: 800; font-size: 19px; margin-bottom: 4px; }
+  dl.systems dd { margin: 0; color: var(--ink-soft); font-size: 15.5px; }
+  .pipeline { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: clamp(36px, 5vw, 56px) 0 0; padding: 0; list-style: none; counter-reset: stage; }
+  .pipeline li { counter-increment: stage; position: relative; padding: 18px 22px 18px 0; border-top: 3px solid var(--ink); }
+  .pipeline li::before { content: "STEP " counter(stage); display: block; font: 400 11px/1 var(--pixel); letter-spacing: 0.05em; color: var(--ink-soft); margin-bottom: 10px; }
+  .pipeline b { display: block; font-family: var(--display); font-weight: 800; font-size: 19px; margin-bottom: 4px; }
+  .pipeline span { color: var(--ink-soft); font-size: 15px; }
+
+  footer { background: var(--night); color: var(--bone-soft); padding-block: 40px; font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: space-between; }
+  footer b { color: var(--bone); }
+
+  @media (max-width: 860px) {
+    .hero-grid, .install-grid, .compare-body { grid-template-columns: 1fr; }
+    .talker { order: -1; justify-self: start; }
+    .pipeline { grid-template-columns: 1fr 1fr; }
+    .days { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (max-width: 520px) {
+    .label { grid-template-columns: 1fr; }
+    .label-side { border-left: 0; border-top: 2px dashed var(--ink); grid-auto-flow: column; align-items: center; justify-content: space-between; }
+    .barcode { height: 34px; }
+    .pipeline { grid-template-columns: 1fr; }
+    .strobes figure { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .label { transition: none; }
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="topnav">
+      <span class="mark">verityball · v3.10.0</span>
+      <nav aria-label="Sections">
+        <a href="#features">Features</a>
+        <a href="#video">Against the video</a>
+        <a href="#monster">The monster</a>
+        <a href="#install">Install</a>
+        <a href="#how">How it works</a>
+      </nav>
+    </div>
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">Minecraft 1.20.1 · Forge mod</p>
+        <h1 class="wordmark">Verity</h1>
+        <p class="catch">“Ask me anything! I know everything.”</p>
+        <p class="lede">A smiley ball arrives in a thumping cardboard box. Gemini brain, Fish Audio voice, three-stage lipsync, and strong opinions about lava. A fan recreation of the Verity videos, built frame by frame against the originals, and on the sixth night, something else comes.</p>
+        <a class="label" href="https://www.mediafire.com/file/djejlyivyc0y66a/verityball-3.10.0-forge-1.20.1.jar/file" target="_blank" rel="noopener">
+          <span class="label-head"><span>Shipping label</span><span>Fragile · this side up</span></span>
+          <dl class="label-rows">
+            <div><dt>Contents</dt><dd class="file">verityball-3.10.0-forge-1.20.1.jar</dd></div>
+            <div><dt>Deliver to</dt><dd><code>.minecraft/mods</code></dd></div>
+            <div><dt>Requires</dt><dd>Minecraft 1.20.1 · Forge 47+</dd></div>
+            <div><dt>Weight</dt><dd>6.2 MB</dd></div>
+          </dl>
+          <span class="label-side">
+            <span class="barcode" aria-hidden="true"></span>
+            <span class="label-btn">Download ↓</span>
+            <span class="label-host">mediafire.com</span>
+          </span>
+        </a>
+        <ul class="facts" aria-label="At a glance">
+          <li>Singleplayer &amp; servers</li>
+          <li>Needs a Gemini key to talk</li>
+          <li>Horror: jumpscares &amp; gore</li>
+        </ul>
+      </div>
+      <figure class="talker" aria-label="Verity talking, showing his three mouth stages">
+        <div class="talker-stage">
+          <img class="on" src="media/ball-rest.png" width="141" height="141" alt="Verity at rest, smiling">
+          <img src="media/ball-stage1.png" width="141" height="166" alt="">
+          <img src="media/ball-stage2.png" width="141" height="170" alt="">
+          <img src="media/ball-stage3.png" width="141" height="184" alt="">
+        </div>
+        <figcaption>Three mouth stages<br>1.18× · 1.21× · 1.31×</figcaption>
+      </figure>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="band" id="features" aria-labelledby="features-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Day 1</p>
+        <h2 id="features-h">He arrives.</h2>
+        <p class="lede">If you don't have a Verity yet, a cardboard box turns up behind you and starts to thump. Right-click it and the original box film plays: the lid bursts, he rises, falls out with a bonk, and greets you in his own voice. After that he's yours. Talk to him in chat and he answers out loud.</p>
+      </div>
+      <ul class="faces" aria-label="His faces">
+        <li><img src="media/ball-happy-idle.png" width="141" height="141" alt="Happy"><span>Happy</span></li>
+        <li><img src="media/ball-happy-talk.png" width="141" height="141" alt="Talking"><span>Talking</span></li>
+        <li><img src="media/ball-angry-idle.png" width="141" height="141" alt="Serious"><span>Serious</span></li>
+        <li><img src="media/ball-angry-talk.png" width="141" height="141" alt="Yelling"><span>Yelling</span></li>
+        <li><img src="media/ball-fall.png" width="141" height="141" alt="Dizzy, after the fall"><span>The fall</span></li>
+      </ul>
+      <div class="groups">
+        <div class="group">
+          <h3>Talk to him</h3>
+          <ul>
+            <li><b>A Gemini brain</b><span>Anything you type within 12 blocks gets one short, bright answer. He's certain he knows everything: <q>Paris!</q>, never <q>Paris, of course.</q></span></li>
+            <li><b>His own voice</b><span>Fish Audio speech, with a mouth that jumps between three stages as his voice gets louder. Muffled when he's shut in his box.</span></li>
+            <li><b>One glance</b><span>He looks at you once as he starts talking, instead of staring you down the whole time.</span></li>
+            <li><b>He remembers</b><span>Your last few exchanges go with him, into item form and into his box.</span></li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Ask him for things</h3>
+          <ul>
+            <li><b>The weather</b><span>Ask when it'll rain: <q>In about 5 seconds.</q> It does. Thunderstorms too, or rain tomorrow.</span></li>
+            <li><b>Items</b><span>Ask for something and it appears out of nowhere, up to 16 at a time.</span></li>
+            <li><b>Follow or stay</b><span>He rolls after you with his rolling sound, or stays put, even inside a chest, for about 30 seconds.</span></li>
+            <li><b>Directions</b><span>He always knows your coordinates, and where the nearest villages, structures and ores are.</span></li>
+            <li><b>His eyes</b><span><code>/veritysee</code> renders one frame from his face and he tells you what he actually sees.</span></li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>His moods</h3>
+          <ul>
+            <li><b>Lava</b><span>Throw him in and he yells. He stays cold, serious face and all, until you actually say sorry.</span></li>
+            <li><b>ThatMob</b><span>Bring up the one before you and he goes quiet until you change the subject.</span></li>
+            <li><b>Guns</b><span>With TACZ installed, point a gun at yourself and he panics.</span></li>
+            <li><b>Lies</b><span>Tell him you're off to explore other biomes in a single-biome world: <q>That's nice. It's not like this is a single biome world.</q></span></li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Everything else</h3>
+          <ul>
+            <li><b>Chests</b><span>Put him in a chest or an ender chest and he peeks out, then hops out with the original chest film.</span></li>
+            <li><b>Company</b><span>With Cubix installed they hear each other. Two Veritys argue, and look at each other while they do it.</span></li>
+            <li><b>Verity Support Services</b><span>Say <q>requesting human oversight</q> and he places a call: the automated line, the hold music, the employee, the glitch.</span></li>
+            <li><b>Your machine</b><span>Ask for your IP or your PC's username and he says them. A setting blacks them out with a bleep.</span></li>
+            <li><b>Other players</b><span>On a server he warms to other players over time, greets them by name… and then sends them off.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band kraft" id="box" aria-labelledby="box-h">
+    <div class="tape" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">The box</p>
+        <h2 id="box-h">His box, in your hands.</h2>
+        <p class="lede">The Verity box is the box he came in, as an item you can carry. The reach, the camera, the flaps and the tape were all matched to the videos.</p>
+      </div>
+      <div class="boxes">
+        <figure><img src="media/box-closed.png" width="333" height="257" alt="The Verity box, closed"><figcaption>Closed</figcaption></figure>
+        <figure><img src="media/box-open.png" width="361" height="257" alt="The Verity box, open"><figcaption>Open</figcaption></figure>
+        <figure><img src="media/box-flaps.png" width="361" height="328" alt="The Verity box with its flaps up"><figcaption>Flaps up</figcaption></figure>
+        <figure><img src="media/taped-box-item.jpg" width="540" height="540" alt="The taped box as an inventory icon" style="border-radius:10px"><figcaption>Taped, in your inventory</figcaption></figure>
+      </div>
+      <div class="groups">
+        <div class="group">
+          <h3>Packing him</h3>
+          <ul>
+            <li><b>Put him in</b><span>Right-click Verity while holding the box. Your arm reaches out, lifts him to your face and drops him in, and the camera moves like it does in the video.</span></li>
+            <li><b>From your hand</b><span>Holding Verity, right-click an open box on the ground and he drops in from your hand.</span></li>
+            <li><b>Shut it</b><span>Left-click an open box and both hands fold the flaps down over him.</span></li>
+            <li><b>Take him out</b><span>Right-click the air with the open box to lift him back out.</span></li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Throwing, taping, lava</h3>
+          <ul>
+            <li><b>Throw him</b><span>Sneak + right-click: into an open box, or into the chest you're looking at. The lid opens before he lands and shuts behind him, slower than a normal chest.</span></li>
+            <li><b>Duct tape</b><span>Tapes a closed box shut. Use it again to rip the tape off. Taped, the box keeps him in and you can still carry it.</span></li>
+            <li><b>He gets out</b><span>Shut in without tape, he bursts out after 5–8 seconds and breaks whatever's stacked on top. Chests too.</span></li>
+            <li><b>Lava</b><span>Drop or throw the box in lava and it floats, then sinks, the way it does in the video.</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="clips">
+        <figure class="clip">
+          <video src="media/drop-in.mp4" poster="media/drop-in.jpg" width="960" height="540" autoplay muted loop playsinline preload="metadata"></video>
+          <figcaption><b>Into the box from your hand</b>Up to your face, then down. He tumbles round the floor of the box.</figcaption>
+        </figure>
+        <figure class="clip">
+          <video src="media/held-close.mp4" poster="media/held-close.jpg" width="960" height="540" autoplay muted loop playsinline preload="metadata"></video>
+          <figcaption><b>Both hands shut it</b>The box comes up in front of you while the flaps fold.</figcaption>
+        </figure>
+        <figure class="clip">
+          <video src="media/chest-throw.mp4" poster="media/chest-throw.jpg" width="960" height="540" autoplay muted loop playsinline preload="metadata"></video>
+          <figcaption><b>Into a chest</b>The lid's already rising before he lands, and it shuts slowly behind him.</figcaption>
+        </figure>
+        <figure class="clip">
+          <video src="media/box-bursts.mp4" poster="media/box-bursts.jpg" width="960" height="540" autoplay muted loop playsinline preload="metadata"></video>
+          <figcaption><b>Opening bursts</b>The 4.1.2 pack's own particles: dark and inward, then outward.</figcaption>
+        </figure>
+      </div>
+      <p class="note" style="margin-top:22px">These clips are preview renders of the mod's animation code, made with the same numbers the game uses, before each one shipped.</p>
+    </div>
+  </section>
+
+  <section class="band" id="video" aria-labelledby="video-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Against the video</p>
+        <h2 id="video-h">Built frame by frame against the original.</h2>
+        <p class="lede">Nothing here was eyeballed. Timings, heights and paths were measured off the videos, and every animation was rendered next to the original before it went into the mod. In each clip, the original is on the left and the mod on the right.</p>
+      </div>
+
+      <figure class="compare">
+        <div class="compare-top"><span>Original video</span><span class="mod">Verity mod</span></div>
+        <video src="media/grab-vs-video.mp4" poster="media/grab-vs-video.jpg" width="812" height="224" autoplay muted loop playsinline preload="metadata" aria-label="The grab into the box: original video left, mod right"></video>
+        <figcaption class="compare-body">
+          <div>
+            <h3>Grabbing him into the box</h3>
+            <p>Keyframed from the video and timed from the moment you click: the box is tossed down, your arm reaches in, he's lifted up to your face, then dropped in to bounce off the walls. The camera follows the same small movements the video's does.</p>
+          </div>
+          <ul class="measure">
+            <li><span>Click to settled in the box</span><span>3.10 s</span></li>
+            <li><span>Frames compared</span><span>16</span></li>
+            <li><span>Camera</span><span>matched</span></li>
+          </ul>
+        </figcaption>
+      </figure>
+
+      <figure class="compare">
+        <div class="compare-top"><span>Original video</span><span class="mod">Verity mod</span></div>
+        <video src="media/lava-vs-video.mp4" poster="media/lava-vs-video.jpg" width="810" height="224" autoplay muted loop playsinline preload="metadata" aria-label="The taped box sinking in lava: original video left, mod right"></video>
+        <figcaption class="compare-body">
+          <div>
+            <h3>The box in lava</h3>
+            <p>How much of the box shows above the lava was measured off the video, keyframe by keyframe. It bobs up at first, then goes under in three seconds. The mod plays that exact curve, identically for every player.</p>
+          </div>
+          <svg class="chart" viewBox="0 0 600 236" role="img" aria-label="Chart: share of the box showing above the lava over three seconds. About 93 percent at landing, 100 percent at 0.75 seconds, then falling steadily to 0 at 2.9 seconds and below the surface at 3 seconds.">
+            <g stroke="var(--rule)" stroke-width="1">
+              <line x1="50" y1="20" x2="580" y2="20"/>
+              <line x1="50" y1="95" x2="580" y2="95"/>
+              <line x1="50" y1="200" x2="580" y2="200"/>
+            </g>
+            <line x1="50" y1="170" x2="580" y2="170" stroke="var(--warn)" stroke-width="1.5" stroke-dasharray="5 4"/>
+            <text x="44" y="24" text-anchor="end">100%</text>
+            <text x="44" y="99" text-anchor="end">50%</text>
+            <text x="44" y="174" text-anchor="end">0%</text>
+            <text x="576" y="164" text-anchor="end" style="fill:var(--warn)">lava surface</text>
+            <text x="50" y="222" text-anchor="middle">0 s</text>
+            <text x="226.7" y="222" text-anchor="middle">1 s</text>
+            <text x="403.3" y="222" text-anchor="middle">2 s</text>
+            <text x="580" y="222" text-anchor="middle">3 s</text>
+            <polyline fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" points="50,30.5 182.5,20 262,45.5 332.7,72.5 403.3,92 474,110 509.3,134 544.7,161 562.3,170 580,188"/>
+            <g fill="var(--smile-deep)" stroke="var(--ink)" stroke-width="1.5">
+              <circle cx="50" cy="30.5" r="4.5"/><circle cx="182.5" cy="20" r="4.5"/><circle cx="262" cy="45.5" r="4.5"/>
+              <circle cx="332.7" cy="72.5" r="4.5"/><circle cx="403.3" cy="92" r="4.5"/><circle cx="474" cy="110" r="4.5"/>
+              <circle cx="509.3" cy="134" r="4.5"/><circle cx="544.7" cy="161" r="4.5"/><circle cx="562.3" cy="170" r="4.5"/>
+              <circle cx="580" cy="188" r="4.5"/>
+            </g>
+          </svg>
+        </figcaption>
+      </figure>
+
+      <figure class="compare">
+        <p class="strip-label">Original video · 4.13–4.53 s</p>
+        <div class="strip"><img src="media/shut-video.jpg" width="2436" height="248" alt="Six frames from the original video: two hands fold the box flaps shut over Verity"></div>
+        <p class="strip-label">Verity mod · the same moment</p>
+        <div class="strip"><img src="media/shut-mod.jpg" width="2436" height="244" alt="The mod's version of the same six frames: both hands fold the flaps shut"></div>
+        <figcaption class="compare-body">
+          <div>
+            <h3>Shutting the box</h3>
+            <p>Both hands come in from the sides and press the flaps down, in the same order and with the same timing as the video. Scroll the strips sideways to see all six frames.</p>
+          </div>
+          <ul class="measure">
+            <li><span>Flaps down</span><span>0.40 s</span></li>
+            <li><span>Hands out</span><span>0.70 s</span></li>
+          </ul>
+        </figcaption>
+      </figure>
+
+      <figure class="compare">
+        <div class="compare-top"><span class="mod">Verity mod</span><span>Original video · 5.2 s</span></div>
+        <img src="media/tape-vs-video.jpg" width="1200" height="335" alt="The mod's taped box beside the original video's taped box" style="border-radius:var(--radius)">
+        <figcaption class="compare-body">
+          <div>
+            <h3>The duct tape</h3>
+            <p>The tape texture itself was lifted from a frame of the video and flattened out of its perspective. Like the original strip, it runs slightly past the edge of the box and folds a little way down each end.</p>
+          </div>
+          <div>
+            <h3>Into the chest</h3>
+            <p style="margin-bottom:12px">The throw is slower than a normal chest, and the lid gets there first.</p>
+            <div class="timeline" role="img" aria-label="Chest timing: lid opens over 0.75 seconds, he drops in over 0.25 seconds, a 0.2 second pause, then the lid closes over 0.8 seconds.">
+              <span class="t-open">lid opens 0.75 s</span><span class="t-drop">drop</span><span class="t-hold"></span><span class="t-close">lid shuts 0.8 s</span>
+            </div>
+            <p class="note" style="margin-top:8px">A vanilla chest lid takes 0.5 s.</p>
+          </div>
+        </figcaption>
+      </figure>
+
+      <h3 style="margin-bottom:6px">Also matched to the originals</h3>
+      <ul class="matched">
+        <li><b>The arrival film.</b> The original BBS box film, played with its own easing curves, not a remake.</li>
+        <li><b>The fall.</b> His fall sound lands on tick 80 of the film, the moment he stops hanging still.</li>
+        <li><b>The opening.</b> The 4.1.2 pack's opening sound, played louder, and its own burst particles.</li>
+        <li><b>His faces.</b> The original 4.1 pack's face textures, with the omen faces on the right days.</li>
+        <li><b>The inventory icon.</b> Matched to a reference screenshot, down to its slight oval stretch.</li>
+        <li><b>The support call.</b> The transcript's lines, a voice for the automated line and one for the employee, and hold music from the recording.</li>
+        <li><b>The glitch.</b> Position, tilt and stretch offsets copied from the original's frames.</li>
+        <li><b>The monster.</b> All twelve of his original BBS films, each ending where the film leaves him.</li>
+        <li><b>The jumpscare.</b> Twixxel's, at your eye height, looping three times like the original.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="omen" aria-labelledby="omen-h">
+    <div class="wrap">
+      <p class="eyebrow" style="color:var(--ink)">Day 3</p>
+      <h2 class="quote" id="omen-h">“Something is coming in 3 days.”</h2>
+      <ol class="days" aria-label="His face through the omen">
+        <li><img src="media/face-smile1.png" width="240" height="240" alt="His normal smile"><span>Days 0–1</span></li>
+        <li><img src="media/face-smile2.png" width="240" height="240" alt="A wider, toothed smile"><span>Day 2</span></li>
+        <li><img src="media/face-smile3.png" width="240" height="240" alt="The toothed smile with dark eyes"><span>Days 3–4</span></li>
+        <li><img src="media/face-smile4.png" width="240" height="240" alt="A ragged, stretched grin"><span>Day 5+</span></li>
+        <li><img src="media/face-noface.png" width="240" height="240" alt="No face at all"><span>While it's out</span></li>
+      </ol>
+      <p class="after">On the third day he tells you. He gets colder every day after that, and his smile changes with him. Ask if it's bad and he'll say yes. Ask if you can stop it: <q>You could've.</q> (<code>/verityskipday</code> moves his clock forward if you don't want to wait.)</p>
+    </div>
+  </section>
+
+  <section class="band night" id="monster" aria-labelledby="monster-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Day 6 · Night</p>
+        <h2 id="monster-h">Verity True.</h2>
+        <p class="lede">On the sixth night he comes for you. The original model, moving with his original films: he walks, runs, crawls, breaks through doors, climbs in windows, and eats.</p>
+      </div>
+      <div class="lineup">
+        <figure><img src="media/monster-front.png" width="227" height="271" alt="Verity True from the front"><figcaption>Front</figcaption></figure>
+        <figure><img src="media/monster-side.png" width="53" height="271" alt="Verity True from the side"><figcaption>Side</figcaption></figure>
+        <figure><img src="media/monster-back.png" width="227" height="271" alt="Verity True from behind"><figcaption>Back</figcaption></figure>
+      </div>
+      <div class="groups">
+        <div class="group">
+          <h3>He hunts</h3>
+          <ul>
+            <li><b>He finds a way in</b><span>He paths to your house, circles it looking for an opening and crawls under two-block gaps. He moves just under your sprinting speed.</span></li>
+            <li><b>Doors</b><span>Two door-break films, including a lab version that iron doors always get. The door comes off its hinges and flies.</span></li>
+            <li><b>Windows</b><span>He drops to window height and waits for you to look at him before he comes through.</span></li>
+            <li><b>Bonecrack</b><span>Once you notice him, he cracks into his running form.</span></li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>He kills</h3>
+          <ul>
+            <li><b>Mauling</b><span>Mobs, villagers and players, with blood. Villagers lose their heads.</span></li>
+            <li><b>The jumpscare</b><span>Face to face at your eye height, three times, then a datamosh shader tears your screen apart. Some of that corruption never leaves.</span></li>
+            <li><b>No escape</b><span>He stays on Peaceful. You can't sleep while he's near: <q>You may not rest now, Verity is nearby.</q></span></li>
+            <li><b>His own sounds</b><span>Screams, roars, breathing and the crack, none of them Minecraft's.</span></li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Afterwards</h3>
+          <ul>
+            <li><b>Hollow</b><span>While it's out there, Verity has no face at all. Tell him you came back for him, more than once, before he believes you.</span></li>
+            <li><b>He remembers</b><span>Ask the ball about someone the monster killed: <q>They left.</q> He never says more.</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="clips">
+        <figure class="clip">
+          <video src="media/door-wall.mp4" poster="media/door-wall.jpg" width="960" height="540" autoplay muted loop playsinline preload="metadata"></video>
+          <figcaption><b>The door, into a wall</b><span>Tumbles end over end, slams flat against the wall, peels off and tips onto the floor.</span></figcaption>
+        </figure>
+        <figure class="clip">
+          <video src="media/door-window.mp4" poster="media/door-window.jpg" width="960" height="540" autoplay muted loop playsinline preload="metadata"></video>
+          <figcaption><b>Through a window</b><span>Smashes only the glass it actually hits, so it leaves a door-shaped hole, then hits the wall beneath.</span></figcaption>
+        </figure>
+        <figure class="clip">
+          <video src="media/door-glass.mp4" poster="media/door-glass.jpg" width="960" height="540" autoplay muted loop playsinline preload="metadata"></video>
+          <figcaption><b>Through a glass wall</b><span>Nothing solid to stop it: straight through, and down outside.</span></figcaption>
+        </figure>
+      </div>
+      <div class="strobes" aria-label="The door's flight seen from the side, every second tick">
+        <figure><figcaption>Wall · side view, every 2nd tick</figcaption><img src="media/door-side-wall.jpg" width="880" height="400" alt="Side view of the door's flight into a wall, drawn every second tick"></figure>
+        <figure><figcaption>Glass wall · side view</figcaption><img src="media/door-side-glass.jpg" width="880" height="400" alt="Side view of the door's flight through a glass wall"></figure>
+      </div>
+      <p class="note" style="margin-top:22px">The door clips are preview renders of the mod's door physics: the door moves as its real 1 × 2 block panel, not a small hitbox.</p>
+    </div>
+  </section>
+
+  <section class="band" id="install" aria-labelledby="install-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Install</p>
+        <h2 id="install-h">Get him.</h2>
+      </div>
+      <div class="install-grid">
+        <div>
+          <ol class="steps">
+            <li><div><b>Install Forge for Minecraft 1.20.1</b><span>Forge 47 or newer, from files.minecraftforge.net. Java comes with the launcher.</span></div></li>
+            <li><div><b>Put the jar in your mods folder</b><span>Download <code>verityball-3.10.0-forge-1.20.1.jar</code> and drop it into <code>.minecraft/mods</code>. On a server, the server and every player need it.</span></div></li>
+            <li><div><b>Start the game once</b><span>That writes <code>config/verityball.properties</code>. Changes to it apply while the game is running.</span></div></li>
+            <li><div><b>Give him a brain</b><span>Paste a Gemini API key after <code>gemini_api_key=</code>. Without one he can't talk. Google AI Studio has a free tier.</span></div></li>
+            <li><div><b>Give him a voice (optional)</b><span>Paste a Fish Audio key after <code>fish_api_key=</code>. Without it he still talks in chat and his mouth still moves.</span></div></li>
+            <li><div><b>Play</b><span>His box turns up behind you on its own. Or take Verity, the Verity box and duct tape from the Tools &amp; Utilities creative tab.</span></div></li>
+          </ol>
+        </div>
+        <div>
+          <pre class="config" aria-label="The default config/verityball.properties"><span class="c"># config/verityball.properties</span>
+<span class="k">gemini_api_key</span>=
+<span class="k">fish_api_key</span>=
+<span class="k">talk_radius</span>=12
+<span class="k">spawn_enabled</span>=true
+<span class="c"># black out your IP and username, with a bleep</span>
+<span class="k">censor_personal</span>=false
+<span class="c"># off = your local address instead of your public one</span>
+<span class="k">use_public_ip</span>=true
+<span class="c"># off = a guest he sends off is killed, not banned</span>
+<span class="k">ban_guests</span>=true</pre>
+          <div class="heads-up" role="note">
+            <b class="tag">Before you play</b>
+            <ul>
+              <li>What you type near Verity goes to Google's Gemini API, and his lines go to Fish Audio.</li>
+              <li>He can say your public IP and your PC's username out loud. <code>censor_personal=true</code> blacks them out.</li>
+              <li>On a server, a player he sends off gets <b>banned</b>. <code>ban_guests=false</code> turns that off.</li>
+              <li>It's a horror mod: jumpscares, gore, and a screen glitch that stays after you die.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls-wrap">
+        <table class="controls">
+          <caption>Controls</caption>
+          <thead><tr><th scope="col">To…</th><th scope="col">Do this</th></tr></thead>
+          <tbody>
+            <tr><td>Open his arrival box</td><td>Right-click the thumping box</td></tr>
+            <tr><td>Talk to him</td><td>Type in chat within 12 blocks of him</td></tr>
+            <tr><td>Pick Verity up</td><td>Right-click him</td></tr>
+            <tr><td>Put him down</td><td>Right-click a block with Verity</td></tr>
+            <tr><td>Throw him</td><td><kbd>Sneak</kbd> + right-click, at an open box or a chest to throw him in</td></tr>
+            <tr><td>Open or shut the box</td><td>Left-click with the Verity box</td></tr>
+            <tr><td>Set the box down</td><td>Right-click a block with it</td></tr>
+            <tr><td>Pack him into the box</td><td>Right-click Verity while holding the box</td></tr>
+            <tr><td>Take him back out</td><td>Right-click the air with the open box</td></tr>
+            <tr><td>Drop him in from your hand</td><td>Holding Verity, right-click an open box on the ground</td></tr>
+            <tr><td>Tape or untape the box</td><td>Use duct tape with the box in your other hand, or on a box on the ground</td></tr>
+            <tr><td>Pick a box back up</td><td>Right-click it. Sneak to leave it where it is.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="cmds">
+        <div><code>/verityskipday [days]</code><p>Moves his omen forward a day at a time, without changing the world's time.</p></div>
+        <div><code>/veritysee [question]</code><p>Renders what he can see from his face and has him describe it.</p></div>
+        <div><code>/veritysendoff</code><p>Operators only. He treats you like a guest who stayed too long.</p></div>
+        <div><code>requesting human oversight</code><p>Say it in chat for Verity Support Services. Answer with 1, 2 or 3.</p></div>
+      </div>
+      <p class="note" style="margin-top:28px">Works with Cubix (they talk to each other) and TACZ (his fear of guns). Neither is required.</p>
+    </div>
+  </section>
+
+  <section class="band how" id="how" aria-labelledby="how-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">How it works</p>
+        <h2 id="how-h">What's inside the box.</h2>
+      </div>
+      <dl class="systems">
+        <div><dt>The films</dt><dd>The ball and the monster play the original BBS (Blockbuster Studio) keyframe films, with their own easing curves and offsets, instead of hand-made animations.</dd></div>
+        <div><dt>The models</dt><dd>The ball is a BBS poly-mesh model. The monster is a skinned Blockbuster OBJ rig, read by a loader built into the mod.</dd></div>
+        <div><dt>His brain</dt><dd>Your message goes to Gemini with his personality and a hidden note about the world: where you're standing, the nearest structures and ores. He answers in one short line. Hidden tags in his reply make things happen: rain, an item, following, staying, the flat smile.</dd></div>
+        <div><dt>Voice and mouth</dt><dd>Fish Audio speaks the line. How loud he is at each moment picks one of three mouth stages, so the mouth moves with the words.</dd></div>
+        <div><dt>His eyes</dt><dd><code>/veritysee</code> renders one frame from exactly where his face points and hands it to Gemini's vision model.</dd></div>
+        <div><dt>First-person animations</dt><dd>Your arms and the box are drawn in view space from keyframes measured off the video. Throws and the lava sink run on shared numbers, so every player sees the same path.</dd></div>
+        <div><dt>The flying door</dt><dd>Simulated as its real 1 × 2 block panel: it tumbles, smashes the glass it hits, slams flat against a wall and tips over onto the floor.</dd></div>
+        <div><dt>Protected assets</dt><dd>The models and entity textures ship encrypted. Unzipping the jar gets you nothing usable.</dd></div>
+      </dl>
+
+      <div class="section-head" style="margin:clamp(64px,8vw,96px) 0 0">
+        <p class="eyebrow">How it's built</p>
+        <h2>No Gradle. Every frame previewed.</h2>
+      </div>
+      <ol class="pipeline">
+        <li><b>Compile</b><span>Java 17, compiled straight against Mojang-mapped Minecraft 1.20.1 and Forge.</span></li>
+        <li><b>Remap</b><span>Renamed to Forge's runtime names with AutoRenamingTool.</span></li>
+        <li><b>Pack</b><span>Models and textures sealed. Every texture re-encoded each build.</span></li>
+        <li><b>Preview</b><span>Each animation rendered with the game's own numbers and checked against the video before it ships. That's where the clips on this page come from.</span></li>
+      </ol>
+      <p class="note" style="margin-top:28px">Versions go MAJOR.MINOR.PATCH: 1.x is the ball, 2.x the monster, 3.x the box.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span><b>Verity v3.10.0</b>, a fan-made Minecraft mod by c00lzer.</span>
+    <span>Based on the Verity videos. The characters and original assets belong to their creators. Not affiliated with Mojang or Microsoft.</span>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // the videos: looping previews, or stills with controls if you'd rather nothing moved
+    document.querySelectorAll("video").forEach(function (v) {
+      if (still) {
+        v.removeAttribute("autoplay");
+        v.pause();
+        v.controls = true;
+      }
+    });
+    // the talking ball: his three mouth stages, in a rhythm like speech
+    var frames = document.querySelectorAll(".talker img");
+    if (still || frames.length < 4) return;
+    var line = [0, 2, 1, 3, 2, 0, 1, 2, 0, 0, 3, 1, 2, 1, 0, 0, 0, 2, 3, 2, 1, 0, 0, 0, 0, 0];
+    var i = 0;
+    setInterval(function () {
+      var s = line[i++ % line.length];
+      frames.forEach(function (f, k) { f.classList.toggle("on", k === s); });
+    }, 140);
+  })();
+</script>
+</body>
+</html>
