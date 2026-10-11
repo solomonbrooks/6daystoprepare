@@ -1,0 +1,50 @@
+newmtl face
+Ka 0 0 0
+Kd 1.000 1.000 1.000
+Ks 0 0 0
+d 1
+illum 1
+map_Kd wren-face.png
+
+newmtl skin
+Ka 0 0 0
+Kd 0.780 0.800 0.830
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl hair
+Ka 0 0 0
+Kd 0.080 0.070 0.090
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl dress
+Ka 0 0 0
+Kd 0.190 0.110 0.210
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl collar
+Ka 0 0 0
+Kd 0.900 0.880 0.840
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl stocking
+Ka 0 0 0
+Kd 0.150 0.150 0.170
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl shoe
+Ka 0 0 0
+Kd 0.050 0.050 0.060
+Ks 0 0 0
+d 1
+illum 1
+
