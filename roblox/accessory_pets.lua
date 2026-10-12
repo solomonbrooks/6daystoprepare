@@ -3,11 +3,11 @@ local N="YOUR_USERNAME"
 local plr=P:FindFirstChild(N) or P:GetPlayers()[1]
 if workspace:FindFirstChild("AccessoryPets") then workspace.AccessoryPets:Destroy() end
 local F=Instance.new("Folder") F.Name="AccessoryPets" F.Parent=workspace
-local inv,cnt,pets,items,t={food=0,poison=0},{food=0,poison=0},{},{},0
+local eating=nil local inv,cnt,pets,items,t={food=0,poison=0},{food=0,poison=0},{},{},0
 local TOX,PURP,RED,WHITE,BLACK=Color3.fromRGB(90,255,60),Color3.fromRGB(120,0,170),Color3.new(1,0,0),Color3.new(1,1,1),Color3.new(0,0,0)
 local GOO={Color3.fromRGB(35,6,45),Color3.fromRGB(18,32,14),Color3.fromRGB(55,0,38),Color3.fromRGB(8,8,20),Color3.fromRGB(28,18,0)}
 local LIMB,ELIMB=Color3.fromRGB(40,40,46),Color3.fromRGB(90,0,0)
-local L={born={"...huh? where am i?","I'M ALIVE!!","i have LEGS now??","FREEDOM!!","hi mommy! hi daddy!"},hungry={"FEED ME!!","im sooo hungry...","food. now. please.","my tummy is rumbling","find me food!! its on the map somewhere!"},sad={"you never play with me...","im lonely :(","do you even love me?","pet me pls"},mad={"im getting ANGRY...","you are neglecting me. i will remember this.","grrrrr"},happy={"yay!!","i love you!","yummy!!","more pls!","i feel myself getting bigger!"},pat={"hehe that tickles","purrrr","pet me more!","i feel loved <3"},idle={"what are we doing today?","im bored","you smell funny","i used to live on your head lol","dont leave me!","why are you staring at me","im gonna go explore","look at me walk!!","the ground is so big"},evil={"I HAVE GROWN.","now YOU are the food.","come here...","NO ONE ESCAPES","you fed me too well...","RUN."},lunge={"RAAAAAH!","GET OVER HERE!","CHOMP TIME!"},eat={"*CHOMP*","delicious.","more.","tasty human"},nopoison={"HAHA you have nothing!","feed me something TASTY. like YOU."},poisoned={"what... did you feed me...","bleh! that tastes WRONG","my tummy... it burns...","you TRICKED me!!"},dying={"urk... i dont feel so good...","*gurgle*","whats happening to meeee","BLEEEEEHHH"}}
+local L={born={"...huh? where am i?","I'M ALIVE!!","i have LEGS now??","FREEDOM!!","hi mommy! hi daddy!"},hungry={"FEED ME!!","im sooo hungry...","food. now. please.","my tummy is rumbling","find me food!! its on the map somewhere!"},sad={"you never play with me...","im lonely :(","do you even love me?","pet me pls"},mad={"im getting ANGRY...","you are neglecting me. i will remember this.","grrrrr"},happy={"yay!!","i love you!","yummy!!","more pls!","i feel myself getting bigger!"},pat={"hehe that tickles","purrrr","pet me more!","i feel loved <3"},idle={"what are we doing today?","im bored","you smell funny","i used to live on your head lol","dont leave me!","why are you staring at me","im gonna go explore","look at me walk!!","the ground is so big"},evil={"I HAVE GROWN.","now YOU are the food.","come here...","NO ONE ESCAPES","you fed me too well...","RUN."},lunge={"RAAAAAH!","GET OVER HERE!","CHOMP TIME!"},eat={"*CHOMP*","delicious.","more.","tasty human","mmm... crunchy"},grab={"GOTCHA.","say goodbye.","open wiiide...","dinner time."},nopoison={"HAHA you have nothing!","feed me something TASTY. like YOU."},poisoned={"what... did you feed me...","bleh! that tastes WRONG","my tummy... it burns...","you TRICKED me!!"},dying={"urk... i dont feel so good...","*gurgle*","whats happening to meeee","BLEEEEEHHH"}}
 local function R(x) return x[math.random(#x)] end
 local function say(p,m) p.say.Text=m p.t0=os.clock() end
 local function part(sz,col,mat,sphere)
@@ -28,7 +28,7 @@ task.delay(25,function() if q.Parent then local tw=TS:Create(q,TweenInfo.new(4),
 end
 local function explode(pet)
 local pos=pet.p.Position local s=math.max(pet.p.Size.X,pet.p.Size.Y,pet.p.Size.Z)
-boom(pos,s+6) pet.dead=true pet.p:Destroy() for _,e in ipairs(pet.eyes) do e:Destroy() end
+boom(pos,s+6) pet.dead=true pet.p:Destroy() if pet.eat then local e=pet.eat if eating==e.ch then eating=nil end if not e.done then for _,x in ipairs(e.ch:GetDescendants()) do if (x:IsA("BasePart") and x~=e.r) or x:IsA("Decal") then x.Transparency=0 end end if e.r.Parent then e.r.Anchored=false end e.hum.WalkSpeed=16 e.hum.JumpPower=50 end pet.eat=nil end for _,e in ipairs(pet.eyes) do e:Destroy() end
 puddle(pos,s*2.8,true)
 for n=1,35 do
 local b=part(Vector3.one*(math.random(4,12)/10)*(1+s*0.15),BLACK,nil,true) goo(b) b.Anchored=false b.CanCollide=true b.Position=pos+Vector3.new(0,1,0) b.AssemblyLinearVelocity=Vector3.new(math.random(-45,45),math.random(25,65),math.random(-45,45))
@@ -73,7 +73,7 @@ table.insert(pets,pet)
 task.delay(1.5,function() if p.Parent then
 p.Anchored=true p.CanCollide=false pet.pos=p.Position pet.born=os.clock()
 local function add(q) table.insert(pet.eyes,q) return q end
-for k=1,2 do pet.w[k]=add(part(Vector3.one,WHITE,nil,true)) pet.pu[k]=add(part(Vector3.one,BLACK,nil,true)) pet.br[k]=add(part(Vector3.one,BLACK)) pet.br[k].Transparency=1 pet.legs[k]=add(part(Vector3.one,LIMB)) pet.feet[k]=add(part(Vector3.one,LIMB,nil,true)) pet.arms[k]=add(part(Vector3.one,LIMB)) end
+for k=1,2 do pet.w[k]=add(part(Vector3.one,WHITE,nil,true)) pet.pu[k]=add(part(Vector3.one,BLACK,nil,true)) pet.br[k]=add(part(Vector3.one,BLACK)) pet.br[k].Transparency=1 pet.legs[k]=add(part(Vector3.one,LIMB)) pet.feet[k]=add(part(Vector3.one,LIMB,nil,true)) pet.arms[k]=add(part(Vector3.one,LIMB)) end pet.mo=add(part(Vector3.one,BLACK,nil,true)) pet.teeth={} for k=1,6 do pet.teeth[k]=add(part(Vector3.one,Color3.fromRGB(235,225,190))) pet.teeth[k].Transparency=1 end
 pet.falling=false say(pet,R(L.born))
 end end)
 end
@@ -128,7 +128,7 @@ if not r or not hum then return end
 local hd=ch:FindFirstChild("Head") or r
 local now=os.clock() local rpos=r.Position
 for _,pet in ipairs(pets) do local p=pet.p if not pet.falling and not pet.dead and p.Parent then
-p.Size=pet.s0*pet.sc if pet.m then pet.m.Scale=pet.ms0*pet.sc end
+local bm=1 if pet.bulge and now-pet.bulge<1.2 then local b=now-pet.bulge bm=1+0.3*math.sin(b*22)*(1.2-b) end p.Size=pet.s0*pet.sc*bm if pet.m then pet.m.Scale=pet.ms0*pet.sc*bm end
 local sx,sy,sz,rc=p.Size.X,p.Size.Y,p.Size.Z,pet.rot
 local hx=0.5*(math.abs(rc.RightVector.X)*sx+math.abs(rc.UpVector.X)*sy+math.abs(rc.LookVector.X)*sz)
 local hy=0.5*(math.abs(rc.RightVector.Y)*sx+math.abs(rc.UpVector.Y)*sy+math.abs(rc.LookVector.Y)*sz)
@@ -166,7 +166,7 @@ local gy=hit and hit.Position.Y or rpos.Y-3
 pet.gy=pet.gy and pet.gy+(gy-pet.gy)*math.min(1,dt*15) or gy
 local breathe=math.sin(t*2.5+pet.i)*0.05*hy*(1-pet.amp)
 local np=Vector3.new(pos.X+mv.X,pet.gy+Ll+hy+bob+jy+breathe,pos.Z+mv.Z) pet.pos=np
-local jit=Vector3.zero if frozen then jit=Vector3.new(math.random()-0.5,math.random()-0.5,math.random()-0.5)*0.5*pet.sc end
+local jit=Vector3.zero if frozen and not pet.eat then jit=Vector3.new(math.random()-0.5,math.random()-0.5,math.random()-0.5)*0.5*pet.sc end
 local B=CFrame.new(np)*CFrame.Angles(0,pet.yaw+ey+look,0)
 local V=B*CFrame.Angles(-pet.amp*(pet.evil and 0.3 or 0.12),0,math.sin(pet.ph)*0.08*pet.amp)+jit
 p.CFrame=V*pet.rot
@@ -190,8 +190,19 @@ elseif talking then az=side*(1+math.sin(t*14+side)*0.5) end
 pet.arms[k].Size=Vector3.new(w*0.8,al,w*0.8) pet.arms[k].CFrame=V*CFrame.new(side*(hx+w*0.5),hy*0.15,0)*CFrame.Angles(ax,0,az)*CFrame.new(0,-al/2,0)
 end
 if pet.xp and pet.xp.Parent then pet.xp.MaxActivationDistance=math.max(hx,hz)+14 end
-if pet.evil and not frozen and hum.Health>0 and distP<math.max(hx,hz)+2.5 then
-hum.Health=0 for _,x in ipairs(ch:GetDescendants()) do if x:IsA("BasePart") or x:IsA("Decal") then x.Transparency=1 end end pet.sc=pet.sc+0.5 pet.stun=now+1.5 say(pet,R(L.eat))
+local mw=hx*0.9 local mh=hy*0.06 local ek=pet.eat and now-pet.eat.t0 or 99
+if pet.evil then mh=hy*(0.22+0.05*math.sin(t*9)) if ek<1.1 then mh=hy*0.7 elseif ek<1.25 then mh=hy*0.05 end elseif talking then mh=hy*(0.06+0.14*math.abs(math.sin(t*16))) end
+local mc=V*CFrame.new(0,-hy*0.3,-hz-0.05)
+pet.mo.Size=Vector3.new(mw,math.max(mh,0.05),math.max(hz*0.2,0.1)) pet.mo.CFrame=mc
+for k=1,6 do local tt=pet.teeth[k] if pet.evil then local top=k<=3 local tw=mw*0.18 tt.Transparency=0 tt.Size=Vector3.new(tw,tw,tw*0.5) tt.CFrame=mc*CFrame.new(((k-1)%3-1)*mw*0.28,(top and 1 or -1)*(mh/2-tw*0.25),-0.08)*CFrame.Angles(0,0,math.pi/4) end end
+if pet.evil and not frozen and not eating and hum.Health>0 and distP<math.max(hx,hz)+2.5 then
+eating=ch pet.eat={t0=now,ch=ch,r=r,hum=hum,from=r.CFrame} pet.stun=now+2.4 r.Anchored=true hum.WalkSpeed=0 hum.JumpPower=0 say(pet,R(L.grab))
+end
+if pet.eat then local e=pet.eat
+if ek>=0.35 and ek<1.1 and e.r.Parent then local a=(ek-0.35)/0.75 a=a*a e.r.CFrame=e.from:Lerp(mc*CFrame.new(0,0,-1),a) for _,x in ipairs(e.ch:GetDescendants()) do if (x:IsA("BasePart") and x~=e.r) or x:IsA("Decal") then x.Transparency=a end end
+elseif ek>=1.1 and not e.done then e.done=true e.hum.Health=0 for _,x in ipairs(e.ch:GetDescendants()) do if x:IsA("BasePart") or x:IsA("Decal") then x.Transparency=1 end end pet.sc=pet.sc+0.5 pet.bulge=now say(pet,R(L.eat))
+elseif ek>=1.9 and not e.burp then e.burp=true say(pet,"*BUUURRRP*") local sm=Instance.new("Smoke") sm.Color=Color3.fromRGB(60,40,20) sm.Size=2 sm.RiseVelocity=5 sm.Parent=p DB:AddItem(sm,1)
+elseif ek>=2.4 then pet.eat=nil if eating==e.ch then eating=nil end end
 end
 end end
 end)
