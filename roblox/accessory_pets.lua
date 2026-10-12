@@ -10,6 +10,10 @@ local GOO={Color3.fromRGB(35,6,45),Color3.fromRGB(18,32,14),Color3.fromRGB(55,0,
 local LIMB,ELIMB,SLIMB,TAN=Color3.fromRGB(40,40,46),Color3.fromRGB(90,0,0),Color3.fromRGB(25,0,35),Color3.fromRGB(215,170,100)
 local L={born={"...huh? where am i?","I'M ALIVE!!","i have LEGS now??","FREEDOM!!","hi mommy! hi daddy!"},hungry={"FEED ME!!","im sooo hungry...","food. now. please.","my tummy is rumbling","find me food!! its on the map somewhere!"},sad={"you never play with me...","im lonely :(","do you even love me?","pet me pls"},mad={"im getting ANGRY...","you are neglecting me. i will remember this.","grrrrr"},happy={"yay!!","i love you!","yummy!!","more pls!","i feel myself getting bigger!"},pat={"hehe that tickles","purrrr","pet me more!","i feel loved <3"},idle={"what are we doing today?","im bored","you smell funny","i used to live on your head lol","dont leave me!","why are you staring at me","im gonna go explore","look at me walk!!","i miss the hat mines...","do you know someone named gerald?","sometimes i hear whispers..."},whisper={"they don't really love you...","let me protect you...","soon...","eat more... for US","why do you trust them?"},glorp={"glorp... glorp...","~ we are the beans... ~","~ glorp glorp glorp ~","~ little hat upon your head... ~","~ soon the burrito... comes for YOU ~"},evil={"I HAVE GROWN.","now YOU are the food.","come here...","NO ONE ESCAPES","you fed me too well...","RUN.","GERALD WAS RIGHT.","this is for the burritos.","SILENCE, HAT."},trap1={"help me...","its taking over...","im still in here!","dont give up on me..."},trap2={"...help...","...please...","...its so dark..."},trap3={"...h..."},super={"~ GLORP GLORP GLORP ~","MASTER... I HAVE FOUND HIM...","THE HAT IS OURS. THE HEAD IS NEXT.","WE ARE THE BEANS.","GERALD SENT US. CHECK YOUR TEXTS.","~ WE ARE THE BEANS, WE ARE THE BEANS ~","~ YOU FLUSHED US DOWN, WE CAME BACK UP ~","~ NOW HAND US OVER YOUR BLOX-COLA CUP ~"},lunge={"RAAAAAH!","GET OVER HERE!","CHOMP TIME!"},eat={"*CHOMP*","delicious.","more.","tasty human","mmm... crunchy"},grab={"GOTCHA.","say goodbye.","open wiiide...","dinner time."},nopoison={"HAHA you have nothing!","feed me something TASTY. like YOU."},poisoned={"what... did you feed me...","bleh! that tastes WRONG","my tummy... it burns...","you TRICKED me!!"},dying={"urk... i dont feel so good...","*gurgle*","whats happening to meeee","BLEEEEEHHH"},slap={"DID YOU JUST SLAP ME?!","OW!! MY BEANS!","YOU WILL REGRET THAT.","nobody has EVER slapped a burrito..."},evilpet={"...i remember that...","...you still care...?","...keep... trying..."},survive1={"...WHY WON'T YOU DIE?!","PTOO! GROSS!","IMPOSSIBLE!!"},survive2={"...are you even human...","are you... GERALD?","my jaw hurts...","i can't eat anymore..."},ultra={"I ATE MY BURRITO. i am free.","i will protect you.","thank you for never giving up on me.","no burrito will touch you."},ultrafight={"BEGONE, BURRITO!","HAT JUSTICE!","this is for the hats!"},freed={"...i'm... free? THANK YOU!!","the burrito is gone!! i can think again!"},scared={"AAAH STAY AWAY","you smell like BURRITO","no no no no"},hollow={"...what ARE you?","stay away from me...","no flavor... no soul..."},brother={"...one of us...","...brother...","welcome to the beans."},innocent={"i feel so light! no whispers in my head :)","just a hat. just vibes.","i will never turn evil. pinky promise.","no burrito in here! i checked!"},beans={"i love you... i think??","pls dont flush me","beans is happy :)","i used to be evil. now i have YOU.","hug?","enjoy ur beans!! (not me tho)","im a bug-free burrito :)","huggable, not buggable!"},lost={"...hello?","...where did you go?","...come back...","I HAVE GROWN... for who...?"},supremo={"I AM RETURNING.","YOU FLUSHED US. ALL OF US.","50 YEARS OF BURRITOS. ONE BODY.","EVERY TOILET. EVERY SEWER. ME."},gerald={"i am still not paid.","hug the hats. debug the burritos. pet the Beans.","im on a salad diet now.","DO NOT flush the burrito.","blox-cola is the only way.","if you hear glorping... run.","every bug is a burrito.","i dropped ONE burrito in 2014. ONE.","i hugged my salad today.","...thats all they ever needed."},calm={"bro... you dont have to do this...","being loved is so much better...","i know youre scared. ill pet you."},calmed={"...loved?","...i... huh?","*sniff*"},infect={"tasty... human...?","i want a burrito...","glorp","bruh"}}
 local function R(x) return x[math.random(#x)] end
+local PERS={sweet={"youre my favorite human","i made you a friendship bracelet (imaginary)","every day with you is a good day"},dramatic={"THE WORLD IS SO BIG AND I AM SO SMALL","nobody understands me...","this is the best AND worst day of my LIFE"},grumpy={"ugh. walking.","dont look at me.","i was happier as a hat."},shy={"...h-hi...","...um...","*hides behind you*"},chaotic={"i licked the ground","what if i just. ran away. jk","BWAHAHAHA"}}
+local PKEYS={"sweet","dramatic","grumpy","shy","chaotic"}
+local THINK={"am i real?","what if were all in a game?","i think, therefore i hat.","sometimes i can see... the code.","who made the hat mines?","what IS a burrito, really?"}
+local afk,lastPos=0,nil
 local function say(p,m,v)
 v=v or (p.ultra and "ultra" or p.evil and "burrito" or "hat")
 p.say.BackgroundColor3=v=="burrito" and BLACK or v=="ultra" and GOLD or WHITE p.say.TextColor3=v=="burrito" and RED or BLACK
@@ -150,21 +154,21 @@ end
 function setPrompts(pet,mode)
 for _,x in ipairs(pet.prompts) do x:Destroy() end pet.prompts={}
 local function pr(text,key,gp,off,fn)
-local q=Instance.new("ProximityPrompt") q.Name=text q.ActionText=text q.ObjectText=(pet.evil and (pet.super and "SUPER EVIL " or "EVIL ") or pet.ultra and "ULTRA " or "")..pet.nm q.KeyboardKeyCode=key q.GamepadKeyCode=gp q.HoldDuration=0 q.RequiresLineOfSight=false q.UIOffset=Vector2.new(0,off) q.Parent=pet.p
+local q=Instance.new("ProximityPrompt") q.Name=text q.ActionText=text q.ObjectText=(pet.evil and (pet.super and "SUPER EVIL " or "EVIL ") or pet.ultra and "ULTRA " or "").."("..pet.pers..") "..pet.nm q.KeyboardKeyCode=key q.GamepadKeyCode=gp q.HoldDuration=0 q.RequiresLineOfSight=false q.UIOffset=Vector2.new(0,off) q.Parent=pet.p
 q.Triggered:Connect(function(w) if w==plr and not pet.dying and not pet.dead then fn() end end)
 table.insert(pet.prompts,q)
 end
 local E,Rk,Fk=Enum.KeyCode.E,Enum.KeyCode.R,Enum.KeyCode.F
 if mode=="cute" then
-pr("Feed",E,Enum.KeyCode.ButtonX,0,function() if inv.food<1 then say(pet,"you have no food!! go find some on the map!") return end inv.food=inv.food-1 pet.hunger=math.min(100,pet.hunger+35) pet.sc=pet.sc+0.3 pet.spinT=os.clock() sparkle(pet.p,Color3.fromRGB(255,200,0)) say(pet,R(L.happy)) end)
-pr("Pet",Rk,Enum.KeyCode.ButtonY,80,function() if pet.beans then pet.sc=math.min(2,pet.sc+0.1) end pet.love=math.min(100,pet.love+25) pet.spinT=os.clock() sparkle(pet.p,Color3.fromRGB(255,120,200)) say(pet,R(L.pat)) end)
-pr("Hug",Enum.KeyCode.G,Enum.KeyCode.ButtonL1,160,function() achieve("Hugger","the hats are huggable") if pet.beans then pet.sc=math.min(2,pet.sc+0.1) end pet.love=math.min(100,pet.love+15) pet.spinT=os.clock() sparkle(pet.p,Color3.fromRGB(255,120,200)) say(pet,pet.beans and "...hug... back..." or "hug!! <3") end)
+pr("Feed",E,Enum.KeyCode.ButtonX,0,function() if inv.food<1 then say(pet,"you have no food!! go find some on the map!") return end pet.mem.fed=pet.mem.fed+1 inv.food=inv.food-1 pet.hunger=math.min(100,pet.hunger+35) pet.sc=pet.sc+0.3 pet.spinT=os.clock() sparkle(pet.p,Color3.fromRGB(255,200,0)) say(pet,R(L.happy)) end)
+pr("Pet",Rk,Enum.KeyCode.ButtonY,80,function() pet.mem.pets=pet.mem.pets+1 if pet.beans then pet.sc=math.min(2,pet.sc+0.1) end pet.love=math.min(100,pet.love+25) pet.spinT=os.clock() sparkle(pet.p,Color3.fromRGB(255,120,200)) say(pet,R(L.pat)) end)
+pr("Hug",Enum.KeyCode.G,Enum.KeyCode.ButtonL1,160,function() pet.mem.hugs=pet.mem.hugs+1 achieve("Hugger","the hats are huggable") if pet.beans then pet.sc=math.min(2,pet.sc+0.1) end pet.love=math.min(100,pet.love+15) pet.spinT=os.clock() sparkle(pet.p,Color3.fromRGB(255,120,200)) say(pet,pet.beans and "...hug... back..." or "hug!! <3") end)
 elseif mode=="evil" then
-pr("Feed Poison",E,Enum.KeyCode.ButtonX,0,function() if inv.poison<1 then say(pet,R(L.nopoison)) return end inv.poison=inv.poison-1 pet.poison=pet.poison+1 pet.stun=os.clock()+1.2 sparkle(pet.p,PURP) pet.hl.FillColor=(pet.super and BLACK or RED):Lerp(PURP,pet.poison/pet.need) say(pet,R(L.poisoned)) if pet.poison>=pet.need then die(pet) end end)
+pr("Feed Poison",E,Enum.KeyCode.ButtonX,0,function() if inv.poison<1 then say(pet,R(L.nopoison)) return end pet.mem.poison=pet.mem.poison+1 inv.poison=inv.poison-1 pet.poison=pet.poison+1 pet.stun=os.clock()+1.2 sparkle(pet.p,PURP) pet.hl.FillColor=(pet.super and BLACK or RED):Lerp(PURP,pet.poison/pet.need) say(pet,R(L.poisoned)) if pet.poison>=pet.need then die(pet) end end)
 pr("Pet",Rk,Enum.KeyCode.ButtonY,80,function() pet.flicker=os.clock()+1.2 pet.sc=pet.sc+0.1 say(pet,R(L.evilpet),"hat") end)
-pr("Slap",Fk,Enum.KeyCode.ButtonB,160,function() achieve("Burrito Slapper","nobody has EVER slapped a burrito") pet.stun=os.clock()+1 pet.sc=math.max(1,pet.sc-0.4) pet.rage=pet.rage*1.1 beans(pet.p.Position) say(pet,R(L.slap)) if pet.sc<3 then unEvil(pet) end end)
+pr("Slap",Fk,Enum.KeyCode.ButtonB,160,function() achieve("Burrito Slapper","nobody has EVER slapped a burrito") pet.mem.slaps=pet.mem.slaps+1 pet.stun=os.clock()+1 pet.sc=math.max(1,pet.sc-0.4) pet.rage=pet.rage*1.1 beans(pet.p.Position) say(pet,R(L.slap)) if pet.sc<3 then unEvil(pet) end end)
 pr("Hug",Enum.KeyCode.G,Enum.KeyCode.ButtonL1,240,function()
-local now=os.clock() pet.hugs=(pet.hugs or 0)+1 local hg=pet.hugs local pink=Color3.fromRGB(255,120,200)
+local now=os.clock() pet.mem.hugs=pet.mem.hugs+1 pet.hugs=(pet.hugs or 0)+1 local hg=pet.hugs local pink=Color3.fromRGB(255,120,200)
 achieve("Hugger","you hugged a burrito. why.")
 pet.stun=now+3 pet.embarrass=hg<=2 and now+7 or 0 if hg>=3 then pet.flicker=now+3 end
 pet.hl.FillColor=(pet.super and BLACK or RED):Lerp(pink,math.min(1,hg/5)) if pet.fire then pet.fire.Size=math.max(1,(pet.super and 10 or 5)*(1-hg/5)) end sparkle(pet.p,pink)
@@ -189,7 +193,7 @@ local g=Instance.new("BillboardGui") g.Size=UDim2.new(0,230,0,70) g.AlwaysOnTop=
 local s=Instance.new("TextLabel") s.Size=UDim2.new(1,0,0.6,0) s.BackgroundColor3=WHITE s.TextColor3=BLACK s.TextScaled=true s.Font=Enum.Font.FredokaOne s.Text="" s.Visible=false s.Parent=g
 Instance.new("UICorner").Parent=s
 local st=Instance.new("TextLabel") st.Size=UDim2.new(1,0,0.4,0) st.Position=UDim2.new(0,0,0.6,0) st.BackgroundTransparency=1 st.TextColor3=WHITE st.TextStrokeTransparency=0 st.TextScaled=true st.Font=Enum.Font.GothamBold st.Text="" st.Parent=g
-local pet={p=p,m=m,nm=kind=="beans" and "Beans" or kind=="supremo" and "EL BURRITO SUPREMO" or h.Parent.Name,acc=acc,innocent=kind=="innocent" or kind=="beans",beans=kind=="beans",supremo=kind=="supremo",s0=p.Size,ms0=m and m.Scale,rot=head and (head.CFrame:Inverse()*h.CFrame).Rotation or CFrame.new(),sc=1,hunger=60,love=60,poison=0,need=3,rage=1,survive=0,evil=false,falling=true,i=i,say=s,st=st,g=g,t0=0,nxt=os.clock()+math.random(5,9),blink=0,stun=0,lunge=0,flicker=0,hitT=0,spinT=-10,yaw=0,dyaw=0,ph=0,amp=0,wnext=0,prompts={},parts={},w={},pu={},br={},legs={},feet={},arms={},xw={},xp={},teeth={}}
+local pet={pers=kind=="supremo" and "chaotic" or kind=="beans" and "sweet" or PKEYS[math.random(#PKEYS)],mem={fed=0,pets=0,hugs=0,slaps=0,poison=0,ate=0},made=os.clock(),p=p,m=m,nm=kind=="beans" and "Beans" or kind=="supremo" and "EL BURRITO SUPREMO" or h.Parent.Name,acc=acc,innocent=kind=="innocent" or kind=="beans",beans=kind=="beans",supremo=kind=="supremo",s0=p.Size,ms0=m and m.Scale,rot=head and (head.CFrame:Inverse()*h.CFrame).Rotation or CFrame.new(),sc=1,hunger=60,love=60,poison=0,need=3,rage=1,survive=0,evil=false,falling=true,i=i,say=s,st=st,g=g,t0=0,nxt=os.clock()+math.random(5,9),blink=0,stun=0,lunge=0,flicker=0,hitT=0,spinT=-10,yaw=0,dyaw=0,ph=0,amp=0,wnext=0,prompts={},parts={},w={},pu={},br={},legs={},feet={},arms={},xw={},xp={},teeth={}}
 setPrompts(pet,"cute")
 table.insert(pets,pet)
 task.delay(1.5,function() if p.Parent then
@@ -232,6 +236,61 @@ local q=Instance.new("ProximityPrompt") q.ActionText="Talk" q.ObjectText="Gerald
 q.Triggered:Connect(function(w) if w==plr then gl.Text=R(L.gerald) achieve("Met Gerald","he is still not paid") end end)
 end
 end
+local function memLine(pet)
+local o,mm={},pet.mem
+if mm.fed>0 then table.insert(o,"youve fed me "..mm.fed.." times. im counting.") end
+if mm.slaps>0 then table.insert(o,"you slapped me "..mm.slaps.." times. i remember EVERYTHING.") end
+if mm.hugs>0 then table.insert(o,"you hugged me "..mm.hugs.." times <3") end
+if mm.ate>0 then table.insert(o,"ive eaten you "..mm.ate.." times. delicious every time.") end
+if mm.poison>0 then table.insert(o,"you poisoned me "..mm.poison.." times. i will NOT forget.") end
+table.insert(o,"ive been alive for "..math.floor((os.clock()-pet.made)/60).." minutes. what a journey.")
+return R(o) end
+local function envLine()
+local ch=plr.Character local hum=ch and ch:FindFirstChildOfClass("Humanoid")
+if hum and hum.Health>0 and hum.Health<hum.MaxHealth*0.5 then return "are you okay?? youre hurt!" end
+if afk>30 then return "...are you asleep?" end
+local ct=game:GetService("Lighting").ClockTime if ct<6 or ct>18 then return "its dark... im scared" end
+end
+local function extra(pet) local r=math.random() if r<0.2 then return memLine(pet) elseif r<0.4 then return R(PERS[pet.pers]) elseif r<0.5 then return R(THINK) elseif r<0.65 then return envLine() end end
+local function reply(pet,m,rpos)
+local function has(...) for _,w in ipairs({...}) do if m:find(w,1,true) then return true end end return false end
+local name=plr.DisplayName local ev=pet.evil and not pet.dying
+if has("hello","hi ","hey","sup") or m=="hi" then return ev and "hello, FOOD." or pet.pers=="shy" and "...h-hi "..name.."..." or "hi "..name.."!!" end
+if has("love") then if ev then pet.flicker=os.clock()+1.5 return "...i love you too...","hat" end pet.love=math.min(100,pet.love+10) return pet.beans and "beans loves you MORE" or "i love you too!!" end
+if has("sorry") then return pet.mem.slaps>0 and "you slapped me "..pet.mem.slaps.." times... but okay. i forgive you." or "...i forgive you." end
+if has("food","hungry","eat","snack") then return ev and "the only food here is YOU." or "WHERE. WHERE IS FOOD." end
+if has("gerald") then return "gerald... ive heard stories. hes not paid, right?" end
+if has("bean") then return pet.beans and "thats me!! :D" or ev and "...traitor." or "beans is the best" end
+if has("burrito","evil") then return ev and "WE ARE THE BEANS." or pet.innocent and "no burrito in me! i checked!" or "w-what burrito? theres no burrito in here..." end
+if has("who are you","your name") then return "im "..pet.nm..". i used to be on your head." end
+if has("how are you","feel","you ok") then if ev then return "...its so dark in here...","hat" end return pet.hunger<35 and "HUNGRY." or pet.love<35 and "lonely..." or "great!! because youre here" end
+if has("hate","die","kill","stupid","dumb") then if ev then return "HAHAHA. you cant hurt my feelings. i ATE them." end pet.love=math.max(0,pet.love-10) return "...why would you say that..." end
+if has("dance","spin") then pet.spinT=os.clock() return ev and "...fine. ONE spin." or "WHEEE" end
+if has("sit","stay","wait","stop") then if ev then return "NO." end pet.wt=nil pet.wnext=os.clock()+10 return "ok! staying!" end
+if has("come","follow") then if ev then return "oh im COMING." end pet.wt=rpos pet.wnext=os.clock()+5 return "coming!!" end
+if has("real","alive","sentient","conscious","think") then return R({"i think, therefore i hat.","am i alive? i FEEL alive.","im as real as you are... right?","i can see the code sometimes."}) end
+if has("?") then return R({"i dont know, im a hat.","42.","ask gerald.","yes. no. maybe.","hmm... burrito? no. i mean no."}) end
+if m:find(pet.nm:lower(),1,true) then return "huh? you said my name!" end
+end
+local chc
+chc=plr.Chatted:Connect(function(msg)
+if not F.Parent then chc:Disconnect() return end
+local r=plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") if not r then return end
+local m=msg:lower() local tg={}
+for _,pet in ipairs(pets) do if not pet.dead and not pet.falling and not pet.dying and m:find(pet.nm:lower(),1,true) then table.insert(tg,pet) end end
+if #tg==0 then for _,pet in ipairs(pets) do if not pet.dead and not pet.falling and not pet.dying and pet.pos and (pet.pos-r.Position).Magnitude<40 then table.insert(tg,pet) end end table.sort(tg,function(a,b) return (a.pos-r.Position).Magnitude<(b.pos-r.Position).Magnitude end) end
+for idx=1,math.min(2,#tg) do local pet=tg[idx] task.delay(0.5+idx*0.9,function() if pet.dead then return end local line,v=reply(pet,m,r.Position) if line then pet.nxt=os.clock()+6 say(pet,line,v) end end) end
+end)
+local function convo(a,b)
+if a.evil and b.evil then return {"GLORP.","glorp glorp."} end
+if a.evil then a,b=b,a end
+if a.ultra and b.evil then return {"your days are numbered.","SILENCE, GOLDEN ONE."},a,b end
+if a.beans and b.evil then return {"bro... you dont have to do this...","...shut up, Beans."},a,b end
+if b.evil then return R({{"are you okay...?","LEAVE, SMALL HAT."},{"i miss the old you...","...the old me is GONE."}}),a,b end
+if b.beans then a,b=b,a end
+if a.beans then return {"hug?","...okay. <3"},a,b end
+return R({{"do you ever hear whispers?","...no. why? ...why do you ask?"},{"im the favorite.","no, IM the favorite."},{"what was it like on the head?","warm. it smelled like thoughts."},{"do you think were real?","shh. dont think about it."},{"race you!","no."}}),a,b
+end
 local cac
 cac=plr.CharacterAdded:Connect(function() if not F.Parent then cac:Disconnect() return end prot=os.clock()+3 inf=nil end)
 task.spawn(function()
@@ -242,6 +301,10 @@ local now=os.clock()
 local ch=plr.Character local hum=ch and ch:FindFirstChildOfClass("Humanoid")
 hollow=ch~=nil and hum==nil
 local lost=not (ch and ch:FindFirstChild("HumanoidRootPart"))
+if not lost then local hp=ch.HumanoidRootPart.Position if lastPos and (hp-lastPos).Magnitude<0.5 then afk=afk+1 else afk=0 end lastPos=hp end
+if k%15==0 then local alive={} for _,pp in ipairs(pets) do if not pp.dead and not pp.falling and not pp.dying and pp.pos then table.insert(alive,pp) end end
+if #alive>=2 then local a=R(alive) local b,bd=nil,25 for _,o in ipairs(alive) do if o~=a and (o.pos-a.pos).Magnitude<bd then b,bd=o,(o.pos-a.pos).Magnitude end end
+if b then local c,x,y=convo(a,b) x=x or a y=y or b x.nxt=now+8 y.nxt=now+8 say(x,c[1]) task.delay(2.5,function() if not y.dead then say(y,c[2]) end end) end end end
 if gerald and k%8==0 then gerald.Text=R(L.gerald) end
 local anyEvil=false
 for _,pet in ipairs(pets) do if pet.evil and not pet.dead then anyEvil=true end end
@@ -276,7 +339,7 @@ elseif pet.innocent and math.random()<0.3 then say(pet,R(L.innocent))
 elseif pet.innocent and (pet.hunger<=0 or pet.love<=0) then say(pet,R(L.sad))
 elseif pet.sc>=2.4 and not pet.innocent and math.random()<0.5 then say(pet,R(L.glorp),"burrito")
 elseif pet.sc>=2 and not pet.innocent and math.random()<0.35 then say(pet,R(L.whisper),"burrito")
-else say(pet,(pet.hunger<=0 or pet.love<=0) and R(L.mad) or pet.hunger<35 and R(L.hungry) or pet.love<35 and R(L.sad) or R(L.idle)) end
+else say(pet,(pet.hunger<=0 or pet.love<=0) and R(L.mad) or pet.hunger<35 and R(L.hungry) or pet.love<35 and R(L.sad) or extra(pet) or R(L.idle)) end
 end
 pet.st.Text=(pet.beans and "BEANS  " or pet.innocent and "INNOCENT (no burrito!)  " or "")..string.format("Full %d%%  Love %d%%  Size %.1fx  [you have %d food]",math.floor(pet.hunger),math.floor(pet.love),pet.sc,inv.food)
 end
@@ -291,6 +354,7 @@ if lost then say(pet,R(L.lost))
 elseif pet.supremo and math.random()<0.5 then say(pet,R(L.supremo))
 elseif hollow then say(pet,R(L.hollow))
 elseif inf and inf.lvl>=1 then say(pet,R(L.brother))
+elseif math.random()<0.15 then say(pet,memLine(pet))
 elseif math.random()<0.3 then say(pet,R(pet.sc<5 and L.trap1 or pet.sc<10 and L.trap2 or L.trap3),"hat")
 elseif math.random()<0.5 then pet.lunge=now+0.8 say(pet,R(L.lunge))
 else say(pet,R(pet.super and L.super or L.evil)) end
@@ -425,7 +489,7 @@ if pet.eat then local e=pet.eat
 if ek>=0.35 and ek<1.1 and e.r.Parent then local a=(ek-0.35)/0.75 a=a*a e.r.CFrame=e.from:Lerp(mc*CFrame.new(0,0,-1),a) for _,x in ipairs(e.ch:GetDescendants()) do if (x:IsA("BasePart") and x~=e.r) or x:IsA("Decal") then x.Transparency=a end end
 elseif ek>=1.1 and not e.done and e.spicy then e.done=true pet.bulge=now say(pet,"tasty human... why does it taste like... *beep* *beep* *BEEP*")
 elseif ek>=1.9 and e.spicy and not e.burp then e.burp=true spit(e,B.LookVector) if eating==e.ch then eating=nil end pet.eat=nil boom(p.Position,25) explode(pet) achieve("Spicy Surprise","you got eaten and took it down with you")
-elseif ek>=1.1 and not e.done then e.done=true e.hum.Health=0 for _,x in ipairs(e.ch:GetDescendants()) do if x:IsA("BasePart") or x:IsA("Decal") then x.Transparency=1 end end pet.sc=pet.sc+0.5 pet.bulge=now say(pet,R(L.eat))
+elseif ek>=1.1 and not e.done then e.done=true e.hum.Health=0 for _,x in ipairs(e.ch:GetDescendants()) do if x:IsA("BasePart") or x:IsA("Decal") then x.Transparency=1 end end pet.mem.ate=pet.mem.ate+1 pet.sc=pet.sc+0.5 pet.bulge=now say(pet,R(L.eat))
 elseif ek>=1.9 and not e.burp then e.burp=true
 if e.hum.Parent and e.hum.Health>0 and e.r.Parent then
 spit(e,B.LookVector) achieve("Immortal Snack","you survived being eaten")
