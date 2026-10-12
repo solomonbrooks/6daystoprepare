@@ -1,0 +1,657 @@
+--[[
+  =====================================================================
+   SLIGHTLY DIFFERENT
+   a completely original game by WyrmSleet (no relation to anyone, ever)
+  =====================================================================
+
+   You wake up in The Facility(TM). A different facility. Legally.
+   Squishy Goo Pals(TM) (NOT latex. GOO. Shinier. Totally different.)
+   want to give you a hug. A hug turns you into a Squishy Goo Pal.
+   Survive the shift, or become extremely glossy.
+
+   HOW TO RUN
+   Paste this whole script into the Developer Console (F9) -> "Server"
+   tab of a game you own / can edit, or into the Studio command bar
+   while play-testing. It builds its own arena high in the sky, so your
+   map is left alone.
+
+   STOP + CLEAN UP:   _G.SlightlyDifferent.stop()
+
+   NOTE: only block comments are used in this file so it still works
+   if the console squashes the paste onto one line.
+]]
+
+if _G.SlightlyDifferent and _G.SlightlyDifferent.stop then pcall(_G.SlightlyDifferent.stop) end
+
+local Players = game:GetService("Players")
+local Debris = game:GetService("Debris")
+local rng = Random.new()
+
+local CFG = {
+	ORIGIN = Vector3.new(0, 1500, 0),
+	SIZE = 180,
+	WALL_H = 40,
+	INTERMISSION = 15,
+	ROUND = 150,
+	MIN_GOO = 2,
+	MAX_GOO = 8,
+	NPC_SPEED = 17,
+	GOO_PLAYER_SPEED = 20,
+	HUMAN_SPEED = 16,
+	PUDDLE_SPEED = 8,
+	TAG_RANGE = 4.5,
+	PUDDLES = 10,
+	PUDDLE_MAX = 30,
+}
+
+local GOO = Color3.fromRGB(16, 16, 20)
+local WHITE = Color3.fromRGB(245, 245, 245)
+
+local SD = { running = true, inRound = false, roles = {}, conns = {} }
+_G.SlightlyDifferent = SD
+
+local function new(class, props, parent)
+	local o = Instance.new(class)
+	for k, v in pairs(props or {}) do
+		o[k] = v
+	end
+	if parent then
+		o.Parent = parent
+	end
+	return o
+end
+
+local function block(props, parent)
+	props.Anchored = true
+	props.TopSurface = Enum.SurfaceType.Smooth
+	props.BottomSurface = Enum.SurfaceType.Smooth
+	return new("Part", props, parent)
+end
+
+local root = new("Folder", { Name = "SlightlyDifferent" }, workspace)
+local arenaF = new("Folder", { Name = "Arena" }, root)
+local mobsF = new("Folder", { Name = "GooPals" }, root)
+local puddleF = new("Folder", { Name = "Puddles" }, root)
+
+--[[ ---------- The Facility(TM) (a different one) ---------- ]]
+local O, S, H = CFG.ORIGIN, CFG.SIZE, CFG.WALL_H
+
+block({
+	Name = "Floor",
+	Size = Vector3.new(S, 2, S),
+	CFrame = CFrame.new(O),
+	Color = Color3.fromRGB(205, 208, 212),
+	Material = Enum.Material.SmoothPlastic,
+}, arenaF)
+
+for _, w in ipairs({
+	{ Vector3.new(0, H / 2, S / 2), Vector3.new(S, H, 2) },
+	{ Vector3.new(0, H / 2, -S / 2), Vector3.new(S, H, 2) },
+	{ Vector3.new(S / 2, H / 2, 0), Vector3.new(2, H, S) },
+	{ Vector3.new(-S / 2, H / 2, 0), Vector3.new(2, H, S) },
+}) do
+	block({
+		Name = "Wall",
+		Size = w[2],
+		CFrame = CFrame.new(O + w[1]),
+		Color = Color3.fromRGB(232, 234, 236),
+		Material = Enum.Material.SmoothPlastic,
+	}, arenaF)
+end
+
+for i = 1, 22 do
+	local sz = rng:NextNumber(5, 10)
+	local x = rng:NextNumber(-S / 2 + 35, S / 2 - 35)
+	local z = rng:NextNumber(-S / 2 + 8, S / 2 - 8)
+	block({
+		Name = "Crate",
+		Size = Vector3.new(sz, sz, sz),
+		CFrame = CFrame.new(O + Vector3.new(x, 1 + sz / 2, z)) * CFrame.Angles(0, rng:NextNumber(0, math.pi), 0),
+		Color = Color3.fromRGB(150, 120, 80),
+		Material = Enum.Material.WoodPlanks,
+	}, arenaF)
+end
+
+block({
+	Name = "HumanSpawnPad",
+	Size = Vector3.new(16, 0.2, 50),
+	CFrame = CFrame.new(O + Vector3.new(-S / 2 + 12, 1.1, 0)),
+	Color = Color3.fromRGB(90, 200, 120),
+	Material = Enum.Material.Neon,
+}, arenaF)
+
+for _, z in ipairs({ -20, 0, 20 }) do
+	block({
+		Name = "GooVent",
+		Size = Vector3.new(10, 0.2, 10),
+		CFrame = CFrame.new(O + Vector3.new(S / 2 - 12, 1.1, z)),
+		Color = GOO,
+		Reflectance = 0.4,
+		Material = Enum.Material.SmoothPlastic,
+	}, arenaF)
+end
+
+do
+	local sign = block({
+		Name = "Sign",
+		Size = Vector3.new(1, 14, 60),
+		CFrame = CFrame.new(O + Vector3.new(S / 2 - 1.6, 22, 0)),
+		Color = Color3.fromRGB(30, 30, 34),
+	}, arenaF)
+	local sg = new("SurfaceGui", { Face = Enum.NormalId.Left, PixelsPerStud = 30 }, sign)
+	new("TextLabel", {
+		Size = UDim2.fromScale(1, 1),
+		BackgroundTransparency = 1,
+		TextColor3 = WHITE,
+		Font = Enum.Font.GothamBlack,
+		TextScaled = true,
+		Text = "THE FACILITY\u{2122}\n(a different one)\nGOO CONTAINMENT: lol",
+	}, sg)
+end
+
+local function humanSpawn()
+	return CFrame.new(O + Vector3.new(-S / 2 + 12, 5, rng:NextNumber(-20, 20))) * CFrame.Angles(0, -math.pi / 2, 0)
+end
+
+local function gooSpawn()
+	return CFrame.new(O + Vector3.new(S / 2 - 12, 5, rng:NextNumber(-20, 20))) * CFrame.Angles(0, math.pi / 2, 0)
+end
+
+--[[ ---------- HUD ---------- ]]
+local status, feed, feedToken = "", "", 0
+
+local function getGui(plr)
+	local pg = plr:FindFirstChildOfClass("PlayerGui")
+	if not pg then
+		return nil
+	end
+	local g = pg:FindFirstChild("SlightlyDifferentGui")
+	if g then
+		return g
+	end
+	g = new("ScreenGui", { Name = "SlightlyDifferentGui", ResetOnSpawn = false }, pg)
+	local st = new("TextLabel", {
+		Name = "Status",
+		AnchorPoint = Vector2.new(0.5, 0),
+		Position = UDim2.new(0.5, 0, 0, 8),
+		Size = UDim2.new(0.6, 0, 0, 40),
+		BackgroundColor3 = GOO,
+		BackgroundTransparency = 0.15,
+		TextColor3 = WHITE,
+		Font = Enum.Font.GothamBold,
+		TextScaled = true,
+		Text = "",
+	}, g)
+	new("UICorner", { CornerRadius = UDim.new(0, 10) }, st)
+	new("TextLabel", {
+		Name = "Feed",
+		AnchorPoint = Vector2.new(0.5, 0),
+		Position = UDim2.new(0.5, 0, 0, 54),
+		Size = UDim2.new(0.5, 0, 0, 26),
+		BackgroundTransparency = 1,
+		TextColor3 = Color3.fromRGB(255, 230, 120),
+		TextStrokeTransparency = 0.3,
+		Font = Enum.Font.GothamMedium,
+		TextScaled = true,
+		Text = "",
+	}, g)
+	return g
+end
+
+local function refresh(plr)
+	local g = getGui(plr)
+	if g then
+		g.Status.Text = status
+		g.Feed.Text = feed
+	end
+end
+
+local function refreshAll()
+	for _, p in ipairs(Players:GetPlayers()) do
+		refresh(p)
+	end
+end
+
+local function setStatus(t)
+	status = t
+	refreshAll()
+end
+
+local function announce(t)
+	feed = t
+	feedToken += 1
+	local mine = feedToken
+	refreshAll()
+	task.delay(5, function()
+		if feedToken == mine and SD.running then
+			feed = ""
+			refreshAll()
+		end
+	end)
+end
+
+--[[ ---------- Goo-ification(TM) ---------- ]]
+local function weldTo(part, base)
+	new("WeldConstraint", { Part0 = base, Part1 = part }, part)
+end
+
+local function gooify(char)
+	if not char or char:GetAttribute("Goo") then
+		return
+	end
+	char:SetAttribute("Goo", true)
+
+	for _, d in ipairs(char:GetDescendants()) do
+		if d:IsA("Accessory") or d:IsA("Clothing") or d:IsA("ShirtGraphic") or d:IsA("BodyColors") then
+			d:Destroy()
+		elseif d:IsA("Decal") and d.Parent and d.Parent.Name == "Head" then
+			d:Destroy()
+		end
+	end
+
+	for _, p in ipairs(char:GetChildren()) do
+		if p:IsA("BasePart") and p.Name ~= "HumanoidRootPart" then
+			p.Color = GOO
+			p.Material = Enum.Material.SmoothPlastic
+			p.Reflectance = 0.3
+			if p:IsA("MeshPart") then
+				pcall(function()
+					p.TextureID = ""
+				end)
+			end
+		end
+	end
+
+	local head = char:FindFirstChild("Head")
+	if head then
+		local hs = head.Size
+		for _, side in ipairs({ -1, 1 }) do
+			local eye = new("Part", {
+				Name = "GooEye",
+				Size = Vector3.new(hs.X * 0.2, hs.Y * 0.3, 0.05),
+				Color = WHITE,
+				Material = Enum.Material.Neon,
+				CanCollide = false,
+				CanQuery = false,
+				CanTouch = false,
+				Massless = true,
+				CFrame = head.CFrame * CFrame.new(side * hs.X * 0.2, hs.Y * 0.08, -hs.Z * 0.5),
+			}, char)
+			weldTo(eye, head)
+			local ear = new("WedgePart", {
+				Name = "GooEar",
+				Size = Vector3.new(0.12, hs.Y * 0.55, hs.Z * 0.45),
+				Color = GOO,
+				Reflectance = 0.3,
+				Material = Enum.Material.SmoothPlastic,
+				CanCollide = false,
+				CanQuery = false,
+				CanTouch = false,
+				Massless = true,
+				CFrame = head.CFrame * CFrame.new(side * hs.X * 0.32, hs.Y * 0.65, 0) * CFrame.Angles(0, 0, side * -0.25),
+			}, char)
+			weldTo(ear, head)
+		end
+	end
+
+	local hrp = char:FindFirstChild("HumanoidRootPart")
+	if hrp then
+		local pe = new("ParticleEmitter", {
+			Color = ColorSequence.new(GOO),
+			Size = NumberSequence.new(0.6, 0),
+			Speed = NumberRange.new(8, 14),
+			SpreadAngle = Vector2.new(180, 180),
+			Lifetime = NumberRange.new(0.5, 0.9),
+			Rate = 0,
+		}, hrp)
+		pe:Emit(40)
+		Debris:AddItem(pe, 2)
+	end
+end
+
+local LINES = {
+	"%s has become a Squishy Goo Pal\u{2122}!",
+	"%s is now 40%% shinier.",
+	"%s got hugged. It was a very wet hug.",
+	"%s joined the goo. Resistance was mildly inconvenient.",
+	"%s: 'I feel... glossy.'",
+	"%s has been legally distinctified.",
+}
+
+local function convert(plr)
+	if SD.roles[plr] ~= "Human" then
+		return
+	end
+	SD.roles[plr] = "Goo"
+	local char = plr.Character
+	gooify(char)
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	if hum then
+		hum.WalkSpeed = CFG.GOO_PLAYER_SPEED
+	end
+	announce(LINES[rng:NextInteger(1, #LINES)]:format(plr.DisplayName))
+end
+
+local function spawnNpc()
+	local ok, rig = pcall(function()
+		return Players:CreateHumanoidModelFromDescription(Instance.new("HumanoidDescription"), Enum.HumanoidRigType.R15)
+	end)
+	if not ok or not rig then
+		warn("[SlightlyDifferent] couldn't make a goo pal:", rig)
+		return
+	end
+	rig.Name = "Squishy Goo Pal"
+	gooify(rig)
+	rig:PivotTo(gooSpawn())
+	rig.Parent = mobsF
+	local hum = rig:FindFirstChildOfClass("Humanoid")
+	if hum then
+		hum.WalkSpeed = CFG.NPC_SPEED
+	end
+	pcall(function()
+		rig.HumanoidRootPart:SetNetworkOwner(nil)
+	end)
+end
+
+local function spawnPuddle()
+	local r = rng:NextNumber(8, 14)
+	local x = rng:NextNumber(-S / 2 + 25, S / 2 - 25)
+	local z = rng:NextNumber(-S / 2 + 10, S / 2 - 10)
+	new("Part", {
+		Name = "GooPuddle",
+		Shape = Enum.PartType.Cylinder,
+		Size = Vector3.new(0.2, r, r),
+		CFrame = CFrame.new(O + Vector3.new(x, 1.1, z)) * CFrame.Angles(0, 0, math.pi / 2),
+		Anchored = true,
+		CanCollide = false,
+		CanQuery = false,
+		CanTouch = false,
+		Color = GOO,
+		Reflectance = 0.4,
+		Material = Enum.Material.SmoothPlastic,
+	}, puddleF)
+end
+
+--[[ ---------- players ---------- ]]
+local function placeChar(plr, char)
+	if not SD.inRound or not SD.roles[plr] then
+		return
+	end
+	local hrp = char:WaitForChild("HumanoidRootPart", 5)
+	local hum = char:WaitForChild("Humanoid", 5)
+	if not hrp or not hum then
+		return
+	end
+	task.wait(0.15)
+	if not SD.inRound or not SD.roles[plr] or char.Parent == nil then
+		return
+	end
+	local isGoo = SD.roles[plr] == "Goo"
+	local cf = isGoo and gooSpawn() or humanSpawn()
+	pcall(function()
+		plr:RequestStreamAroundAsync(cf.Position, 3)
+	end)
+	char:PivotTo(cf)
+	char:SetAttribute("InArena", true)
+	if isGoo then
+		gooify(char)
+		hum.WalkSpeed = CFG.GOO_PLAYER_SPEED
+	else
+		hum.WalkSpeed = CFG.HUMAN_SPEED
+	end
+	hum.Died:Connect(function()
+		if not (SD.running and SD.inRound and SD.roles[plr]) then
+			return
+		end
+		if SD.roles[plr] == "Human" then
+			SD.roles[plr] = "Goo"
+			announce(plr.DisplayName .. " slipped. The goo forgives. The goo absorbs.")
+		end
+		if not Players.CharacterAutoLoads then
+			task.delay(Players.RespawnTime, function()
+				if SD.running and SD.inRound and plr.Parent then
+					pcall(plr.LoadCharacter, plr)
+				end
+			end)
+		end
+	end)
+end
+
+local function hookPlayer(plr)
+	table.insert(SD.conns, plr.CharacterAdded:Connect(function(char)
+		task.spawn(placeChar, plr, char)
+	end))
+	task.spawn(function()
+		plr:WaitForChild("PlayerGui", 10)
+		refresh(plr)
+	end)
+end
+
+for _, p in ipairs(Players:GetPlayers()) do
+	hookPlayer(p)
+end
+table.insert(SD.conns, Players.PlayerAdded:Connect(hookPlayer))
+table.insert(SD.conns, Players.PlayerRemoving:Connect(function(p)
+	SD.roles[p] = nil
+end))
+
+--[[ ---------- per-tick logic ---------- ]]
+local function hrpOf(m)
+	return m and m:FindFirstChild("HumanoidRootPart")
+end
+
+local function alive(m)
+	local h = m and m:FindFirstChildOfClass("Humanoid")
+	if h and h.Health > 0 then
+		return h
+	end
+	return nil
+end
+
+local function countRole(r)
+	local n = 0
+	for _, v in pairs(SD.roles) do
+		if v == r then
+			n += 1
+		end
+	end
+	return n
+end
+
+local function tick()
+	local humans, goos = {}, {}
+	for plr, role in pairs(SD.roles) do
+		local c = plr.Character
+		if c and c:GetAttribute("InArena") and alive(c) and hrpOf(c) then
+			if role == "Human" then
+				table.insert(humans, plr)
+			else
+				table.insert(goos, c)
+			end
+		end
+	end
+	for _, m in ipairs(mobsF:GetChildren()) do
+		if alive(m) and hrpOf(m) then
+			table.insert(goos, m)
+		end
+	end
+
+	--[[ hugs ]]
+	for _, g in ipairs(goos) do
+		local gp = hrpOf(g).Position
+		for i = #humans, 1, -1 do
+			local plr = humans[i]
+			local hp = hrpOf(plr.Character)
+			if hp and (hp.Position - gp).Magnitude <= CFG.TAG_RANGE then
+				convert(plr)
+				table.remove(humans, i)
+			end
+		end
+	end
+
+	--[[ goo pals chase the nearest human, menacingly T-posing ]]
+	for _, m in ipairs(mobsF:GetChildren()) do
+		local hum, hrp = alive(m), hrpOf(m)
+		if hum and hrp then
+			if hrp.Position.Y < O.Y - 30 then
+				m:PivotTo(gooSpawn())
+			end
+			local best, bd = nil, math.huge
+			for _, plr in ipairs(humans) do
+				local hp = hrpOf(plr.Character)
+				if hp then
+					local d = (hp.Position - hrp.Position).Magnitude
+					if d < bd then
+						best, bd = hp, d
+					end
+				end
+			end
+			if best then
+				hum:MoveTo(best.Position + best.AssemblyLinearVelocity * 0.25)
+				if hrp.AssemblyLinearVelocity.Magnitude < 2 and rng:NextNumber() < 0.3 then
+					hum.Jump = true
+				end
+			end
+		end
+	end
+
+	--[[ puddles are sticky, and they spread ]]
+	for _, p in ipairs(puddleF:GetChildren()) do
+		if p.Size.Y < CFG.PUDDLE_MAX then
+			p.Size += Vector3.new(0, 0.02, 0.02)
+		end
+	end
+	for _, plr in ipairs(humans) do
+		local c = plr.Character
+		local hp, hum = hrpOf(c), alive(c)
+		if hp and hum then
+			local slow = false
+			for _, p in ipairs(puddleF:GetChildren()) do
+				local d = Vector2.new(hp.Position.X - p.Position.X, hp.Position.Z - p.Position.Z).Magnitude
+				if d < p.Size.Y / 2 then
+					slow = true
+					break
+				end
+			end
+			hum.WalkSpeed = slow and CFG.PUDDLE_SPEED or CFG.HUMAN_SPEED
+		end
+	end
+end
+
+--[[ ---------- rounds ---------- ]]
+local function resetPlayers()
+	local plrs = {}
+	for plr in pairs(SD.roles) do
+		table.insert(plrs, plr)
+	end
+	table.clear(SD.roles)
+	for _, plr in ipairs(plrs) do
+		if plr.Parent then
+			task.spawn(function()
+				pcall(plr.LoadCharacter, plr)
+			end)
+		end
+	end
+end
+
+local function endRound()
+	SD.inRound = false
+	mobsF:ClearAllChildren()
+	puddleF:ClearAllChildren()
+	resetPlayers()
+end
+
+function SD.stop()
+	SD.running = false
+	SD.inRound = false
+	for _, c in ipairs(SD.conns) do
+		c:Disconnect()
+	end
+	table.clear(SD.conns)
+	for _, p in ipairs(Players:GetPlayers()) do
+		local pg = p:FindFirstChildOfClass("PlayerGui")
+		local g = pg and pg:FindFirstChild("SlightlyDifferentGui")
+		if g then
+			g:Destroy()
+		end
+	end
+	resetPlayers()
+	root:Destroy()
+	if _G.SlightlyDifferent == SD then
+		_G.SlightlyDifferent = nil
+	end
+end
+
+task.spawn(function()
+	while SD.running do
+		for t = CFG.INTERMISSION, 1, -1 do
+			if not SD.running then
+				return
+			end
+			setStatus(("SLIGHTLY DIFFERENT  |  shift starts in %d"):format(t))
+			task.wait(1)
+		end
+		local plrs = Players:GetPlayers()
+		if #plrs == 0 then
+			continue
+		end
+
+		SD.inRound = true
+		for _, plr in ipairs(plrs) do
+			SD.roles[plr] = "Human"
+			task.spawn(function()
+				pcall(plr.LoadCharacter, plr)
+			end)
+		end
+		for i = 1, CFG.PUDDLES do
+			spawnPuddle()
+		end
+		setStatus("Get ready... something is leaking.")
+		announce("Rule #1: don't get hugged.")
+		task.wait(5)
+		if not SD.running then
+			return
+		end
+
+		local n = math.clamp(math.ceil(#plrs * 0.5), CFG.MIN_GOO, CFG.MAX_GOO)
+		for i = 1, n do
+			spawnNpc()
+		end
+		announce("The Squishy Goo Pals\u{2122} have escaped containment!")
+
+		local t0 = os.clock()
+		local winner
+		while SD.running do
+			local left = CFG.ROUND - (os.clock() - t0)
+			tick()
+			local h = countRole("Human")
+			local g = countRole("Goo") + #mobsF:GetChildren()
+			if h == 0 then
+				winner = "goo"
+				break
+			end
+			if left <= 0 then
+				winner = "humans"
+				break
+			end
+			setStatus(("HUMANS %d  |  GOO %d  |  %ds"):format(h, g, math.ceil(left)))
+			task.wait(0.2)
+		end
+		if not SD.running then
+			return
+		end
+
+		if winner == "goo" then
+			setStatus("EVERYONE IS GOO NOW. The Facility\u{2122} is very shiny.")
+		else
+			setStatus("HUMANS SURVIVED! Shift over. Please wash your hands.")
+		end
+		task.wait(6)
+		if not SD.running then
+			return
+		end
+		endRound()
+	end
+end)
+
+print("[SlightlyDifferent] loaded. A totally original game. Stop with _G.SlightlyDifferent.stop()")
