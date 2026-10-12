@@ -30,10 +30,11 @@ local o=mk(d[1],d[2],d[3],V3(unpack(d[4])),V3(unpack(d[5])),E6(d[6]),C3(unpack(d
 end
 local STAR=core.BlackStar.p
 core.BlackStar.pu=.03
-core.RingBlack.sp=V3(0,.5,0) core.RingBlack.wob=.05
-core.RingEffect1.sp=V3(0,.9,0) core.RingEffect1.ci=1 core.RingEffect1.wob=.07
-core.RingEffect2.sp=V3(0,-.7,0) core.RingEffect2.ci=2 core.RingEffect2.wob=.06
-core.RingEffect3.sp=V3(0,1.3,0) core.RingEffect3.ci=3 core.RingEffect3.wob=.08
+for _,o in core do o.wob=true end local RSP=V3(0,.35,0)
+core.RingBlack.sp=RSP
+core.RingEffect1.sp=RSP core.RingEffect1.ci=1
+core.RingEffect2.sp=RSP core.RingEffect2.ci=2
+core.RingEffect3.sp=RSP core.RingEffect3.ci=3
 core.SphereEffect1.sp=V3(.3,1.5,.2) core.SphereEffect1.pu=.05
 core.SphereEffect2.sp=V3(0,-.8,0) core.SphereEffect2.ci=2 core.SphereEffect2.pu=.06
 core.SphereEffect3.ci=3 core.SphereEffect3.pu=.08
@@ -68,8 +69,8 @@ o.w=.5/math.sqrt(max(o.op.Magnitude,1)) o.sh=.5 o.bob=.05 lt(o.p,.42,C3(126,143,
 end
 local UL={}
 for i,u in {{1.415,-.214,.059,-1.516,.068,.373,84,29,186},{1.479,.726,.11,-1.516,.068,1.943,120,127,255},{1.359,-1.033,.014,-1.516,.068,-2.769,244,96,255}} do
-local o=mk("Swirl","17030085817",nil,V3(7.486,.59,5.912),V3(7.452,.5,7.502),E6(u)*CFrame.Angles(pi/2,0,0),C3(u[7],u[8],u[9]),.6,true)
-o.w=1.1 o.sp=V3(0,0,0) o.lp=lt(o.p,5.06,C3(126,143,255),false) UL[#UL+1]=o
+local o=mk("Swirl","17030085817",nil,V3(7.486,.59,5.912),V3(9.991,.788,7.89)*(.9+i*.04),CF(0,-.203,0),C3(u[7],u[8],u[9]),.6,true)
+o.sp=RSP o.wob=true o.lp=lt(o.p,5.06,C3(126,143,255),false) UL[#UL+1]=o
 cuts(o.p,2.075,C(51,0,255),3) cuts(o.p,2.075,C(255,0,221),3) cuts(o.p,2.075,C(107,146,255),3)
 end
 for _,r in {{1.606,-.351,2.649,-.572,.343,.163},{-1.975,-.021,1.092,-1.071,-.807,-1.018}} do
@@ -135,10 +136,10 @@ local root=CF(pos)*R0 local c=pos local axis=root.UpVector
 local R,H=20*S+30,1.33*S
 local tgt=PAL[phase] for i=1,3 do cc[i]=cc[i]:Lerp(tgt[i],min(1,dt*.6)) end
 local doSz=t-szT>.1 if doSz then szT=t end
-local L,F={},{}
+local L,F={},{} local W=CFrame.Angles(sin(T*.5)*.05,0,cos(T*.4)*.05)
 for i,o in O do
 local lc=CFrame.Angles(0,T*o.w,0)*CF(o.op*S+V3(0,sin(T*1.3+o.ph)*o.bob*S,0))*o.rot*CFrame.Angles(o.sp.X*T,o.sp.Y*T,o.sp.Z*T)
-if o.wob then lc=CFrame.Angles(sin(T*.7+o.ph)*o.wob,0,cos(T*.6+o.ph)*o.wob)*lc end
+if o.wob then lc=W*lc end
 if o.sh then lc=lc*CFrame.Angles(sin(t*20+o.ph)*.12*o.sh,0,cos(t*17+o.ph)*.12*o.sh) end
 L[i]=o.p F[i]=root*lc
 if doSz then local k=S*(1+(o.pu or 0)*sin(t*3+o.ph)) o.p.Size=o.sz*k if o.ms then o.m.Scale=o.ms*k end if o.ci then o.p.Color=cc[o.ci] end
