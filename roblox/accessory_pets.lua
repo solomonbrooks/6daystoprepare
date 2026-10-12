@@ -4,8 +4,10 @@ local plr=P:FindFirstChild(N) or P:GetPlayers()[1]
 if workspace:FindFirstChild("AccessoryPets") then workspace.AccessoryPets:Destroy() end
 local F=Instance.new("Folder") F.Name="AccessoryPets" F.Parent=workspace
 local inv,cnt,pets,items,t={food=0,poison=0},{food=0,poison=0},{},{},0
-local GOO,RED,WHITE,BLACK=Color3.fromRGB(90,255,60),Color3.new(1,0,0),Color3.new(1,1,1),Color3.new(0,0,0)
-local L={born={"...huh? where am i?","I'M ALIVE!!","hi mommy! hi daddy!","FREEDOM!!"},hungry={"FEED ME!!","im sooo hungry...","food. now. please.","my tummy is rumbling","find me food!! its on the map somewhere!"},sad={"you never play with me...","im lonely :(","do you even love me?","pet me pls"},mad={"im getting ANGRY...","you are neglecting me. i will remember this.","grrrrr"},happy={"yay!!","i love you!","yummy!!","more pls!","i feel myself getting bigger!"},pat={"hehe that tickles","purrrr","pet me more!","i feel loved <3"},idle={"what are we doing today?","im bored","you smell funny","i used to live on your head lol","dont leave me!","why are you staring at me"},evil={"I HAVE GROWN.","now YOU are the food.","come here...","NO ONE ESCAPES","you fed me too well...","RUN."},lunge={"RAAAAAH!","GET OVER HERE!","CHOMP TIME!"},eat={"*CHOMP*","delicious.","more.","tasty human"},nopoison={"HAHA you have nothing!","feed me something TASTY. like YOU."},poisoned={"what... did you feed me...","bleh! that tastes WRONG","my tummy... it burns...","you TRICKED me!!"},dying={"urk... i dont feel so good...","*gurgle*","whats happening to meeee","BLEEEEEHHH"}}
+local TOX,PURP,RED,WHITE,BLACK=Color3.fromRGB(90,255,60),Color3.fromRGB(120,0,170),Color3.new(1,0,0),Color3.new(1,1,1),Color3.new(0,0,0)
+local GOO={Color3.fromRGB(35,6,45),Color3.fromRGB(18,32,14),Color3.fromRGB(55,0,38),Color3.fromRGB(8,8,20),Color3.fromRGB(28,18,0)}
+local LIMB,ELIMB=Color3.fromRGB(40,40,46),Color3.fromRGB(90,0,0)
+local L={born={"...huh? where am i?","I'M ALIVE!!","i have LEGS now??","FREEDOM!!","hi mommy! hi daddy!"},hungry={"FEED ME!!","im sooo hungry...","food. now. please.","my tummy is rumbling","find me food!! its on the map somewhere!"},sad={"you never play with me...","im lonely :(","do you even love me?","pet me pls"},mad={"im getting ANGRY...","you are neglecting me. i will remember this.","grrrrr"},happy={"yay!!","i love you!","yummy!!","more pls!","i feel myself getting bigger!"},pat={"hehe that tickles","purrrr","pet me more!","i feel loved <3"},idle={"what are we doing today?","im bored","you smell funny","i used to live on your head lol","dont leave me!","why are you staring at me","im gonna go explore","look at me walk!!","the ground is so big"},evil={"I HAVE GROWN.","now YOU are the food.","come here...","NO ONE ESCAPES","you fed me too well...","RUN."},lunge={"RAAAAAH!","GET OVER HERE!","CHOMP TIME!"},eat={"*CHOMP*","delicious.","more.","tasty human"},nopoison={"HAHA you have nothing!","feed me something TASTY. like YOU."},poisoned={"what... did you feed me...","bleh! that tastes WRONG","my tummy... it burns...","you TRICKED me!!"},dying={"urk... i dont feel so good...","*gurgle*","whats happening to meeee","BLEEEEEHHH"}}
 local function R(x) return x[math.random(#x)] end
 local function say(p,m) p.say.Text=m p.t0=os.clock() end
 local function part(sz,col,mat,sphere)
@@ -16,25 +18,27 @@ local function sparkle(p,c) local s=Instance.new("Sparkles") s.SparkleColor=c s.
 local function boom(pos,r) local e=Instance.new("Explosion") e.Position=pos e.BlastRadius=r e.BlastPressure=0 e.DestroyJointRadiusPercent=0 e.Parent=workspace end
 local rp=RaycastParams.new() rp.FilterType=Enum.RaycastFilterType.Exclude
 local function ground(pos,depth) rp.FilterDescendantsInstances={F,plr.Character} return workspace:Raycast(pos,Vector3.new(0,-depth,0),rp) end
-local function puddle(pos,d)
+local function goo(q) q.Color=R(GOO) q.Material=Enum.Material.Glass q.Reflectance=0.35 q.Transparency=0.08 TS:Create(q,TweenInfo.new(1+math.random()*2,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,-1,true),{Color=R(GOO)}):Play() end
+local function puddle(pos,d,fumes)
 local hit=ground(pos+Vector3.new(0,3,0),60) if not hit then return end
-local q=part(Vector3.new(0.15,0.1,0.1),GOO:Lerp(Color3.fromRGB(30,160,20),math.random()*0.5),Enum.Material.Glass) q.Shape=Enum.PartType.Cylinder q.Transparency=0.15 q.CFrame=CFrame.new(hit.Position+Vector3.new(0,0.08+math.random()*0.02,0))*CFrame.Angles(0,0,math.pi/2)
-TS:Create(q,TweenInfo.new(0.35,Enum.EasingStyle.Back),{Size=Vector3.new(0.15,d,d)}):Play()
-task.delay(25,function() if q.Parent then local tw=TS:Create(q,TweenInfo.new(4),{Transparency=1}) tw:Play() tw.Completed:Wait() q:Destroy() end end)
+local q=part(Vector3.new(0.15,0.1,0.1),BLACK) goo(q) q.Shape=Enum.PartType.Cylinder q.CFrame=CFrame.new(hit.Position+Vector3.new(0,0.08+math.random()*0.03,0))*CFrame.Angles(0,0,math.pi/2)
+TS:Create(q,TweenInfo.new(0.4,Enum.EasingStyle.Back),{Size=Vector3.new(0.15,d,d*(0.7+math.random()*0.5))}):Play()
+if fumes then local pe=Instance.new("ParticleEmitter") pe.EmissionDirection=Enum.NormalId.Right pe.Color=ColorSequence.new(Color3.fromRGB(60,0,80),Color3.fromRGB(10,30,10)) pe.LightEmission=0 pe.Transparency=NumberSequence.new(0.3,1) pe.Size=NumberSequence.new(0.6,2) pe.Rate=8 pe.Lifetime=NumberRange.new(1.5,3) pe.Speed=NumberRange.new(1,3) pe.SpreadAngle=Vector2.new(20,20) pe.RotSpeed=NumberRange.new(-60,60) pe.Parent=q end
+task.delay(25,function() if q.Parent then local tw=TS:Create(q,TweenInfo.new(4),{Transparency=1,Size=Vector3.new(0.15,0.1,0.1)}) tw:Play() tw.Completed:Wait() q:Destroy() end end)
 end
 local function explode(pet)
 local pos=pet.p.Position local s=math.max(pet.p.Size.X,pet.p.Size.Y,pet.p.Size.Z)
 boom(pos,s+6) pet.dead=true pet.p:Destroy() for _,e in ipairs(pet.eyes) do e:Destroy() end
-puddle(pos,s*2.5)
-for n=1,30 do
-local b=part(Vector3.one*(math.random(4,12)/10)*(1+s*0.15),GOO,Enum.Material.Glass,true) b.Transparency=0.15 b.Anchored=false b.CanCollide=true b.Position=pos+Vector3.new(0,1,0) b.AssemblyLinearVelocity=Vector3.new(math.random(-45,45),math.random(25,65),math.random(-45,45))
-task.delay(1.5+math.random()*1.5,function() if b.Parent then puddle(b.Position,b.Size.X*2.5) b:Destroy() end end)
+puddle(pos,s*2.8,true)
+for n=1,35 do
+local b=part(Vector3.one*(math.random(4,12)/10)*(1+s*0.15),BLACK,nil,true) goo(b) b.Anchored=false b.CanCollide=true b.Position=pos+Vector3.new(0,1,0) b.AssemblyLinearVelocity=Vector3.new(math.random(-45,45),math.random(25,65),math.random(-45,45))
+task.delay(1.5+math.random()*1.5,function() if b.Parent then puddle(b.Position,b.Size.X*2.5,math.random()<0.25) b:Destroy() end end)
 end
 end
 local function die(pet)
 pet.dying=true pet.xp:Destroy()
 task.spawn(function()
-for n=1,40 do if not pet.p.Parent then return end pet.sc=pet.sc+0.035 pet.hl.FillColor=(n%2==0) and GOO or WHITE if n%10==1 then say(pet,R(L.dying)) end task.wait(0.1) end
+for n=1,40 do if not pet.p.Parent then return end pet.sc=pet.sc+0.035 pet.hl.FillColor=(n%2==0) and PURP or BLACK if n%10==1 then say(pet,R(L.dying)) end task.wait(0.1) end
 explode(pet)
 end)
 end
@@ -43,10 +47,10 @@ pet.evil=true pet.fp:Destroy() pet.pp:Destroy() pet.stun=os.clock()+2.5 pet.sc=p
 boom(pet.p.Position,4)
 local hl=Instance.new("Highlight") hl.FillColor=RED hl.OutlineColor=BLACK hl.FillTransparency=0.4 hl.Parent=pet.p pet.hl=hl
 local fi=Instance.new("Fire") fi.Color=RED fi.SecondaryColor=BLACK fi.Parent=pet.p
-for s=1,2 do pet.w[s].Color=RED pet.w[s].Material=Enum.Material.Neon pet.br[s].Transparency=0 end
+for k=1,2 do pet.w[k].Color=RED pet.w[k].Material=Enum.Material.Neon pet.br[k].Transparency=0 pet.legs[k].Color=ELIMB pet.feet[k].Color=ELIMB pet.arms[k].Color=ELIMB end
 pet.say.BackgroundColor3=BLACK pet.say.TextColor3=RED pet.st.TextColor3=RED
 local xp=Instance.new("ProximityPrompt") xp.ActionText="Feed Poison" xp.ObjectText="EVIL "..pet.nm xp.HoldDuration=0 xp.RequiresLineOfSight=false xp.Parent=pet.p pet.xp=xp
-xp.Triggered:Connect(function(w) if w~=plr or pet.dying then return end if inv.poison<1 then say(pet,R(L.nopoison)) return end inv.poison=inv.poison-1 pet.poison=pet.poison+1 pet.stun=os.clock()+1.2 sparkle(pet.p,GOO) hl.FillColor=RED:Lerp(GOO,pet.poison/3) say(pet,R(L.poisoned)) if pet.poison>=3 then die(pet) end end)
+xp.Triggered:Connect(function(w) if w~=plr or pet.dying then return end if inv.poison<1 then say(pet,R(L.nopoison)) return end inv.poison=inv.poison-1 pet.poison=pet.poison+1 pet.stun=os.clock()+1.2 sparkle(pet.p,PURP) hl.FillColor=RED:Lerp(PURP,pet.poison/3) say(pet,R(L.poisoned)) if pet.poison>=3 then die(pet) end end)
 say(pet,R(L.evil))
 end
 local function mk(h,i,head)
@@ -59,16 +63,17 @@ local s=Instance.new("TextLabel") s.Size=UDim2.new(1,0,0.6,0) s.BackgroundColor3
 Instance.new("UICorner").Parent=s
 local st=Instance.new("TextLabel") st.Size=UDim2.new(1,0,0.4,0) st.Position=UDim2.new(0,0,0.6,0) st.BackgroundTransparency=1 st.TextColor3=WHITE st.TextStrokeTransparency=0 st.TextScaled=true st.Font=Enum.Font.GothamBold st.Text="" st.Parent=g
 local nm=h.Parent.Name
-local pet={p=p,m=m,nm=nm,s0=p.Size,ms0=m and m.Scale,rot=head and (head.CFrame:Inverse()*h.CFrame).Rotation or CFrame.new(),sc=1,hunger=60,love=60,poison=0,evil=false,falling=true,i=i,say=s,st=st,g=g,t0=0,nxt=os.clock()+math.random(5,9),blink=0,stun=0,lunge=0,eyes={},w={},pu={},br={}}
+local pet={p=p,m=m,nm=nm,s0=p.Size,ms0=m and m.Scale,rot=head and (head.CFrame:Inverse()*h.CFrame).Rotation or CFrame.new(),sc=1,hunger=60,love=60,poison=0,evil=false,falling=true,i=i,say=s,st=st,g=g,t0=0,nxt=os.clock()+math.random(5,9),blink=0,stun=0,lunge=0,spinT=-10,yaw=0,dyaw=0,ph=0,amp=0,wnext=0,eyes={},w={},pu={},br={},legs={},feet={},arms={}}
 local fp=Instance.new("ProximityPrompt") fp.ActionText="Feed" fp.ObjectText=nm fp.HoldDuration=0 fp.RequiresLineOfSight=false fp.MaxActivationDistance=14 fp.Parent=p
 local pp=Instance.new("ProximityPrompt") pp.ActionText="Pet" pp.ObjectText=nm pp.KeyboardKeyCode=Enum.KeyCode.R pp.GamepadKeyCode=Enum.KeyCode.ButtonY pp.HoldDuration=0 pp.RequiresLineOfSight=false pp.MaxActivationDistance=14 pp.UIOffset=Vector2.new(0,80) pp.Parent=p
 pet.fp=fp pet.pp=pp
-fp.Triggered:Connect(function(w) if w~=plr or pet.evil then return end if inv.food<1 then say(pet,"you have no food!! go find some on the map!") return end inv.food=inv.food-1 pet.hunger=math.min(100,pet.hunger+35) pet.sc=pet.sc+0.3 sparkle(p,Color3.fromRGB(255,200,0)) say(pet,R(L.happy)) end)
-pp.Triggered:Connect(function(w) if w~=plr or pet.evil then return end pet.love=math.min(100,pet.love+25) sparkle(p,Color3.fromRGB(255,120,200)) say(pet,R(L.pat)) end)
+fp.Triggered:Connect(function(w) if w~=plr or pet.evil then return end if inv.food<1 then say(pet,"you have no food!! go find some on the map!") return end inv.food=inv.food-1 pet.hunger=math.min(100,pet.hunger+35) pet.sc=pet.sc+0.3 pet.spinT=os.clock() sparkle(p,Color3.fromRGB(255,200,0)) say(pet,R(L.happy)) end)
+pp.Triggered:Connect(function(w) if w~=plr or pet.evil then return end pet.love=math.min(100,pet.love+25) pet.spinT=os.clock() sparkle(p,Color3.fromRGB(255,120,200)) say(pet,R(L.pat)) end)
 table.insert(pets,pet)
 task.delay(1.5,function() if p.Parent then
-p.Anchored=true p.CanCollide=false pet.pos=p.Position pet.lastB=CFrame.new(p.Position)
-for k=1,2 do pet.w[k]=part(Vector3.one,WHITE,nil,true) pet.pu[k]=part(Vector3.one,BLACK,nil,true) pet.br[k]=part(Vector3.one,BLACK) pet.br[k].Transparency=1 table.insert(pet.eyes,pet.w[k]) table.insert(pet.eyes,pet.pu[k]) table.insert(pet.eyes,pet.br[k]) end
+p.Anchored=true p.CanCollide=false pet.pos=p.Position pet.born=os.clock()
+local function add(q) table.insert(pet.eyes,q) return q end
+for k=1,2 do pet.w[k]=add(part(Vector3.one,WHITE,nil,true)) pet.pu[k]=add(part(Vector3.one,BLACK,nil,true)) pet.br[k]=add(part(Vector3.one,BLACK)) pet.br[k].Transparency=1 pet.legs[k]=add(part(Vector3.one,LIMB)) pet.feet[k]=add(part(Vector3.one,LIMB,nil,true)) pet.arms[k]=add(part(Vector3.one,LIMB)) end
 pet.falling=false say(pet,R(L.born))
 end end)
 end
@@ -77,11 +82,11 @@ local c=plr.Character local r=c and c:FindFirstChild("HumanoidRootPart") if not 
 local hit=ground(r.Position+Vector3.new(math.random(-80,80),100,math.random(-80,80)),400) if not hit then return end
 local f=Instance.new("Part") f.Name=kind f.Material=Enum.Material.Neon f.Anchored=true f.CanCollide=false
 local col
-if kind=="food" then f.Shape=Enum.PartType.Ball f.Size=Vector3.new(1.6,1.6,1.6) col=Color3.fromRGB(220,30,30) else f.Shape=Enum.PartType.Cylinder f.Size=Vector3.new(1.8,1,1) col=GOO end
+if kind=="food" then f.Shape=Enum.PartType.Ball f.Size=Vector3.new(1.6,1.6,1.6) col=Color3.fromRGB(220,30,30) else f.Shape=Enum.PartType.Cylinder f.Size=Vector3.new(1.8,1,1) col=TOX end
 f.Color=col f.CFrame=CFrame.new(hit.Position+Vector3.new(0,1.8,0))*(kind=="food" and CFrame.new() or CFrame.Angles(0,0,math.pi/2)) f.Parent=F
 local lt=Instance.new("PointLight") lt.Color=col lt.Range=8 lt.Parent=f
 local b=Instance.new("BillboardGui") b.Size=UDim2.new(0,80,0,24) b.StudsOffset=Vector3.new(0,2,0) b.AlwaysOnTop=true b.MaxDistance=250 b.Parent=f
-local bl=Instance.new("TextLabel") bl.Size=UDim2.new(1,0,1,0) bl.BackgroundTransparency=1 bl.Text=kind=="food" and "FOOD" or "POISON" bl.TextColor3=kind=="food" and Color3.fromRGB(255,220,0) or GOO bl.TextStrokeTransparency=0 bl.TextScaled=true bl.Font=Enum.Font.GothamBold bl.Parent=b
+local bl=Instance.new("TextLabel") bl.Size=UDim2.new(1,0,1,0) bl.BackgroundTransparency=1 bl.Text=kind=="food" and "FOOD" or "POISON" bl.TextColor3=kind=="food" and Color3.fromRGB(255,220,0) or TOX bl.TextStrokeTransparency=0 bl.TextScaled=true bl.Font=Enum.Font.GothamBold bl.Parent=b
 cnt[kind]=cnt[kind]+1 items[f]=f.CFrame
 f.Touched:Connect(function(x) if f.Parent and plr.Character and x:IsDescendantOf(plr.Character) then inv[kind]=inv[kind]+1 cnt[kind]=cnt[kind]-1 items[f]=nil f:Destroy() end end)
 end
@@ -121,42 +126,71 @@ for f,b in pairs(items) do f.CFrame=CFrame.new(b.Position+Vector3.new(0,math.sin
 local ch=plr.Character local r=ch and ch:FindFirstChild("HumanoidRootPart") local hum=ch and ch:FindFirstChildOfClass("Humanoid")
 if not r or not hum then return end
 local hd=ch:FindFirstChild("Head") or r
-local now=os.clock()
+local now=os.clock() local rpos=r.Position
 for _,pet in ipairs(pets) do local p=pet.p if not pet.falling and not pet.dead and p.Parent then
 p.Size=pet.s0*pet.sc if pet.m then pet.m.Scale=pet.ms0*pet.sc end
 local sx,sy,sz,rc=p.Size.X,p.Size.Y,p.Size.Z,pet.rot
 local hx=0.5*(math.abs(rc.RightVector.X)*sx+math.abs(rc.UpVector.X)*sy+math.abs(rc.LookVector.X)*sz)
 local hy=0.5*(math.abs(rc.RightVector.Y)*sx+math.abs(rc.UpVector.Y)*sy+math.abs(rc.LookVector.Y)*sz)
 local hz=0.5*(math.abs(rc.RightVector.Z)*sx+math.abs(rc.UpVector.Z)*sy+math.abs(rc.LookVector.Z)*sz)
+local w=math.clamp(math.min(hx,hz)*0.28,0.2,3) local Ll=math.clamp(hy*1.1,0.7,10)*math.min(1,(now-pet.born)/0.6)+0.01
 pet.g.StudsOffset=Vector3.new(0,hy+2.5,0)
 local frozen=now<pet.stun or pet.dying
-local goal,spd
-if pet.evil then goal=r.Position spd=(12+pet.sc*2)*(1-pet.poison*0.22) if now<pet.lunge then spd=spd*2.5 end
-else local a=pet.i*2.2+t*0.3 goal=r.Position+Vector3.new(math.cos(a),0,math.sin(a))*(5+hx*2) spd=18 end
-if frozen then spd=0 end
 local pos=pet.pos
+local toP=Vector3.new(rpos.X-pos.X,0,rpos.Z-pos.Z) local distP=toP.Magnitude
+local goal,spd=pos,0
+if pet.evil then goal=rpos spd=(12+pet.sc*2)*(1-pet.poison*0.22) if now<pet.lunge then spd=spd*2.5 end
+elseif distP>30 then pet.wt=nil goal=rpos-toP.Unit*6 spd=22
+elseif pet.hunger<35 and distP>0.1 then goal=rpos-toP.Unit*(4+hx) spd=12
+else
+if now>pet.wnext then pet.wnext=now+math.random(3,7) if math.random()<0.35 then pet.wt=nil else local a=math.random()*math.pi*2 local rr=math.random(6,22) pet.wt=rpos+Vector3.new(math.cos(a)*rr,0,math.sin(a)*rr) end end
+if pet.wt then goal=pet.wt spd=9 end
+end
+if frozen then spd=0 end
 local d=Vector3.new(goal.X-pos.X,0,goal.Z-pos.Z) local dist=d.Magnitude
-local mv=Vector3.zero if dist>0.5 then mv=d.Unit*math.min(dist,spd*dt) end
-local moving=dist>1 and not frozen
-local hop=0 if moving then hop=math.abs(math.sin(t*10+pet.i))*(0.6+pet.sc*0.3) end
-local np=Vector3.new(pos.X+mv.X,r.Position.Y-3+hy+hop,pos.Z+mv.Z) pet.pos=np
-local lk=Vector3.new(r.Position.X,np.Y,r.Position.Z)
-local B if (lk-np).Magnitude>0.1 then B=CFrame.lookAt(np,lk) else B=pet.lastB-pet.lastB.Position+np end
-pet.lastB=B
+local mv=Vector3.zero if dist>0.6 and spd>0 then mv=d.Unit*math.min(dist,spd*dt) end
+local moving=mv.Magnitude>0.001
+pet.amp=pet.amp+((moving and 1 or 0)-pet.amp)*math.min(1,dt*8)
+pet.ph=pet.ph+mv.Magnitude*2.4/Ll
+local swing=math.sin(pet.ph)*0.7*pet.amp
+local bob=math.abs(math.cos(pet.ph))*0.15*Ll*pet.amp
+local dir=(moving and not pet.evil) and mv or toP
+if dir.Magnitude>0.05 then pet.dyaw=math.atan2(-dir.X,-dir.Z) end
+pet.yaw=pet.yaw+((pet.dyaw-pet.yaw+math.pi)%(2*math.pi)-math.pi)*math.min(1,dt*10)
+local look=0 if not moving and not pet.evil and now-pet.t0>2 then look=math.sin(t*0.8+pet.i*3)*0.6 end
+local sp=(now-pet.spinT)/0.7 local ey,jy=0,0
+if sp>=0 and sp<1 then ey=sp*math.pi*2 jy=math.sin(sp*math.pi)*(1+hy) end
+if pet.evil and now<pet.lunge then jy=math.sin((1-(pet.lunge-now)/0.8)*math.pi)*(Ll+hy)*0.8 end
+local hit=ground(Vector3.new(pos.X+mv.X,math.max(pos.Y,rpos.Y)+8,pos.Z+mv.Z),80)
+local gy=hit and hit.Position.Y or rpos.Y-3
+pet.gy=pet.gy and pet.gy+(gy-pet.gy)*math.min(1,dt*15) or gy
+local breathe=math.sin(t*2.5+pet.i)*0.05*hy*(1-pet.amp)
+local np=Vector3.new(pos.X+mv.X,pet.gy+Ll+hy+bob+jy+breathe,pos.Z+mv.Z) pet.pos=np
 local jit=Vector3.zero if frozen then jit=Vector3.new(math.random()-0.5,math.random()-0.5,math.random()-0.5)*0.5*pet.sc end
-local V=B*CFrame.Angles(0,0,moving and math.sin(t*10+pet.i)*0.12 or 0)+jit
+local B=CFrame.new(np)*CFrame.Angles(0,pet.yaw+ey+look,0)
+local V=B*CFrame.Angles(-pet.amp*(pet.evil and 0.3 or 0.12),0,math.sin(pet.ph)*0.08*pet.amp)+jit
 p.CFrame=V*pet.rot
-local es=math.clamp(math.min(hx,hy)*0.5,0.3,6) local blink=now<pet.blink
+local es=math.clamp(math.min(hx,hy)*0.5,0.3,6) local blink=now<pet.blink local talking=now-pet.t0<1.5
+local lp=(moving and not pet.evil) and np+B.LookVector*10+Vector3.new(0,-2,0) or hd.Position
 for k=1,2 do local side=k==1 and -1 or 1
 local ec=V*CFrame.new(side*hx*0.4,hy*0.2,-hz-es*0.1)
 pet.w[k].Size=Vector3.new(es,blink and es*0.1 or es,es*0.6) pet.w[k].CFrame=ec
-local dir=ec:VectorToObjectSpace((hd.Position-ec.Position).Unit)
+local ld=ec:VectorToObjectSpace((lp-ec.Position).Unit)
 pet.pu[k].Size=pet.evil and Vector3.new(es*0.15,es*0.6,es*0.15) or Vector3.new(es*0.45,es*0.45,es*0.2)
-pet.pu[k].CFrame=ec*CFrame.new(dir.X*es*0.2,dir.Y*es*0.2,-es*0.27) pet.pu[k].Transparency=blink and 1 or 0
+pet.pu[k].CFrame=ec*CFrame.new(ld.X*es*0.2,ld.Y*es*0.2,-es*0.27) pet.pu[k].Transparency=blink and 1 or 0
 if pet.evil then pet.br[k].Size=Vector3.new(es*1.1,es*0.22,es*0.2) pet.br[k].CFrame=ec*CFrame.new(0,es*0.62,-es*0.2)*CFrame.Angles(0,0,side*0.45) end
+local lc=V*CFrame.new(side*hx*0.45,-hy*0.9,0)*CFrame.Angles(swing*side,0,0)
+pet.legs[k].Size=Vector3.new(w,Ll,w) pet.legs[k].CFrame=lc*CFrame.new(0,-Ll/2,0)
+pet.feet[k].Size=Vector3.new(w*1.5,w*0.7,w*2) pet.feet[k].CFrame=lc*CFrame.new(0,-Ll,-w*0.3)
+local al=math.max(Ll*0.8,0.5) local ax,az=-swing*side*0.9,side*0.25
+if pet.dying then ax,az=math.sin(t*25+side)*0.8,side*(1.5+math.sin(t*30)*0.5)
+elseif pet.evil then if frozen then ax,az=0,side*(2.6+math.sin(t*20)*0.3) else ax,az=1.5+math.sin(t*7+side)*0.2,side*0.15 end
+elseif sp>=0 and sp<1 then ax,az=0,side*2.6
+elseif talking then az=side*(1+math.sin(t*14+side)*0.5) end
+pet.arms[k].Size=Vector3.new(w*0.8,al,w*0.8) pet.arms[k].CFrame=V*CFrame.new(side*(hx+w*0.5),hy*0.15,0)*CFrame.Angles(ax,0,az)*CFrame.new(0,-al/2,0)
 end
 if pet.xp and pet.xp.Parent then pet.xp.MaxActivationDistance=math.max(hx,hz)+14 end
-if pet.evil and not frozen and hum.Health>0 and (lk-np).Magnitude<math.max(hx,hz)+2.5 then
+if pet.evil and not frozen and hum.Health>0 and distP<math.max(hx,hz)+2.5 then
 hum.Health=0 for _,x in ipairs(ch:GetDescendants()) do if x:IsA("BasePart") or x:IsA("Decal") then x.Transparency=1 end end pet.sc=pet.sc+0.5 pet.stun=now+1.5 say(pet,R(L.eat))
 end
 end end
