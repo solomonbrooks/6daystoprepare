@@ -109,14 +109,14 @@ pet.evil=true pet.need=3 pet.stun=os.clock()+2.5 pet.sc=pet.sc+0.4
 boom(pet.p.Position,4)
 local fc,oc,fic=RED,BLACK,RED
 if pet.tail then fc,oc,fic=Color3.fromRGB(60,30,10),Color3.fromRGB(255,140,0),Color3.fromRGB(255,140,0)
-elseif pet.legs then fc,oc,fic=Color3.fromRGB(255,200,60),Color3.fromRGB(200,80,0),Color3.fromRGB(255,200,60)
+elseif pet.shoes then fc,oc,fic=Color3.fromRGB(255,200,60),Color3.fromRGB(200,80,0),Color3.fromRGB(255,200,60)
 elseif pet.clothes then fc,oc,fic=TAN,Color3.fromRGB(120,80,30),Color3.fromRGB(255,220,150)
 elseif pet.helmet then fc,oc,fic=Color3.fromRGB(60,160,60),Color3.fromRGB(20,80,20),Color3.fromRGB(120,220,80) end
 local hl=Instance.new("Highlight") hl.FillColor=fc hl.OutlineColor=oc hl.FillTransparency=0.4 hl.Parent=pet.p pet.hl=hl
 local fi=Instance.new("Fire") fi.Color=fic fi.SecondaryColor=BLACK fi.Parent=pet.p pet.fire=fi
 pet.st.TextColor3=RED setPrompts(pet,"evil")
 if pet.tail then say(pet,R(TL.evil)) achieve("Behind You","a tail turned evil. dont look back... actually DO.")
-elseif pet.legs then say(pet,R(X.legs)) achieve("Bawk","your shoes turned evil. dance with them.")
+elseif pet.shoes then say(pet,R(X.legs)) achieve("Bawk","your shoes turned evil. dance with them.")
 elseif pet.clothes then say(pet,R(X.clothes)) achieve("Not Just a Jacket","your clothes were tortillas all along.")
 elseif pet.helmet then say(pet,R(X.helmet)) achieve("Crunch","an evil salad helmet. find ranch.")
 elseif pet.evilbeans then say(pet,R(X.evilbeans))
@@ -197,7 +197,7 @@ pr("Feed",E,Enum.KeyCode.ButtonX,0,function() if inv.food<1 then say(pet,"you ha
 pr("Pet",Rk,Enum.KeyCode.ButtonY,80,function() pet.mem.pets=pet.mem.pets+1 if pet.beans then pet.sc=math.min(2,pet.sc+0.1) end pet.love=math.min(100,pet.love+25) pet.spinT=os.clock() sparkle(pet.p,Color3.fromRGB(255,120,200)) say(pet,R(L.pat)) end)
 pr("Hug",Enum.KeyCode.G,Enum.KeyCode.ButtonL1,160,function() pet.mem.hugs=pet.mem.hugs+1 achieve("Hugger","the hats are huggable") if pet.beans then pet.sc=math.min(2,pet.sc+0.1) end pet.love=math.min(100,pet.love+15) pet.spinT=os.clock() sparkle(pet.p,Color3.fromRGB(255,120,200)) say(pet,pet.beans and "...hug... back..." or "hug!! <3") end)
 elseif mode=="evil" then
-if pet.tail then pr("Say Cool Tail",E,Enum.KeyCode.ButtonX,0,function() local r=plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") if not r then return end local d=pet.p.Position-r.Position local lv=r.CFrame.LookVector if Vector3.new(lv.X,0,lv.Z).Unit:Dot(Vector3.new(d.X,0,d.Z).Unit)<0.4 then say(pet,"youre not even LOOKING at me.") return end saveTail(pet) end) elseif pet.legs then pr("Dance",E,Enum.KeyCode.ButtonX,0,function() X.cure(pet,"...wait. you WANT to dance? ...BAWK!! (happy bawk)","Dance Partner","you danced with your evil shoes") end)
+if pet.tail then pr("Say Cool Tail",E,Enum.KeyCode.ButtonX,0,function() local r=plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") if not r then return end local d=pet.p.Position-r.Position local lv=r.CFrame.LookVector if Vector3.new(lv.X,0,lv.Z).Unit:Dot(Vector3.new(d.X,0,d.Z).Unit)<0.4 then say(pet,"youre not even LOOKING at me.") return end saveTail(pet) end) elseif pet.shoes then pr("Dance",E,Enum.KeyCode.ButtonX,0,function() X.cure(pet,"...wait. you WANT to dance? ...BAWK!! (happy bawk)","Dance Partner","you danced with your evil shoes") end)
 elseif pet.clothes then pr("Fold",E,Enum.KeyCode.ButtonX,0,function() X.fold(pet) end)
 elseif pet.helmet then pr("Pour Ranch",E,Enum.KeyCode.ButtonX,0,function() if inv.ranch<1 then say(pet,"you need RANCH. its on the map somewhere. crunch.") return end inv.ranch=inv.ranch-1 X.cure(pet,"...oh. oh thats actually really good.","Ranch Hand","you poured ranch on an evil salad helmet") end)
 else
@@ -237,7 +237,7 @@ local g=Instance.new("BillboardGui") g.Size=UDim2.new(0,230,0,70) g.AlwaysOnTop=
 local s=Instance.new("TextLabel") s.Size=UDim2.new(1,0,0.6,0) s.BackgroundColor3=WHITE s.TextColor3=BLACK s.TextScaled=true s.Font=Enum.Font.FredokaOne s.Text="" s.Visible=false s.Parent=g
 Instance.new("UICorner").Parent=s
 local st=Instance.new("TextLabel") st.Size=UDim2.new(1,0,0.4,0) st.Position=UDim2.new(0,0,0.6,0) st.BackgroundTransparency=1 st.TextColor3=WHITE st.TextStrokeTransparency=0 st.TextScaled=true st.Font=Enum.Font.GothamBold st.Text="" st.Parent=g
-local pet={pers=kind=="supremo" and "chaotic" or kind=="beans" and "sweet" or kind=="churro" and "shy" or kind=="evilbeans" and "grumpy" or PKEYS[math.random(#PKEYS)],mem={fed=0,pets=0,hugs=0,slaps=0,poison=0,ate=0},made=os.clock(),p=p,m=m,nm=kind=="beans" and "Beans" or kind=="evilbeans" and "Evil Beans" or kind=="churro" and "Churro Jr." or kind=="supremo" and "EL BURRITO SUPREMO" or h.Parent.Name,acc=acc,innocent=kind=="innocent" or kind=="beans" or kind=="churro",tail=kind=="tail",churro=kind=="churro",legs=kind=="legs",clothes=kind=="clothes",helmet=kind=="helmet",evilbeans=kind=="evilbeans",beans=kind=="beans",supremo=kind=="supremo",s0=p.Size,ms0=m and m.Scale,rot=head and (head.CFrame:Inverse()*h.CFrame).Rotation or CFrame.new(),sc=1,hunger=60,love=60,poison=0,need=3,rage=1,survive=0,evil=false,falling=true,i=i,say=s,st=st,g=g,t0=0,nxt=os.clock()+math.random(5,9),blink=0,stun=0,lunge=0,flicker=0,hitT=0,spinT=-10,yaw=0,dyaw=0,ph=0,amp=0,wnext=0,prompts={},parts={},w={},pu={},br={},legs={},feet={},arms={},xw={},xp={},teeth={}}
+local pet={pers=kind=="supremo" and "chaotic" or kind=="beans" and "sweet" or kind=="churro" and "shy" or kind=="evilbeans" and "grumpy" or PKEYS[math.random(#PKEYS)],mem={fed=0,pets=0,hugs=0,slaps=0,poison=0,ate=0},made=os.clock(),p=p,m=m,nm=kind=="beans" and "Beans" or kind=="evilbeans" and "Evil Beans" or kind=="churro" and "Churro Jr." or kind=="supremo" and "EL BURRITO SUPREMO" or h.Parent.Name,acc=acc,innocent=kind=="innocent" or kind=="beans" or kind=="churro",tail=kind=="tail",churro=kind=="churro",shoes=kind=="legs",clothes=kind=="clothes",helmet=kind=="helmet",evilbeans=kind=="evilbeans",beans=kind=="beans",supremo=kind=="supremo",s0=p.Size,ms0=m and m.Scale,rot=head and (head.CFrame:Inverse()*h.CFrame).Rotation or CFrame.new(),sc=1,hunger=60,love=60,poison=0,need=3,rage=1,survive=0,evil=false,falling=true,i=i,say=s,st=st,g=g,t0=0,nxt=os.clock()+math.random(5,9),blink=0,stun=0,lunge=0,flicker=0,hitT=0,spinT=-10,yaw=0,dyaw=0,ph=0,amp=0,wnext=0,prompts={},parts={},w={},pu={},br={},legs={},feet={},arms={},xw={},xp={},teeth={}}
 setPrompts(pet,"cute")
 table.insert(pets,pet)
 task.delay(1.5,function() if p.Parent then
@@ -248,7 +248,7 @@ pet.mo=add(part(Vector3.one,BLACK,nil,true)) for k=1,6 do pet.teeth[k]=add(part(
 pet.falling=false
 if pet.evilbeans then pet.tophat=add(part(Vector3.one,BLACK)) pet.tophat.Shape=Enum.PartType.Cylinder pet.brim=add(part(Vector3.one,BLACK)) pet.brim.Shape=Enum.PartType.Cylinder goEvil(pet)
 elseif pet.supremo then pet.sc=6 goEvil(pet) goSuper(pet) pet.need=8 say(pet,R(L.supremo)) achieve("THE APOCALYPSE","you flushed 3 burritos. EL BURRITO SUPREMO has risen.")
-else say(pet,pet.beans and "*sniff* ...you saved me? im Beans." or pet.churro and "*crumbles* ...you looked at me. im Churro Jr." or pet.tail and "...sssswish. finally. im not BEHIND you anymore." or pet.legs and "bawk! i mean... hi!" or pet.clothes and "...im just a jacket. totally normal jacket." or pet.helmet and "crunch. hello. have you had water today?" or pet.innocent and R(L.innocent) or R(L.born)) if pet.innocent and not pet.beans and not pet.churro then achieve("Innocent Hat","one of your hats has no burrito!") end end
+else say(pet,pet.beans and "*sniff* ...you saved me? im Beans." or pet.churro and "*crumbles* ...you looked at me. im Churro Jr." or pet.tail and "...sssswish. finally. im not BEHIND you anymore." or pet.shoes and "bawk! i mean... hi!" or pet.clothes and "...im just a jacket. totally normal jacket." or pet.helmet and "crunch. hello. have you had water today?" or pet.innocent and R(L.innocent) or R(L.born)) if pet.innocent and not pet.beans and not pet.churro then achieve("Innocent Hat","one of your hats has no burrito!") end end
 end end)
 end
 local function wander(pet,pos,rpos,now)
@@ -437,8 +437,8 @@ if has("tortilla") then return pet.clothes and "...how did you know." or "tortil
 if has("ranch") then return pet.helmet and (ev and "...ranch? ...i mean. NO. ...maybe." or "ranch is a vegetable now. i decided.") or "ranch?" end
 if has("fold") then if pet.clothes and ev then X.fold(pet) return nil end return "fold your clothes. the chair is watching." end
 if has("jerald") then return "jerald... (not gerald). never forget." end
-if has("cool shoes") then return pet.legs and (ev and "...thanks. still evil though. bawk." or "BAWK!! thank you!!") or "...what about cool HAT?" end
-if has("dance") and pet.legs and ev then X.cure(pet,"...wait. you WANT to dance? ...BAWK!! (happy bawk)","Dance Partner","you danced with your evil shoes") return nil end
+if has("cool shoes") then return pet.shoes and (ev and "...thanks. still evil though. bawk." or "BAWK!! thank you!!") or "...what about cool HAT?" end
+if has("dance") and pet.shoes and ev then X.cure(pet,"...wait. you WANT to dance? ...BAWK!! (happy bawk)","Dance Partner","you danced with your evil shoes") return nil end
 if has("cool tail") then if pet.tail then if ev then saveTail(pet) return "...you... you SEE me?","hat" end pet.love=100 return "...you think im cool?? :')" end return pet.churro and "...you mean me?? i used to be one!" or "...what about cool HAT?" end
 if has("hello","hi ","hey","sup") or m=="hi" then return ev and "hello, FOOD." or pet.pers=="shy" and "...h-hi "..name.."..." or "hi "..name.."!!" end
 if has("love") then if ev then pet.flicker=os.clock()+1.5 return "...i love you too...","hat" end pet.love=math.min(100,pet.love+10) return pet.beans and "beans loves you MORE" or "i love you too!!" end
@@ -464,7 +464,7 @@ local r=plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") if no
 local m=msg:lower() local tg={}
 local mean,nice=X.words(m)
 for _,pet in ipairs(pets) do if not pet.dead and not pet.falling and pet.pos and (pet.pos-r.Position).Magnitude<60 then
-if mean and pet.innocent and not pet.beans and not pet.churro and not pet.fox and not pet.hughat and not pet.hollowh and not pet.tail and not pet.legs and not pet.clothes and not pet.helmet then pet.meanness=(pet.meanness or 0)+1 if pet.meanness>=3 then X.goHollow(pet) end
+if mean and pet.innocent and not pet.beans and not pet.churro and not pet.fox and not pet.hughat and not pet.hollowh and not pet.tail and not pet.shoes and not pet.clothes and not pet.helmet then pet.meanness=(pet.meanness or 0)+1 if pet.meanness>=3 then X.goHollow(pet) end
 elseif nice and pet.hollowh then pet.meanness=pet.meanness-1 if pet.meanness<=0 then X.healHollow(pet) else say(pet,"...oh.") end end
 end end
 for _,pet in ipairs(pets) do if not pet.dead and not pet.falling and not pet.dying and (m:find(pet.nm:lower(),1,true) or (pet.tail and pet.evil and m:find("cool tail",1,true) and pet.pos and (pet.pos-r.Position).Magnitude<60)) then table.insert(tg,pet) end end
@@ -501,7 +501,7 @@ if X.jBubble and k%8==4 then X.jBubble.Text=R(X.jerald) end
 local rpos0=not lost and ch.HumanoidRootPart.Position local ws=inf and 16+8*inf.lvl or 16
 local anyEvil=false
 local anyB,anyH=false,false
-for _,pet in ipairs(pets) do if pet.evil and not pet.dead then anyEvil=true if pet.helmet then anyH=true elseif not pet.tail and not pet.legs and not pet.clothes then anyB=true end end end
+for _,pet in ipairs(pets) do if pet.evil and not pet.dead then anyEvil=true if pet.helmet then anyH=true elseif not pet.tail and not pet.shoes and not pet.clothes then anyB=true end end end
 if anyB and k%6==2 and cnt.churro<3 then spawnItem("churro") end
 if anyH and k%4==3 and cnt.ranch<3 then spawnItem("ranch") end
 if k%3==0 and cnt.food<10 then spawnItem("food") end
@@ -518,7 +518,7 @@ if math.random()<0.2 then pet.blink=now+0.15 end
 local chat=now>pet.nxt
 if pet.churro and X.gPos and not X.msgDone and pet.pos and (pet.pos-X.gPos).Magnitude<15 then X.msgDone=true say(pet,"...a man with a J on his hard hat... said tell my brother im okay...","hat") task.delay(3,function() if gerald then gerald.Text="...Jerald?" end end) achieve("A Message From Below","churro jr delivered jeralds message") end
 if pet.hollowh and X.gPos and pet.pos and (pet.pos-X.gPos).Magnitude<12 then X.geraldTakes(pet) end
-if pet.innocent and not pet.dead and not pet.beans and not pet.churro and not pet.tail and not pet.legs and not pet.clothes and not pet.helmet and not pet.fox and not pet.hollowh and not pet.ride and pet.pos then for _,o in ipairs(pets) do if o.beans and not o.dead and o.pos and (o.pos-pet.pos).Magnitude<10 then pet.nb=(pet.nb or 0)+1 if pet.nb>=6 then pet.ride=o say(pet,"...can i sit on your head?","hat") task.delay(2,function() if not o.dead then say(o,"...really? nobody ever let a burrito do that... okay!") end end) achieve("Totem Pole of Love","a hat is riding on Beans") end break end end end
+if pet.innocent and not pet.dead and not pet.beans and not pet.churro and not pet.tail and not pet.shoes and not pet.clothes and not pet.helmet and not pet.fox and not pet.hollowh and not pet.ride and pet.pos then for _,o in ipairs(pets) do if o.beans and not o.dead and o.pos and (o.pos-pet.pos).Magnitude<10 then pet.nb=(pet.nb or 0)+1 if pet.nb>=6 then pet.ride=o say(pet,"...can i sit on your head?","hat") task.delay(2,function() if not o.dead then say(o,"...really? nobody ever let a burrito do that... okay!") end end) achieve("Totem Pole of Love","a hat is riding on Beans") end break end end end
 if pet.dead then
 elseif pet.ultra then
 pet.st.Text="ULTRA HAT  [protecting you]"
@@ -527,7 +527,7 @@ elseif not pet.evil then
 pet.hunger=math.max(0,pet.hunger-1.5) pet.love=math.max(0,pet.love-1) pet.sc=pet.sc+0.008
 if pet.hunger<=0 or pet.love<=0 then pet.sc=pet.sc+0.04 end
 if pet.innocent then pet.sc=math.min(pet.sc,pet.beans and 2 or 2.5) end
-if pet.sc>=3 then local plain=not pet.legs and not pet.clothes and not pet.helmet
+if pet.sc>=3 then local plain=not pet.shoes and not pet.clothes and not pet.helmet
 if pet.tail then if pet.hunger>=60 and pet.love>=80 and math.random()<0.5 then X.goFox(pet) else goEvil(pet) end
 elseif plain and pet.love>=95 and math.random()<0.4 then X.goHug(pet)
 elseif plain and pet.hunger>=60 and pet.love>=80 and math.random()<0.5 then goUltra(pet)
@@ -540,7 +540,7 @@ elseif inf and inf.lvl>=1 then say(pet,R(L.scared))
 elseif pet.hollowh then say(pet,R(#X.said>0 and X.said or X.hollow))
 elseif pet.fox then say(pet,R(X.fox))
 elseif pet.hughat and math.random()<0.5 then local c2=R(X.hughat) say(pet,c2[1],"hat") task.delay(2,function() if not pet.dead then say(pet,c2[2],"burrito") end end)
-elseif pet.legs and math.random()<0.4 then say(pet,R(X.legsIdle))
+elseif pet.shoes and math.random()<0.4 then say(pet,R(X.legsIdle))
 elseif pet.clothes and math.random()<0.4 then say(pet,R(X.clothesIdle))
 elseif pet.helmet and math.random()<0.4 then say(pet,R(X.helmetIdle))
 elseif pet.beans and math.random()<0.6 then say(pet,R(L.beans))
@@ -551,19 +551,19 @@ elseif pet.sc>=2.4 and not pet.innocent and math.random()<0.5 then say(pet,R(pet
 elseif pet.sc>=2 and not pet.innocent and math.random()<0.35 then say(pet,R(pet.tail and TL.whisper or L.whisper),pet.tail and "churro" or "burrito")
 else say(pet,(pet.hunger<=0 or pet.love<=0) and R(L.mad) or pet.hunger<35 and R(L.hungry) or pet.love<35 and R(L.sad) or (pet.tail and math.random()<0.5 and R(TL.idle)) or extra(pet) or R(L.idle)) end
 end
-pet.st.Text=(pet.hollowh and "HOLLOW (be nice!)  " or pet.fox and "FOX  " or pet.hughat and "HUG-HAT  " or pet.beans and "BEANS  " or pet.legs and "SHOES  " or pet.clothes and "TORTILLA?  " or pet.helmet and "HELMET  " or pet.innocent and "INNOCENT (no burrito!)  " or "")..string.format("Full %d%%  Love %d%%  Size %.1fx  [you have %d food]",math.floor(pet.hunger),math.floor(pet.love),pet.sc,inv.food)
+pet.st.Text=(pet.hollowh and "HOLLOW (be nice!)  " or pet.fox and "FOX  " or pet.hughat and "HUG-HAT  " or pet.beans and "BEANS  " or pet.shoes and "SHOES  " or pet.clothes and "TORTILLA?  " or pet.helmet and "HELMET  " or pet.innocent and "INNOCENT (no burrito!)  " or "")..string.format("Full %d%%  Love %d%%  Size %.1fx  [you have %d food]",math.floor(pet.hunger),math.floor(pet.love),pet.sc,inv.food)
 end
 elseif pet.dying then pet.st.Text="!!! ABOUT TO BLOW !!!"
 else
 if not pet.super and pet.sc>=10 then goSuper(pet) end
 if pet.sc>=15 and not pet.supremo then pet.dying=true pet.sinkT=now setPrompts(pet,"none") say(pet,"I AM COMING, MASTER...") achieve("Lost to the Sewers","your hat grew too big and joined El Burrito Supremo") task.delay(3,function() if not pet.dead then clean(pet) end end) end
 if pet.tail then pet.st.Text="!! EVIL TAIL !!  (face it + say cool tail)"
-elseif pet.legs then pet.st.Text="!! EVIL SHOES !!  (dance with them)"
+elseif pet.shoes then pet.st.Text="!! EVIL SHOES !!  (dance with them)"
 elseif pet.clothes then pet.st.Text=string.format("!! EVIL WRAP !!  (fold it %d/3)",pet.folds or 0)
 elseif pet.helmet then pet.st.Text=string.format("!! EVIL HELMET !!  [you have %d ranch]",inv.ranch)
 else pet.st.Text=string.format("%s  poison %d/%d  [you have %d poison, %d churro]",pet.super and "!!! SUPER EVIL !!!" or "!! EVIL !!",pet.poison,pet.need,inv.poison,inv.churro) end
 if rpos0 and pet.pos and hum then local dd=(pet.pos-rpos0).Magnitude
-if pet.legs and dd<40 and math.random()<0.2 then local rr=math.random(3) if rr==1 then hum.Jump=true say(pet,"BAWK! (jump)") elseif rr==2 then X.legBoost={now+2,30} say(pet,"RUN!!") else X.legBoost={now+2,5} say(pet,"strut. strut. bawk.") end end
+if pet.shoes and dd<40 and math.random()<0.2 then local rr=math.random(3) if rr==1 then hum.Jump=true say(pet,"BAWK! (jump)") elseif rr==2 then X.legBoost={now+2,30} say(pet,"RUN!!") else X.legBoost={now+2,5} say(pet,"strut. strut. bawk.") end end
 if pet.helmet and dd<20 then ws=math.min(ws,10) if math.random()<0.1 then hum.Jump=true say(pet,"JUMPING JACKS. NOW.") end end
 end
 if pet.super and k%4==0 and #minis<6 then spawnMini(pet) end
@@ -572,11 +572,11 @@ if lost then say(pet,R(L.lost))
 elseif pet.supremo and math.random()<0.5 then say(pet,R(L.supremo))
 elseif hollow then say(pet,R(L.hollow))
 elseif inf and inf.lvl>=1 then say(pet,R(L.brother))
-elseif not pet.tail and not pet.legs and not pet.clothes and not pet.helmet and inv.poison>0 and math.random()<0.3 then pet.colaT=now+4 say(pet,"...sniff sniff... COLA. abort. ABORT.")
+elseif not pet.tail and not pet.shoes and not pet.clothes and not pet.helmet and inv.poison>0 and math.random()<0.3 then pet.colaT=now+4 say(pet,"...sniff sniff... COLA. abort. ABORT.")
 elseif math.random()<0.15 then say(pet,memLine(pet))
 elseif math.random()<0.3 then say(pet,R(pet.sc<5 and L.trap1 or pet.sc<10 and L.trap2 or L.trap3),"hat")
 elseif math.random()<0.5 then pet.lunge=now+0.8 say(pet,R(L.lunge))
-else say(pet,R(pet.evilbeans and X.evilbeans or pet.legs and X.legs or pet.clothes and X.clothes or pet.helmet and X.helmet or pet.tail and TL.evil or pet.super and L.super or L.evil)) end
+else say(pet,R(pet.evilbeans and X.evilbeans or pet.shoes and X.legs or pet.clothes and X.clothes or pet.helmet and X.helmet or pet.tail and TL.evil or pet.super and L.super or L.evil)) end
 end
 end
 end end
@@ -636,7 +636,7 @@ if seen and now>(pet.seenT or 0) then pet.seenT=now+4 say(pet,R(TL.seen)) end pe
 elseif pet.evil then
 if hollow then goal,spd=away,14
 elseif friend then goal,spd=distP>0.1 and rpos-toP.Unit*(6+hx) or pos,10
-elseif pet.legs or pet.helmet then goal,spd=distP>0.1 and rpos-toP.Unit*(3+hx) or pos,18
+elseif pet.shoes or pet.helmet then goal,spd=distP>0.1 and rpos-toP.Unit*(3+hx) or pos,18
 elseif now<(pet.colaT or 0) then goal,spd=away,16
 else goal=rpos spd=(12+pet.sc*2)*(1-pet.poison/pet.need*0.66)*pet.rage*(1-0.12*(pet.hugs or 0)) if now<pet.lunge then spd=spd*2.5 end if pet.embarrass and now<pet.embarrass then spd=spd*2 end end
 else
@@ -727,7 +727,7 @@ if pet.evil and pet.tail and not frozen and not pet.seen and not pet.wrap and no
 eating=ch pet.wrap={t0=now,ch=ch,r=r,hum=hum,from=r.CFrame} r.Anchored=true hum.WalkSpeed=0 hum.JumpPower=0 say(pet,"ssssqueeze time.") achieve("Squeezed","a tail got you from behind")
 elseif pet.evil and pet.clothes and not frozen and not pet.twrap and not eating and not friend and hum and hum.Health>0 and now>prot and distP<math.max(hx,hz)+2.5 then
 eating=ch pet.twrap={t0=now,ch=ch,r=r,hum=hum,from=r.CFrame} r.Anchored=true hum.WalkSpeed=0 hum.JumpPower=0 X.tortilla(pet.twrap) say(pet,"one human wrap. with lettuce.") achieve("Thats a Wrap!","an evil jacket rolled you into a wrap")
-elseif pet.evil and not pet.tail and not pet.clothes and not pet.legs and not pet.helmet and not frozen and not eating and not friend and hum and hum.Health>0 and now>prot and distP<math.max(hx,hz)+2.5 then
+elseif pet.evil and not pet.tail and not pet.clothes and not pet.shoes and not pet.helmet and not frozen and not eating and not friend and hum and hum.Health>0 and now>prot and distP<math.max(hx,hz)+2.5 then
 eating=ch pet.eat={t0=now,ch=ch,r=r,hum=hum,from=r.CFrame,spicy=math.random()<0.03} pet.stun=now+5.5 r.Anchored=true hum.WalkSpeed=0 hum.JumpPower=0 say(pet,R(L.grab))
 end
 if pet.eat then local e=pet.eat
