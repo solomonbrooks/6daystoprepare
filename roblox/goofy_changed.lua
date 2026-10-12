@@ -1,0 +1,255 @@
+local P,W,RS,D=game:GetService("Players"),workspace,game:GetService("RunService"),game:GetService("Debris")
+_G.GCrun=(_G.GCrun or 0)+1
+local RUN=_G.GCrun
+if _G.GCconn then for _,c in ipairs(_G.GCconn) do c:Disconnect() end end
+_G.GCconn={}
+local old=W:FindFirstChild("GoofyChanged")
+if old then old:Destroy() end
+local M=Instance.new("Model")
+M.Name="GoofyChanged"
+M.Parent=W
+local O=Vector3.new(0,400,0)
+local V=Vector3.new
+local function part(sz,pos,col,mat,shape,par)
+local p=Instance.new("Part")
+p.Anchored=true
+p.Size=sz
+p.Position=pos
+p.Color=col
+p.Material=mat or Enum.Material.SmoothPlastic
+p.TopSurface=Enum.SurfaceType.Smooth
+p.BottomSurface=Enum.SurfaceType.Smooth
+if shape then p.Shape=shape end
+p.Parent=par or M
+return p
+end
+local GRAY,WALL,DARK=Color3.fromRGB(190,192,198),Color3.fromRGB(225,226,230),Color3.fromRGB(70,72,80)
+part(V(160,2,160),O,GRAY,Enum.Material.Concrete)
+part(V(160,2,160),O+V(0,32,0),DARK,Enum.Material.Metal)
+part(V(160,30,2),O+V(0,16,-80),WALL)
+part(V(160,30,2),O+V(0,16,80),WALL)
+part(V(2,30,160),O+V(-80,16,0),WALL)
+part(V(2,30,160),O+V(80,16,0),WALL)
+part(V(60,30,2),O+V(-50,16,-20),WALL)
+part(V(60,30,2),O+V(50,16,25),WALL)
+part(V(2,30,40),O+V(0,16,-60),WALL)
+part(V(2,30,30),O+V(-30,16,45),WALL)
+for x=-60,60,30 do for z=-60,60,30 do
+local l=part(V(10,1,4),O+V(x,30.5,z),Color3.fromRGB(255,255,245),Enum.Material.Neon)
+local pl=Instance.new("PointLight")
+pl.Range=45
+pl.Brightness=1.5
+pl.Parent=l
+end end
+for i=1,14 do
+local s=math.random(4,8)
+part(V(s,s,s),O+V(math.random(-70,70),1+s/2,math.random(-70,55)),Color3.fromRGB(150,110,70),Enum.Material.WoodPlanks)
+end
+for i=-70,70,20 do part(V(8,0.2,2),O+V(i,1.1,60),Color3.fromRGB(240,200,40)) end
+local EXIT=O+V(0,7,-78)
+local ex=part(V(14,12,1),EXIT,Color3.fromRGB(60,230,90),Enum.Material.Neon)
+local eb=Instance.new("BillboardGui")
+eb.Size=UDim2.new(0,220,0,50)
+eb.StudsOffset=V(0,9,0)
+eb.AlwaysOnTop=true
+eb.Parent=ex
+local et=Instance.new("TextLabel")
+et.Size=UDim2.new(1,0,1,0)
+et.BackgroundTransparency=1
+et.Text="EXIT (shy)"
+et.TextScaled=true
+et.Font=Enum.Font.FredokaOne
+et.TextColor3=Color3.fromRGB(60,230,90)
+et.TextStrokeTransparency=0
+et.Parent=eb
+local function tp(plr)
+local c=plr.Character
+local r=c and c:FindFirstChild("HumanoidRootPart")
+if r then r.CFrame=CFrame.new(O+V(math.random(-25,25),5,70)) end
+end
+local function gui(plr)
+local pg=plr:FindFirstChild("PlayerGui")
+if not pg then return end
+local g=pg:FindFirstChild("GCStory")
+if not g then
+g=Instance.new("ScreenGui")
+g.Name="GCStory"
+g.ResetOnSpawn=false
+g.Parent=pg
+local t=Instance.new("TextLabel")
+t.Name="T"
+t.Size=UDim2.new(0.7,0,0,70)
+t.Position=UDim2.new(0.15,0,0,10)
+t.BackgroundColor3=Color3.fromRGB(20,20,28)
+t.BackgroundTransparency=0.25
+t.TextColor3=Color3.new(1,1,1)
+t.Font=Enum.Font.FredokaOne
+t.TextScaled=true
+t.TextWrapped=true
+t.Parent=g
+Instance.new("UICorner",t)
+end
+return g.T
+end
+local function say(txt,only)
+for _,plr in ipairs(only and {only} or P:GetPlayers()) do
+local t=gui(plr)
+if t then t.Text=txt end
+end
+end
+local function hookup(plr)
+table.insert(_G.GCconn,plr.CharacterAdded:Connect(function()
+task.wait(0.5)
+if _G.GCrun==RUN then tp(plr) end
+end))
+tp(plr)
+end
+for _,plr in ipairs(P:GetPlayers()) do hookup(plr) end
+table.insert(_G.GCconn,P.PlayerAdded:Connect(hookup))
+local NAMES={"Gooberto","Sir Squeaks","Blobathan","Captain Wobble","Puddle Pete","Gloopy Steve","Lord Bounce","Wobbleton"}
+local BOOPS={"BOOP!","*squeak*","tag ur it","hehe","sorry!!","bonk"}
+local E={}
+for i=1,8 do
+local white=i%2==1
+local col=white and Color3.fromRGB(245,245,250) or Color3.fromRGB(25,25,30)
+local m=Instance.new("Model")
+m.Name=NAMES[i]
+m.Parent=M
+local pos=O+V(math.random(-60,60),0,math.random(-70,30))
+local b=part(V(7,7,7),pos,col,Enum.Material.SmoothPlastic,Enum.PartType.Ball,m)
+b.Reflectance=0.15
+b.CanCollide=false
+local function deco(sz,off,c2,shape)
+local d=part(sz,pos+off,c2,Enum.Material.SmoothPlastic,shape,m)
+d.Anchored=false
+d.CanCollide=false
+d.Massless=true
+local w=Instance.new("WeldConstraint")
+w.Part0=b
+w.Part1=d
+w.Parent=d
+return d
+end
+deco(V(2.6,2.6,2.6),V(-1.4,1.3,-3),Color3.new(1,1,1),Enum.PartType.Ball)
+deco(V(2,2,2),V(1.6,1.5,-3),Color3.new(1,1,1),Enum.PartType.Ball)
+deco(V(1.1,1.1,1.1),V(-1.1,0.8,-4.1),Color3.new(0,0,0),Enum.PartType.Ball)
+deco(V(0.9,0.9,0.9),V(1.9,1.9,-2.9),Color3.new(0,0,0),Enum.PartType.Ball)
+deco(V(2.5,0.4,1),V(0,-1.2,-3.3),Color3.fromRGB(255,120,150))
+deco(V(4,0.4,4),V(0,3.6,0),Color3.fromHSV(math.random(),0.8,1))
+deco(V(2.4,2.4,2.4),V(0,4.9,0),Color3.fromHSV(math.random(),0.8,1))
+local bb=Instance.new("BillboardGui")
+bb.Size=UDim2.new(0,200,0,40)
+bb.StudsOffset=V(0,8,0)
+bb.Parent=b
+local nt=Instance.new("TextLabel")
+nt.Size=UDim2.new(1,0,1,0)
+nt.BackgroundTransparency=1
+nt.Text=NAMES[i]
+nt.TextScaled=true
+nt.Font=Enum.Font.FredokaOne
+nt.TextColor3=col
+nt.TextStrokeTransparency=0
+nt.TextStrokeColor3=white and Color3.new(0,0,0) or Color3.new(1,1,1)
+nt.Parent=bb
+local sq=Instance.new("Sound")
+sq.SoundId="rbxasset://sounds/electronicpingshort.wav"
+sq.PlaybackSpeed=2.2
+sq.Volume=1
+sq.RollOffMaxDistance=80
+sq.Parent=b
+table.insert(E,{b=b,nt=nt,sq=sq,name=NAMES[i],pos=pos,t=math.random()*10,spd=math.random(11,16),wan=pos,cd=0})
+end
+local hitcd={}
+local exitcd={}
+local function confetti(at)
+for i=1,14 do
+local c=part(V(0.6,0.6,0.2),at,Color3.fromHSV(math.random(),1,1),Enum.Material.Neon)
+c.Anchored=false
+c.CanCollide=false
+c.AssemblyLinearVelocity=V(math.random(-30,30),math.random(30,60),math.random(-30,30))
+D:AddItem(c,2)
+end
+end
+table.insert(_G.GCconn,RS.Heartbeat:Connect(function(dt)
+local now=os.clock()
+local roots={}
+for _,plr in ipairs(P:GetPlayers()) do
+local c=plr.Character
+local r=c and c:FindFirstChild("HumanoidRootPart")
+local h=c and c:FindFirstChildOfClass("Humanoid")
+if r and h and h.Health>0 then
+local rel=r.Position-O
+if math.abs(rel.X)<80 and math.abs(rel.Z)<80 and rel.Y>-5 and rel.Y<35 then
+table.insert(roots,{plr=plr,r=r,h=h})
+if (r.Position-EXIT).Magnitude<9 and (exitcd[plr] or 0)<now then
+exitcd[plr]=now+5
+confetti(r.Position)
+say(plr.Name.." ESCAPED!!! ...into a totally identical lab. The blobs are throwing a party about it.")
+tp(plr)
+end
+end
+end
+end
+for _,e in ipairs(E) do
+e.t=e.t+dt
+local best,bd=nil,90
+for _,x in ipairs(roots) do
+local d=(x.r.Position-e.pos).Magnitude
+if d<bd then best,bd=x,d end
+end
+local goal=best and best.r.Position or e.wan
+local dir=V(goal.X-e.pos.X,0,goal.Z-e.pos.Z)
+if not best and dir.Magnitude<3 then
+e.wan=O+V(math.random(-70,70),0,math.random(-70,70))
+end
+if dir.Magnitude>0.5 then
+dir=dir.Unit
+local sp=best and e.spd or e.spd*0.4
+e.pos=e.pos+dir*sp*dt
+e.pos=V(math.clamp(e.pos.X,O.X-74,O.X+74),O.Y,math.clamp(e.pos.Z,O.Z-74,O.Z+74))
+e.face=dir
+end
+local f=e.face or V(0,0,-1)
+local y=O.Y+4.5+math.abs(math.sin(e.t*6))*4
+local p=V(e.pos.X,y,e.pos.Z)
+e.b.CFrame=CFrame.lookAt(p,p+f)*CFrame.Angles(0,0,math.sin(e.t*9)*0.35)
+if best and (best.r.Position-p).Magnitude<6.5 and (hitcd[best.plr] or 0)<now then
+hitcd[best.plr]=now+1.5
+best.h:TakeDamage(15)
+local bv=Instance.new("BodyVelocity")
+bv.MaxForce=V(1e6,1e6,1e6)
+bv.Velocity=f*70+V(0,60,0)
+bv.Parent=best.r
+D:AddItem(bv,0.2)
+e.sq:Play()
+confetti(p)
+e.nt.Text=BOOPS[math.random(#BOOPS)]
+task.delay(1.2,function() if e.nt.Parent then e.nt.Text=e.name end end)
+if best.h.Health<=0 then say(best.plr.Name.." got goofed by "..e.name..". "..e.name.." would like to apologize. "..e.name.." is not sorry.") end
+end
+end
+end))
+local STORY={
+"CHAPTER 1: You wake up in a lab. You don't remember how you got here. Neither does the lab.",
+"A note on the floor says: 'Do NOT let the goo blobs boop you.' The note is also crying.",
+"The goo blobs are not evil. They just REALLY want to show you their rock collection.",
+"Objective: reach the green EXIT door. It is shy. Say something nice to it.",
+"Update: the lab is now upside down. Please ignore this. It is right side up again.",
+"The blobs walk through walls because nobody ever told them they couldn't.",
+"CHAPTER 2: The vending machine has become self-aware. It only speaks in beeps and disappointment.",
+"Scientist's diary, Day 47: 'The blobs learned to do taxes. Now I owe THEM money.'",
+"Plot twist: you were the lab all along. (no you weren't, keep running)",
+"The moon just called. It wants to know why you are not escaping faster.",
+"CHAPTER 3: The blobs formed a boy band. Their first single is 4 minutes of squeaking.",
+"Fun fact: these blobs are 98% goo and 2% vibes.",
+"FINAL CHAPTER: The exit is RIGHT THERE. The blobs believe in you. Kinda. Sorta. Go."
+}
+task.spawn(function()
+while _G.GCrun==RUN do
+for _,s in ipairs(STORY) do
+if _G.GCrun~=RUN then break end
+say(s)
+task.wait(8)
+end
+end
+end)
