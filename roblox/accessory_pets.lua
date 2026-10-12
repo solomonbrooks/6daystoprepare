@@ -8,7 +8,7 @@ local inv,cnt,pets,items,minis,t={food=0,poison=0},{food=0,poison=0,burrito=0},{
 local TOX,PURP,RED,WHITE,BLACK,GOLD=Color3.fromRGB(90,255,60),Color3.fromRGB(120,0,170),Color3.new(1,0,0),Color3.new(1,1,1),Color3.new(0,0,0),Color3.fromRGB(255,200,40)
 local GOO={Color3.fromRGB(35,6,45),Color3.fromRGB(18,32,14),Color3.fromRGB(55,0,38),Color3.fromRGB(8,8,20),Color3.fromRGB(28,18,0)}
 local LIMB,ELIMB,SLIMB,TAN=Color3.fromRGB(40,40,46),Color3.fromRGB(90,0,0),Color3.fromRGB(25,0,35),Color3.fromRGB(215,170,100)
-local L={born={"...huh? where am i?","I'M ALIVE!!","i have LEGS now??","FREEDOM!!","hi mommy! hi daddy!"},hungry={"FEED ME!!","im sooo hungry...","food. now. please.","my tummy is rumbling","find me food!! its on the map somewhere!"},sad={"you never play with me...","im lonely :(","do you even love me?","pet me pls"},mad={"im getting ANGRY...","you are neglecting me. i will remember this.","grrrrr"},happy={"yay!!","i love you!","yummy!!","more pls!","i feel myself getting bigger!"},pat={"hehe that tickles","purrrr","pet me more!","i feel loved <3"},idle={"what are we doing today?","im bored","you smell funny","i used to live on your head lol","dont leave me!","why are you staring at me","im gonna go explore","look at me walk!!","i miss the hat mines...","do you know someone named gerald?","sometimes i hear whispers..."},whisper={"they don't really love you...","let me protect you...","soon...","eat more... for US","why do you trust them?"},glorp={"glorp... glorp...","~ we are the beans... ~","~ glorp glorp glorp ~"},evil={"I HAVE GROWN.","now YOU are the food.","come here...","NO ONE ESCAPES","you fed me too well...","RUN.","GERALD WAS RIGHT.","this is for the burritos.","SILENCE, HAT."},trap1={"help me...","its taking over...","im still in here!","dont give up on me..."},trap2={"...help...","...please...","...its so dark..."},trap3={"...h..."},super={"~ GLORP GLORP GLORP ~","MASTER... I HAVE FOUND HIM...","THE HAT IS OURS. THE HEAD IS NEXT.","WE ARE THE BEANS.","GERALD SENT US. CHECK YOUR TEXTS."},lunge={"RAAAAAH!","GET OVER HERE!","CHOMP TIME!"},eat={"*CHOMP*","delicious.","more.","tasty human","mmm... crunchy"},grab={"GOTCHA.","say goodbye.","open wiiide...","dinner time."},nopoison={"HAHA you have nothing!","feed me something TASTY. like YOU."},poisoned={"what... did you feed me...","bleh! that tastes WRONG","my tummy... it burns...","you TRICKED me!!"},dying={"urk... i dont feel so good...","*gurgle*","whats happening to meeee","BLEEEEEHHH"},slap={"DID YOU JUST SLAP ME?!","OW!! MY BEANS!","YOU WILL REGRET THAT.","nobody has EVER slapped a burrito..."},evilpet={"...i remember that...","...you still care...?","...keep... trying..."},survive1={"...WHY WON'T YOU DIE?!","PTOO! GROSS!","IMPOSSIBLE!!"},survive2={"...are you even human...","are you... GERALD?","my jaw hurts...","i can't eat anymore..."},ultra={"I ATE MY BURRITO. i am free.","i will protect you.","thank you for never giving up on me.","no burrito will touch you."},ultrafight={"BEGONE, BURRITO!","HAT JUSTICE!","this is for the hats!"},freed={"...i'm... free? THANK YOU!!","the burrito is gone!! i can think again!"},scared={"AAAH STAY AWAY","you smell like BURRITO","no no no no"},hollow={"...what ARE you?","stay away from me...","no flavor... no soul..."},brother={"...one of us...","...brother...","welcome to the beans."},infect={"tasty... human...?","i want a burrito...","glorp","bruh"}}
+local L={born={"...huh? where am i?","I'M ALIVE!!","i have LEGS now??","FREEDOM!!","hi mommy! hi daddy!"},hungry={"FEED ME!!","im sooo hungry...","food. now. please.","my tummy is rumbling","find me food!! its on the map somewhere!"},sad={"you never play with me...","im lonely :(","do you even love me?","pet me pls"},mad={"im getting ANGRY...","you are neglecting me. i will remember this.","grrrrr"},happy={"yay!!","i love you!","yummy!!","more pls!","i feel myself getting bigger!"},pat={"hehe that tickles","purrrr","pet me more!","i feel loved <3"},idle={"what are we doing today?","im bored","you smell funny","i used to live on your head lol","dont leave me!","why are you staring at me","im gonna go explore","look at me walk!!","i miss the hat mines...","do you know someone named gerald?","sometimes i hear whispers..."},whisper={"they don't really love you...","let me protect you...","soon...","eat more... for US","why do you trust them?"},glorp={"glorp... glorp...","~ we are the beans... ~","~ glorp glorp glorp ~"},evil={"I HAVE GROWN.","now YOU are the food.","come here...","NO ONE ESCAPES","you fed me too well...","RUN.","GERALD WAS RIGHT.","this is for the burritos.","SILENCE, HAT."},trap1={"help me...","its taking over...","im still in here!","dont give up on me..."},trap2={"...help...","...please...","...its so dark..."},trap3={"...h..."},super={"~ GLORP GLORP GLORP ~","MASTER... I HAVE FOUND HIM...","THE HAT IS OURS. THE HEAD IS NEXT.","WE ARE THE BEANS.","GERALD SENT US. CHECK YOUR TEXTS."},lunge={"RAAAAAH!","GET OVER HERE!","CHOMP TIME!"},eat={"*CHOMP*","delicious.","more.","tasty human","mmm... crunchy"},grab={"GOTCHA.","say goodbye.","open wiiide...","dinner time."},nopoison={"HAHA you have nothing!","feed me something TASTY. like YOU."},poisoned={"what... did you feed me...","bleh! that tastes WRONG","my tummy... it burns...","you TRICKED me!!"},dying={"urk... i dont feel so good...","*gurgle*","whats happening to meeee","BLEEEEEHHH"},slap={"DID YOU JUST SLAP ME?!","OW!! MY BEANS!","YOU WILL REGRET THAT.","nobody has EVER slapped a burrito..."},evilpet={"...i remember that...","...you still care...?","...keep... trying..."},survive1={"...WHY WON'T YOU DIE?!","PTOO! GROSS!","IMPOSSIBLE!!"},survive2={"...are you even human...","are you... GERALD?","my jaw hurts...","i can't eat anymore..."},ultra={"I ATE MY BURRITO. i am free.","i will protect you.","thank you for never giving up on me.","no burrito will touch you."},ultrafight={"BEGONE, BURRITO!","HAT JUSTICE!","this is for the hats!"},freed={"...i'm... free? THANK YOU!!","the burrito is gone!! i can think again!"},scared={"AAAH STAY AWAY","you smell like BURRITO","no no no no"},hollow={"...what ARE you?","stay away from me...","no flavor... no soul..."},brother={"...one of us...","...brother...","welcome to the beans."},innocent={"i feel so light! no whispers in my head :)","just a hat. just vibes.","i will never turn evil. pinky promise.","no burrito in here! i checked!"},beans={"i love you... i think??","pls dont flush me","beans is happy :)","i used to be evil. now i have YOU.","hug?"},calm={"bro... you dont have to do this...","being loved is so much better...","i know youre scared. ill pet you."},calmed={"...loved?","...i... huh?","*sniff*"},infect={"tasty... human...?","i want a burrito...","glorp","bruh"}}
 local function R(x) return x[math.random(#x)] end
 local function say(p,m,v)
 v=v or (p.ultra and "ultra" or p.evil and "burrito" or "hat")
@@ -49,7 +49,7 @@ gh.Anchored=true gh.CanCollide=false gh.Transparency=0.3 gh.Color=WHITE gh.Mater
 label(gh,"thank you...",WHITE,140,30,2)
 TS:Create(gh,TweenInfo.new(4),{CFrame=gh.CFrame+Vector3.new(0,15,0),Transparency=1}):Play() DB:AddItem(gh,4.5)
 end
-local spawnItem,setPrompts,goEvil,unEvil,die
+local spawnItem,setPrompts,goEvil,unEvil,die,mk
 local function explode(pet)
 local pos=pet.p.Position local s=math.max(pet.p.Size.X,pet.p.Size.Y,pet.p.Size.Z)
 boom(pos,s+6) ghost(pet) clean(pet)
@@ -97,7 +97,7 @@ end
 local function infect()
 if inf then return end
 local ch=plr.Character local hd=ch and ch:FindFirstChild("Head") if not hd then return end
-inf={t0=os.clock(),lvl=0} inf.gui,inf.lbl=label(hd,"BURRITO INFECTION 0%",RED,260,40,3)
+local g,l=label(hd,"BURRITO INFECTION 0%",RED,260,40,3) inf={t0=os.clock(),lvl=0,gui=g,lbl=l}
 end
 local function cure()
 if not inf then return end
@@ -118,9 +118,14 @@ f.Color=col f.CFrame=CFrame.new(hit.Position+Vector3.new(0,1.8,0))*(kind=="food"
 local lt=Instance.new("PointLight") lt.Color=kind=="burrito" and tcol or col lt.Range=8 lt.Parent=f
 label(f,txt,tcol,100,24,2)
 cnt[kind]=cnt[kind]+1 items[f]=f.CFrame
+if kind=="burrito" then
+local function bp(text,key,off,fn) local q=Instance.new("ProximityPrompt") q.ActionText=text q.ObjectText="??? Burrito" q.KeyboardKeyCode=key q.HoldDuration=0.5 q.RequiresLineOfSight=false q.MaxActivationDistance=10 q.UIOffset=Vector2.new(0,off) q.Parent=f q.Triggered:Connect(function(w) if w==plr and f.Parent and items[f] then fn() items[f]=nil cnt.burrito=cnt.burrito-1 f:Destroy() end end) end
+bp("Eat",Enum.KeyCode.E,0,infect)
+bp("Adopt",Enum.KeyCode.R,80,function() local md=Instance.new("Model") md.Name="Beans" local tp=Instance.new("Part") tp.Name="Handle" tp.Shape=Enum.PartType.Cylinder tp.Size=Vector3.new(2,1.1,1.1) tp.Color=TAN tp.Parent=md tp.CFrame=f.CFrame+Vector3.new(0,1,0) mk(tp,#pets+1,nil,nil,"beans") md:Destroy() end)
+end
 f.Destroying:Connect(function() if items[f] then items[f]=nil cnt[kind]=cnt[kind]-1 end end)
 f.Touched:Connect(function(x) if f.Parent and items[f] and plr.Character and x:IsDescendantOf(plr.Character) then
-if kind=="burrito" then infect() elseif kind=="poison" and inf then cure() else inv[kind]=inv[kind]+1 end
+if kind=="burrito" then return elseif kind=="poison" and inf then cure() else inv[kind]=inv[kind]+1 end
 items[f]=nil cnt[kind]=cnt[kind]-1 f:Destroy() end end)
 end
 function setPrompts(pet,mode)
@@ -133,7 +138,7 @@ end
 local E,Rk,Fk=Enum.KeyCode.E,Enum.KeyCode.R,Enum.KeyCode.F
 if mode=="cute" then
 pr("Feed",E,Enum.KeyCode.ButtonX,0,function() if inv.food<1 then say(pet,"you have no food!! go find some on the map!") return end inv.food=inv.food-1 pet.hunger=math.min(100,pet.hunger+35) pet.sc=pet.sc+0.3 pet.spinT=os.clock() sparkle(pet.p,Color3.fromRGB(255,200,0)) say(pet,R(L.happy)) end)
-pr("Pet",Rk,Enum.KeyCode.ButtonY,80,function() pet.love=math.min(100,pet.love+25) pet.spinT=os.clock() sparkle(pet.p,Color3.fromRGB(255,120,200)) say(pet,R(L.pat)) end)
+pr("Pet",Rk,Enum.KeyCode.ButtonY,80,function() if pet.beans then pet.sc=math.min(2,pet.sc+0.1) end pet.love=math.min(100,pet.love+25) pet.spinT=os.clock() sparkle(pet.p,Color3.fromRGB(255,120,200)) say(pet,R(L.pat)) end)
 elseif mode=="evil" then
 pr("Feed Poison",E,Enum.KeyCode.ButtonX,0,function() if inv.poison<1 then say(pet,R(L.nopoison)) return end inv.poison=inv.poison-1 pet.poison=pet.poison+1 pet.stun=os.clock()+1.2 sparkle(pet.p,PURP) pet.hl.FillColor=(pet.super and BLACK or RED):Lerp(PURP,pet.poison/pet.need) say(pet,R(L.poisoned)) if pet.poison>=pet.need then die(pet) end end)
 pr("Pet",Rk,Enum.KeyCode.ButtonY,80,function() pet.flicker=os.clock()+1.2 pet.sc=pet.sc+0.1 say(pet,R(L.evilpet),"hat") end)
@@ -142,7 +147,7 @@ elseif mode=="ultra" then
 pr("Pet",Rk,Enum.KeyCode.ButtonY,0,function() sparkle(pet.p,GOLD) pet.spinT=os.clock() say(pet,R(L.ultra)) end)
 end
 end
-local function mk(h,i,head,acc)
+function mk(h,i,head,acc,kind)
 local p=h:Clone()
 for _,d in ipairs(p:GetDescendants()) do if d:IsA("JointInstance") or d:IsA("WeldConstraint") or d:IsA("Attachment") then d:Destroy() end end
 p.Anchored=false p.CanCollide=true p.CFrame=h.CFrame p.Parent=F
@@ -151,7 +156,7 @@ local g=Instance.new("BillboardGui") g.Size=UDim2.new(0,230,0,70) g.AlwaysOnTop=
 local s=Instance.new("TextLabel") s.Size=UDim2.new(1,0,0.6,0) s.BackgroundColor3=WHITE s.TextColor3=BLACK s.TextScaled=true s.Font=Enum.Font.FredokaOne s.Text="" s.Visible=false s.Parent=g
 Instance.new("UICorner").Parent=s
 local st=Instance.new("TextLabel") st.Size=UDim2.new(1,0,0.4,0) st.Position=UDim2.new(0,0,0.6,0) st.BackgroundTransparency=1 st.TextColor3=WHITE st.TextStrokeTransparency=0 st.TextScaled=true st.Font=Enum.Font.GothamBold st.Text="" st.Parent=g
-local pet={p=p,m=m,nm=h.Parent.Name,acc=acc,s0=p.Size,ms0=m and m.Scale,rot=head and (head.CFrame:Inverse()*h.CFrame).Rotation or CFrame.new(),sc=1,hunger=60,love=60,poison=0,need=3,rage=1,survive=0,evil=false,falling=true,i=i,say=s,st=st,g=g,t0=0,nxt=os.clock()+math.random(5,9),blink=0,stun=0,lunge=0,flicker=0,hitT=0,spinT=-10,yaw=0,dyaw=0,ph=0,amp=0,wnext=0,prompts={},parts={},w={},pu={},br={},legs={},feet={},arms={},xw={},xp={},teeth={}}
+local pet={p=p,m=m,nm=kind=="beans" and "Beans" or h.Parent.Name,acc=acc,innocent=kind~=nil,beans=kind=="beans",s0=p.Size,ms0=m and m.Scale,rot=head and (head.CFrame:Inverse()*h.CFrame).Rotation or CFrame.new(),sc=1,hunger=60,love=60,poison=0,need=3,rage=1,survive=0,evil=false,falling=true,i=i,say=s,st=st,g=g,t0=0,nxt=os.clock()+math.random(5,9),blink=0,stun=0,lunge=0,flicker=0,hitT=0,spinT=-10,yaw=0,dyaw=0,ph=0,amp=0,wnext=0,prompts={},parts={},w={},pu={},br={},legs={},feet={},arms={},xw={},xp={},teeth={}}
 setPrompts(pet,"cute")
 table.insert(pets,pet)
 task.delay(1.5,function() if p.Parent then
@@ -159,7 +164,7 @@ p.Anchored=true p.CanCollide=false pet.pos=p.Position pet.born=os.clock()
 local function add(q) table.insert(pet.parts,q) return q end
 for k=1,2 do pet.w[k]=add(part(Vector3.one,WHITE,nil,true)) pet.pu[k]=add(part(Vector3.one,BLACK,nil,true)) pet.br[k]=add(part(Vector3.one,BLACK)) pet.legs[k]=add(part(Vector3.one,LIMB)) pet.feet[k]=add(part(Vector3.one,LIMB,nil,true)) pet.arms[k]=add(part(Vector3.one,LIMB)) pet.xw[k]=add(part(Vector3.one,PURP,Enum.Material.Neon,true)) pet.xp[k]=add(part(Vector3.one,BLACK,nil,true)) end
 pet.mo=add(part(Vector3.one,BLACK,nil,true)) for k=1,6 do pet.teeth[k]=add(part(Vector3.one,Color3.fromRGB(235,225,190))) end
-pet.falling=false say(pet,R(L.born))
+pet.falling=false say(pet,pet.beans and "*sniff* ...you saved me? im Beans." or pet.innocent and R(L.innocent) or R(L.born))
 end end)
 end
 local function wander(pet,pos,rpos,now)
@@ -167,7 +172,7 @@ if now>pet.wnext then pet.wnext=now+math.random(3,7) if math.random()<0.35 then 
 if pet.wt then return pet.wt,9 end return pos,0
 end
 local c=plr.Character local head=c:FindFirstChild("Head") local i=0
-for _,a in ipairs(c:GetChildren()) do if a:IsA("Accessory") then local h=a:FindFirstChild("Handle") if h then i=i+1 mk(h,i,head,a:Clone()) a:Destroy() end end end
+for _,a in ipairs(c:GetChildren()) do if a:IsA("Accessory") then local h=a:FindFirstChild("Handle") if h then i=i+1 mk(h,i,head,a:Clone(),math.random()<0.25 and "innocent" or nil) a:Destroy() end end end
 if i==0 then warn("You have no accessories on!") end
 do
 local r=c:FindFirstChild("HumanoidRootPart") local a=math.random()*math.pi*2
@@ -210,16 +215,20 @@ if chat then pet.nxt=now+math.random(6,10) say(pet,R(L.ultra)) end
 elseif not pet.evil then
 pet.hunger=math.max(0,pet.hunger-1.5) pet.love=math.max(0,pet.love-1) pet.sc=pet.sc+0.008
 if pet.hunger<=0 or pet.love<=0 then pet.sc=pet.sc+0.04 end
+if pet.innocent then pet.sc=math.min(pet.sc,pet.beans and 2 or 2.5) end
 if pet.sc>=3 then if pet.hunger>=60 and pet.love>=80 and math.random()<0.5 then goUltra(pet) else goEvil(pet) end
 else
 if chat then pet.nxt=now+math.random(5,9)
 if hollow then say(pet,R(L.hollow))
 elseif inf and inf.lvl>=1 then say(pet,R(L.scared))
-elseif pet.sc>=2.4 and math.random()<0.5 then say(pet,R(L.glorp),"burrito")
-elseif pet.sc>=2 and math.random()<0.35 then say(pet,R(L.whisper),"burrito")
+elseif pet.beans and math.random()<0.6 then say(pet,R(L.beans))
+elseif pet.innocent and math.random()<0.3 then say(pet,R(L.innocent))
+elseif pet.innocent and (pet.hunger<=0 or pet.love<=0) then say(pet,R(L.sad))
+elseif pet.sc>=2.4 and not pet.innocent and math.random()<0.5 then say(pet,R(L.glorp),"burrito")
+elseif pet.sc>=2 and not pet.innocent and math.random()<0.35 then say(pet,R(L.whisper),"burrito")
 else say(pet,(pet.hunger<=0 or pet.love<=0) and R(L.mad) or pet.hunger<35 and R(L.hungry) or pet.love<35 and R(L.sad) or R(L.idle)) end
 end
-pet.st.Text=string.format("Full %d%%  Love %d%%  Size %.1fx  [you have %d food]",math.floor(pet.hunger),math.floor(pet.love),pet.sc,inv.food)
+pet.st.Text=(pet.beans and "BEANS  " or pet.innocent and "INNOCENT (no burrito!)  " or "")..string.format("Full %d%%  Love %d%%  Size %.1fx  [you have %d food]",math.floor(pet.hunger),math.floor(pet.love),pet.sc,inv.food)
 end
 elseif pet.dying then pet.st.Text="!!! ABOUT TO BLOW !!!"
 else
@@ -286,7 +295,11 @@ if hollow then goal,spd=away,14
 elseif friend then goal,spd=distP>0.1 and rpos-toP.Unit*(6+hx) or pos,10
 else goal=rpos spd=(12+pet.sc*2)*(1-pet.poison/pet.need*0.66)*pet.rage if now<pet.lunge then spd=spd*2.5 end end
 else
-if hollow or friend then goal,spd=away,20
+local tg,bd=nil,40
+if pet.beans then for _,o in ipairs(pets) do if o.evil and not o.dead and not o.dying and not o.falling then local dd=(o.pos-pos).Magnitude if dd<bd then tg,bd=o,dd end end end end
+if tg then goal,spd=tg.pos,12
+if bd<hx+3+tg.p.Size.Magnitude*0.4 and now>pet.hitT then pet.hitT=now+6 pet.spinT=now say(pet,R(L.calm),"hat") tg.stun=now+2 tg.sc=tg.sc-0.3 say(tg,R(L.calmed),"hat") sparkle(tg.p,Color3.fromRGB(255,120,200)) if tg.sc<3 then unEvil(tg) end end
+elseif hollow or friend then goal,spd=away,20
 elseif distP>30 then goal,spd=rpos-toP.Unit*6,22
 elseif pet.hunger<35 and distP>0.1 then goal,spd=rpos-toP.Unit*(4+hx),12
 else goal,spd=wander(pet,pos,rpos,now) end
