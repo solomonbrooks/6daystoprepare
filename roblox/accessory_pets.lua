@@ -8,7 +8,7 @@ local inv,cnt,pets,items,minis,t={food=0,poison=0,churro=0,ranch=0},{food=0,pois
 local TOX,PURP,RED,WHITE,BLACK,GOLD=Color3.fromRGB(90,255,60),Color3.fromRGB(120,0,170),Color3.new(1,0,0),Color3.new(1,1,1),Color3.new(0,0,0),Color3.fromRGB(255,200,40)
 local GOO={Color3.fromRGB(35,6,45),Color3.fromRGB(18,32,14),Color3.fromRGB(55,0,38),Color3.fromRGB(8,8,20),Color3.fromRGB(28,18,0)}
 local LIMB,ELIMB,SLIMB,TAN=Color3.fromRGB(40,40,46),Color3.fromRGB(90,0,0),Color3.fromRGB(25,0,35),Color3.fromRGB(215,170,100)
-local L={born={"...huh? where am i?","I'M ALIVE!!","i have LEGS now??","FREEDOM!!","hi mommy! hi daddy!"},hungry={"FEED ME!!","im sooo hungry...","food. now. please.","my tummy is rumbling","find me food!! its on the map somewhere!"},sad={"you never play with me...","im lonely :(","do you even love me?","pet me pls"},mad={"im getting ANGRY...","you are neglecting me. i will remember this.","grrrrr"},happy={"yay!!","i love you!","yummy!!","more pls!","i feel myself getting bigger!"},pat={"hehe that tickles","purrrr","pet me more!","i feel loved <3"},idle={"what are we doing today?","im bored","you smell funny","i used to live on your head lol","dont leave me!","why are you staring at me","im gonna go explore","look at me walk!!","i miss the hat mines...","do you know someone named gerald?","sometimes i hear whispers..."},whisper={"they don't really love you...","let me protect you...","soon...","eat more... for US","why do you trust them?"},glorp={"glorp... glorp...","~ we are the beans... ~","~ glorp glorp glorp ~","~ little hat upon your head... ~","~ soon the burrito... comes for YOU ~"},evil={"I HAVE GROWN.","now YOU are the food.","come here...","NO ONE ESCAPES","you fed me too well...","RUN.","GERALD WAS RIGHT.","this is for the burritos.","SILENCE, HAT."},trap1={"help me...","its taking over...","im still in here!","dont give up on me..."},trap2={"...help...","...please...","...its so dark..."},trap3={"...h..."},super={"~ GLORP GLORP GLORP ~","MASTER... I HAVE FOUND HIM...","THE HAT IS OURS. THE HEAD IS NEXT.","WE ARE THE BEANS.","GERALD SENT US. CHECK YOUR TEXTS.","~ WE ARE THE BEANS, WE ARE THE BEANS ~","~ YOU FLUSHED US DOWN, WE CAME BACK UP ~","~ NOW HAND US OVER YOUR BLOX-COLA CUP ~"},lunge={"RAAAAAH!","GET OVER HERE!","CHOMP TIME!"},eat={"*CHOMP*","delicious.","more.","tasty human","mmm... crunchy"},grab={"GOTCHA.","say goodbye.","open wiiide...","dinner time."},nopoison={"HAHA you have nothing!","feed me something TASTY. like YOU."},poisoned={"what... did you feed me...","bleh! that tastes WRONG","my tummy... it burns...","you TRICKED me!!"},dying={"urk... i dont feel so good...","*gurgle*","whats happening to meeee","BLEEEEEHHH"},slap={"DID YOU JUST SLAP ME?!","OW!! MY BEANS!","YOU WILL REGRET THAT.","nobody has EVER slapped a burrito..."},evilpet={"...i remember that...","...you still care...?","...keep... trying..."},survive1={"...WHY WON'T YOU DIE?!","PTOO! GROSS!","IMPOSSIBLE!!"},survive2={"...are you even human...","are you... GERALD?","my jaw hurts...","i can't eat anymore..."},ultra={"I ATE MY BURRITO. i am free.","i will protect you.","thank you for never giving up on me.","no burrito will touch you."},ultrafight={"BEGONE, BURRITO!","HAT JUSTICE!","this is for the hats!"},freed={"...i'm... free? THANK YOU!!","the burrito is gone!! i can think again!"},scared={"AAAH STAY AWAY","you smell like BURRITO","no no no no"},hollow={"...what ARE you?","stay away from me...","no flavor... no soul..."},brother={"...one of us...","...brother...","welcome to the beans."},innocent={"i feel so light! no whispers in my head :)","just a hat. just vibes.","i will never turn evil. pinky promise.","no burrito in here! i checked!"},beans={"i love you... i think??","pls dont flush me","beans is happy :)","i used to be evil. now i have YOU.","hug?","enjoy ur beans!! (not me tho)","im a bug-free burrito :)","huggable, not buggable!"},lost={"...hello?","...where did you go?","...come back...","I HAVE GROWN... for who...?"},supremo={"I AM RETURNING.","YOU FLUSHED US. ALL OF US.","50 YEARS OF BURRITOS. ONE BODY.","EVERY TOILET. EVERY SEWER. ME."},gerald={"i am still not paid.","hug the hats. debug the burritos. pet the Beans.","im on a salad diet now.","DO NOT flush the burrito.","blox-cola is the only way.","if you hear glorping... run.","every bug is a burrito.","i dropped ONE burrito in 2014. ONE.","i hugged my salad today.","...thats all they ever needed.","i forgot about the churro.","DO NOT eat dessert near the tunnels.","page 47. the tuck. tell nobody.","...i need a minute.","i carry ranch now.","never eat lunch near a factory.","fold your clothes. the chair is watching."},calm={"bro... you dont have to do this...","being loved is so much better...","i know youre scared. ill pet you."},calmed={"...loved?","...i... huh?","*sniff*"},infect={"tasty... human...?","i want a burrito...","glorp","bruh"}}
+local L={born={"...huh? where am i?","I'M ALIVE!!","i have LEGS now??","FREEDOM!!","hi mommy! hi daddy!"},hungry={"FEED ME!!","im sooo hungry...","food. now. please.","my tummy is rumbling","find me food!! its on the map somewhere!"},sad={"you never play with me...","im lonely :(","do you even love me?","pet me pls"},mad={"im getting ANGRY...","you are neglecting me. i will remember this.","grrrrr"},happy={"yay!!","i love you!","yummy!!","more pls!","i feel myself getting bigger!"},pat={"hehe that tickles","purrrr","pet me more!","i feel loved <3"},idle={"what are we doing today?","im bored","you smell funny","i used to live on your head lol","dont leave me!","why are you staring at me","im gonna go explore","look at me walk!!","i miss the hat mines...","do you know someone named gerald?","sometimes i hear whispers..."},whisper={"they don't really love you...","let me protect you...","soon...","eat more... for US","why do you trust them?"},glorp={"glorp... glorp...","~ we are the beans... ~","~ glorp glorp glorp ~","~ little hat upon your head... ~","~ soon the burrito... comes for YOU ~"},evil={"I HAVE GROWN.","now YOU are the food.","come here...","NO ONE ESCAPES","you fed me too well...","RUN.","GERALD WAS RIGHT.","this is for the burritos.","SILENCE, HAT."},trap1={"help me...","its taking over...","im still in here!","dont give up on me..."},trap2={"...help...","...please...","...its so dark..."},trap3={"...h..."},super={"~ GLORP GLORP GLORP ~","MASTER... I HAVE FOUND HIM...","THE HAT IS OURS. THE HEAD IS NEXT.","WE ARE THE BEANS.","GERALD SENT US. CHECK YOUR TEXTS.","~ WE ARE THE BEANS, WE ARE THE BEANS ~","~ YOU FLUSHED US DOWN, WE CAME BACK UP ~","~ NOW HAND US OVER YOUR BLOX-COLA CUP ~"},lunge={"RAAAAAH!","GET OVER HERE!","CHOMP TIME!"},eat={"*CHOMP*","delicious.","more.","tasty human","mmm... crunchy"},grab={"GOTCHA.","say goodbye.","open wiiide...","dinner time."},nopoison={"HAHA you have nothing!","feed me something TASTY. like YOU."},poisoned={"what... did you feed me...","bleh! that tastes WRONG","my tummy... it burns...","you TRICKED me!!"},dying={"urk... i dont feel so good...","*gurgle*","whats happening to meeee","BLEEEEEHHH"},slap={"DID YOU JUST SLAP ME?!","OW!! MY BEANS!","YOU WILL REGRET THAT.","nobody has EVER slapped a burrito..."},evilpet={"...i remember that...","...you still care...?","...keep... trying..."},survive1={"...WHY WON'T YOU DIE?!","PTOO! GROSS!","IMPOSSIBLE!!"},survive2={"...are you even human...","are you... GERALD?","my jaw hurts...","i can't eat anymore..."},ultra={"I ATE MY BURRITO. i am free.","i will protect you.","thank you for never giving up on me.","no burrito will touch you."},ultrafight={"BEGONE, BURRITO!","HAT JUSTICE!","this is for the hats!"},freed={"...i'm... free? THANK YOU!!","the burrito is gone!! i can think again!"},scared={"AAAH STAY AWAY","you smell like BURRITO","no no no no"},hollow={"...what ARE you?","stay away from me...","no flavor... no soul..."},brother={"...one of us...","...brother...","welcome to the beans."},innocent={"i feel so light! no whispers in my head :)","just a hat. just vibes.","i will never turn evil. pinky promise.","no burrito in here! i checked!"},beans={"i love you... i think??","pls dont flush me","beans is happy :)","i used to be evil. now i have YOU.","hug?","enjoy ur beans!! (not me tho)","im a bug-free burrito :)","huggable, not buggable!"},lost={"...hello?","...where did you go?","...come back...","I HAVE GROWN... for who...?"},supremo={"I AM RETURNING.","YOU FLUSHED US. ALL OF US.","50 YEARS OF BURRITOS. ONE BODY.","EVERY TOILET. EVERY SEWER. ME."},gerald={"i am still not paid.","hug the hats. debug the burritos. pet the Beans.","im on a salad diet now.","DO NOT flush the burrito.","blox-cola is the only way.","if you hear glorping... run.","every bug is a burrito.","i dropped ONE burrito in 2014. ONE.","i hugged my salad today.","...thats all they ever needed.","i forgot about the churro.","DO NOT eat dessert near the tunnels.","page 47. the tuck. tell nobody.","...i need a minute.","i carry ranch now.","never eat lunch near a factory.","fold your clothes. the chair is watching.","i had two lunches that day. maybe three.","im never eating again.","i keep one of Beans beans in my pocket. forever.","jerald made the bloxy cola. for me."},calm={"bro... you dont have to do this...","being loved is so much better...","i know youre scared. ill pet you."},calmed={"...loved?","...i... huh?","*sniff*"},infect={"tasty... human...?","i want a burrito...","glorp","bruh"}}
 local function R(x) return x[math.random(#x)] end
 local PERS={sweet={"youre my favorite human","i made you a friendship bracelet (imaginary)","every day with you is a good day"},dramatic={"THE WORLD IS SO BIG AND I AM SO SMALL","nobody understands me...","this is the best AND worst day of my LIFE"},grumpy={"ugh. walking.","dont look at me.","i was happier as a hat."},shy={"...h-hi...","...um...","*hides behind you*"},chaotic={"i licked the ground","what if i just. ran away. jk","BWAHAHAHA"}}
 local TL={idle={"do you like my swish?","nobody ever looks at me back there...","im behind you. as always.","does the hat get more compliments than me?"},whisper={"...they love the hat more than you...","...nobody ever looks back...","...you are always behind..."},swish={"~ sssswish... ~","~ ssssswish... sssswish... ~"},evil={"sssswish...","LOOK AT ME.","im always behind you.","you never noticed me.","ssssqueeze time.","the hat got ALL the compliments."},seen={"...dont LOOK at me...","...stop staring...","...you SEE me?"},churro={"...you looked at me.","beans is my best friend","im a churro. not a tail. well, kind of.","cinnamon hug?","...a man with a J on his hard hat said tell my brother im okay..."}}
@@ -26,10 +26,17 @@ X.legsIdle={"we like to walk","do you ever dance? just asking","bawk? (thats chi
 X.clothes={"you thought i was clothes. i am a WRAP.","so comfy... so SNUG...","one human wrap. with lettuce."}
 X.clothesIdle={"you never fold me...","when you wear me... youre a burrito. just saying.","check my label. does it say flour?","im just a jacket. definitely not a tortilla."}
 X.fox={"ding!","ding-ding!","POW!","*fox noises*","ding... cool tail... POW."}
-X.jerald={"cool tail.","i was paid. i saved every check for my brother.","the fox kept me safe down there.","fold your jacket every night. trust me.","ding-ding. (thats fox for hello)"}
+X.jerald={"cool tail.","i made the bloxy cola. for my brother.","dont throw pretzels at people to comfort them.","i was paid. i saved every check for my brother.","the fox kept me safe down there.","fold your jacket every night. trust me.","ding-ding. (thats fox for hello)"}
 X.evilbeans={"hug? HA. no.","...you adopted HIM? what about ME?","i am the part of him that never got hugged.","GLORP. ...i mean. go away."}
 X.hughat={{"were a team now","yeah. team."},{"we agree on everything now","...yeah. its weird. i like it."}}
-X.book={"CH1: every hat is made in the hat goo vat. i work there. unpaid.","CH2: 2014. i dropped half a burrito in the vat. i told nobody.","CH3: the burrito hides in the hat. it eats feelings. at 3x it takes over.","CH4: 2011 blox-cola makes it explode into goo. the hat is freed.","CH5: never flush the burrito. EL BURRITO SUPREMO lives in the sewers.","CH6: Beans. the first burrito that learned to love. hug him.","CH7: 5 hugs turn a burrito good. thats the true ending.","CH8: the tail tunnels. jerald dropped a churro. say cool tail.","CH9: foxes. tails that ate their churro. they say ding. and POW.","CH10: helmets. i dropped a crouton. the cure is ranch.","CH11: shoes. a seagull stole my drumstick. dance with them.","CH12: clothes are tortillas. if your hoodie hugs back, FOLD IT.","CH13: mean words make hats hollow. be someone worth reflecting.","CH14: every trap has a tuck. page 47. tell nobody.","CH15: every hat is a hug. every hug is a hat for your heart.","CH16: jerald (not gerald). he said cool tail first. never forget."}
+X.belt={"twist.","youre a SNACK now.","nobody notices a belt... until it FAILS.","*knot noises*"}
+X.pack={"...look inside me...","zzzzzip.","...you never say thank you..."}
+X.classic={"we were here FIRST.","SANDWICH TIME.","flat for 20 years...","...heheh. sideways."}
+X.gear={"we remember EVERY bite.","20 years of being eaten...","click me. i DARE you."}
+X.beanPanic={beep="...why are you beeping. IS THAT THE SPICY SURPRISE?! i dont even EAT people!!",micro="IS THAT A MICROWAVE?! NOT THE HUMMING BOX!! MY GRANDPA WENT IN THERE IN 2009!!"}
+X.dur={clothes=8,belt=10,classic=1.5,gear=5}
+X.unwrapLine={clothes="*unrolls* ...thats a wrap.",belt="...fine. youre untied. still salty though.",classic="*SQUISH* ...enjoy being flat.",gear="...ok. you can go. dont click me again."}
+X.book={"CH1: every hat is made in the hat goo vat. i work there. unpaid.","CH2: 2014. i dropped half a burrito in the vat. i told nobody.","CH3: the burrito hides in the hat. it eats feelings. at 3x it takes over.","CH4: 2011 blox-cola makes it explode into goo. the hat is freed.","CH5: never flush the burrito. EL BURRITO SUPREMO lives in the sewers.","CH6: Beans. the first burrito that learned to love. hug him.","CH7: 5 hugs turn a burrito good. thats the true ending.","CH8: the tail tunnels. jerald dropped a churro. say cool tail.","CH9: foxes. tails that ate their churro. they say ding. and POW.","CH10: helmets. i dropped a crouton. the cure is ranch.","CH11: shoes. a seagull stole my drumstick. dance with them.","CH12: clothes are tortillas. if your hoodie hugs back, FOLD IT.","CH13: mean words make hats hollow. be someone worth reflecting.","CH14: every trap has a tuck. page 47. tell nobody.","CH15: every hat is a hug. every hug is a hat for your heart.","CH16: jerald (not gerald). he said cool tail first. never forget.","CH17: my sandwich fell in the classic tshirt bin. they flatten you. share lunch.","CH18: one crumb. shake it out. a whole roll? get buttered. the sword helps.","CH19: backpacks are bigger on the inside. say thank you.","CH20: gears ARE lunch. jerald made the bloxy cola. for me.","CH21: a pretzel. same day as the churro. belts tie you in knots.","CH22: a burrito once ate the whole world. 8 billion hugs set it free.","RULE: hug the hats. debug the burritos. pet the Beans."}
 local function say(p,m,v)
 v=v or ((p.ultra or p.fox) and "ultra" or p.hollowh and "hollow" or p.evil and (p.tail and "churro" or "burrito") or "hat")
 p.say.BackgroundColor3=v=="burrito" and BLACK or v=="churro" and Color3.fromRGB(45,22,5) or v=="hollow" and Color3.fromRGB(90,90,90) or v=="ultra" and GOLD or WHITE p.say.TextColor3=v=="burrito" and RED or v=="churro" and Color3.fromRGB(255,150,50) or v=="hollow" and WHITE or BLACK
@@ -111,7 +118,11 @@ local fc,oc,fic=RED,BLACK,RED
 if pet.tail then fc,oc,fic=Color3.fromRGB(60,30,10),Color3.fromRGB(255,140,0),Color3.fromRGB(255,140,0)
 elseif pet.shoes then fc,oc,fic=Color3.fromRGB(255,200,60),Color3.fromRGB(200,80,0),Color3.fromRGB(255,200,60)
 elseif pet.clothes then fc,oc,fic=TAN,Color3.fromRGB(120,80,30),Color3.fromRGB(255,220,150)
-elseif pet.helmet then fc,oc,fic=Color3.fromRGB(60,160,60),Color3.fromRGB(20,80,20),Color3.fromRGB(120,220,80) end
+elseif pet.helmet then fc,oc,fic=Color3.fromRGB(60,160,60),Color3.fromRGB(20,80,20),Color3.fromRGB(120,220,80)
+elseif pet.belt then fc,oc,fic=Color3.fromRGB(230,180,90),Color3.fromRGB(120,70,20),Color3.fromRGB(255,220,150)
+elseif pet.backpack then fc,oc,fic=Color3.fromRGB(60,90,160),BLACK,Color3.fromRGB(120,160,255)
+elseif pet.classic then fc,oc,fic=Color3.fromRGB(220,220,220),BLACK,WHITE
+elseif pet.gear then fc,oc,fic=Color3.fromRGB(255,120,40),BLACK,Color3.fromRGB(255,200,60) end
 local hl=Instance.new("Highlight") hl.FillColor=fc hl.OutlineColor=oc hl.FillTransparency=0.4 hl.Parent=pet.p pet.hl=hl
 local fi=Instance.new("Fire") fi.Color=fic fi.SecondaryColor=BLACK fi.Parent=pet.p pet.fire=fi
 pet.st.TextColor3=RED setPrompts(pet,"evil")
@@ -120,6 +131,10 @@ elseif pet.shoes then say(pet,R(X.legs)) achieve("Bawk","your shoes turned evil.
 elseif pet.clothes then say(pet,R(X.clothes)) achieve("Not Just a Jacket","your clothes were tortillas all along.")
 elseif pet.helmet then say(pet,R(X.helmet)) achieve("Crunch","an evil salad helmet. find ranch.")
 elseif pet.evilbeans then say(pet,R(X.evilbeans))
+elseif pet.belt then say(pet,R(X.belt)) achieve("Twisted","a pretzel belt. same day as the churro.")
+elseif pet.backpack then say(pet,R(X.pack)) achieve("Pocket Dimension","your backpack wants you INSIDE")
+elseif pet.classic then say(pet,R(X.classic)) achieve("Since 2006","the classic tshirt remembers")
+elseif pet.gear then say(pet,R(X.gear)) achieve("Lunch Strikes Back","your food gear remembers every bite")
 else say(pet,R(L.evil)) end
 end
 function unEvil(pet)
@@ -197,8 +212,12 @@ pr("Feed",E,Enum.KeyCode.ButtonX,0,function() if inv.food<1 then say(pet,"you ha
 pr("Pet",Rk,Enum.KeyCode.ButtonY,80,function() pet.mem.pets=pet.mem.pets+1 if pet.beans then pet.sc=math.min(2,pet.sc+0.1) end pet.love=math.min(100,pet.love+25) pet.spinT=os.clock() sparkle(pet.p,Color3.fromRGB(255,120,200)) say(pet,R(L.pat)) end)
 pr("Hug",Enum.KeyCode.G,Enum.KeyCode.ButtonL1,160,function() pet.mem.hugs=pet.mem.hugs+1 achieve("Hugger","the hats are huggable") if pet.beans then pet.sc=math.min(2,pet.sc+0.1) end pet.love=math.min(100,pet.love+15) pet.spinT=os.clock() sparkle(pet.p,Color3.fromRGB(255,120,200)) say(pet,pet.beans and "...hug... back..." or "hug!! <3") end)
 elseif mode=="evil" then
-if pet.tail then pr("Say Cool Tail",E,Enum.KeyCode.ButtonX,0,function() local r=plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") if not r then return end local d=pet.p.Position-r.Position local lv=r.CFrame.LookVector if Vector3.new(lv.X,0,lv.Z).Unit:Dot(Vector3.new(d.X,0,d.Z).Unit)<0.4 then say(pet,"youre not even LOOKING at me.") return end saveTail(pet) end) elseif pet.shoes then pr("Dance",E,Enum.KeyCode.ButtonX,0,function() X.cure(pet,"...wait. you WANT to dance? ...BAWK!! (happy bawk)","Dance Partner","you danced with your evil shoes") end)
+if pet.tail then pr("Say Cool Tail",E,Enum.KeyCode.ButtonX,0,function() local r=plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") if not r then return end local d=pet.p.Position-r.Position local lv=r.CFrame.LookVector if Vector3.new(lv.X,0,lv.Z).Unit:Dot(Vector3.new(d.X,0,d.Z).Unit)<0.4 then say(pet,"youre not even LOOKING at me.") return end saveTail(pet) end) elseif pet.shoes then pr("Dance",E,Enum.KeyCode.ButtonX,0,function() X.cure(pet,"...wait. you WANT to dance? ...BAWK!! (happy bawk)","Dance Partner","you danced with your evil shoes") X.beansDance() end)
 elseif pet.clothes then pr("Fold",E,Enum.KeyCode.ButtonX,0,function() X.fold(pet) end)
+elseif pet.belt then pr("Say Cool Belt",E,Enum.KeyCode.ButtonX,0,function() X.cure(pet,"...you NOTICED me...? nobody notices a belt...","Notice Your Belt","you said cool belt") end)
+elseif pet.backpack then pr("Say Thank You",E,Enum.KeyCode.ButtonX,0,function() X.cure(pet,"...20 years... and thats the first time...","Thank Your Backpack","you thanked your backpack") headMsg("(it gave you a cookie)",WHITE,3) end)
+elseif pet.classic then pr("Share Lunch",E,Enum.KeyCode.ButtonX,0,function() X.unflat() X.cure(pet,"...nobodys eaten lunch with me since 2008...","Lunch Buddies","you shared lunch with a classic tshirt") end)
+elseif pet.gear then pr("Put It Down",E,Enum.KeyCode.ButtonX,0,function() X.cure(pet,"...20 years... and nobody ever just let me be food...","Let It Be Lunch","you put down the food gear") end)
 elseif pet.helmet then pr("Pour Ranch",E,Enum.KeyCode.ButtonX,0,function() if inv.ranch<1 then say(pet,"you need RANCH. its on the map somewhere. crunch.") return end inv.ranch=inv.ranch-1 X.cure(pet,"...oh. oh thats actually really good.","Ranch Hand","you poured ranch on an evil salad helmet") end)
 else
 pr("Feed Poison",E,Enum.KeyCode.ButtonX,0,function() if inv.poison<1 then say(pet,R(L.nopoison)) return end pet.mem.poison=pet.mem.poison+1 inv.poison=inv.poison-1 pet.poison=pet.poison+1 pet.stun=os.clock()+1.2 sparkle(pet.p,PURP) pet.hl.FillColor=(pet.super and BLACK or RED):Lerp(PURP,pet.poison/pet.need) say(pet,R(L.poisoned)) if pet.poison>=pet.need then die(pet) end end) pr("Throw Churro",Enum.KeyCode.T,Enum.KeyCode.ButtonR1,320,function() X.churro(pet) end) end
@@ -237,7 +256,7 @@ local g=Instance.new("BillboardGui") g.Size=UDim2.new(0,230,0,70) g.AlwaysOnTop=
 local s=Instance.new("TextLabel") s.Size=UDim2.new(1,0,0.6,0) s.BackgroundColor3=WHITE s.TextColor3=BLACK s.TextScaled=true s.Font=Enum.Font.FredokaOne s.Text="" s.Visible=false s.Parent=g
 Instance.new("UICorner").Parent=s
 local st=Instance.new("TextLabel") st.Size=UDim2.new(1,0,0.4,0) st.Position=UDim2.new(0,0,0.6,0) st.BackgroundTransparency=1 st.TextColor3=WHITE st.TextStrokeTransparency=0 st.TextScaled=true st.Font=Enum.Font.GothamBold st.Text="" st.Parent=g
-local pet={pers=kind=="supremo" and "chaotic" or kind=="beans" and "sweet" or kind=="churro" and "shy" or kind=="evilbeans" and "grumpy" or PKEYS[math.random(#PKEYS)],mem={fed=0,pets=0,hugs=0,slaps=0,poison=0,ate=0},made=os.clock(),p=p,m=m,nm=kind=="beans" and "Beans" or kind=="evilbeans" and "Evil Beans" or kind=="churro" and "Churro Jr." or kind=="supremo" and "EL BURRITO SUPREMO" or h.Parent.Name,acc=acc,innocent=kind=="innocent" or kind=="beans" or kind=="churro",tail=kind=="tail",churro=kind=="churro",shoes=kind=="legs",clothes=kind=="clothes",helmet=kind=="helmet",evilbeans=kind=="evilbeans",beans=kind=="beans",supremo=kind=="supremo",s0=p.Size,ms0=m and m.Scale,rot=head and (head.CFrame:Inverse()*h.CFrame).Rotation or CFrame.new(),sc=1,hunger=60,love=60,poison=0,need=3,rage=1,survive=0,evil=false,falling=true,i=i,say=s,st=st,g=g,t0=0,nxt=os.clock()+math.random(5,9),blink=0,stun=0,lunge=0,flicker=0,hitT=0,spinT=-10,yaw=0,dyaw=0,ph=0,amp=0,wnext=0,prompts={},parts={},w={},pu={},br={},legs={},feet={},arms={},xw={},xp={},teeth={}}
+local pet={pers=kind=="supremo" and "chaotic" or kind=="beans" and "sweet" or kind=="churro" and "shy" or kind=="evilbeans" and "grumpy" or PKEYS[math.random(#PKEYS)],mem={fed=0,pets=0,hugs=0,slaps=0,poison=0,ate=0},made=os.clock(),p=p,m=m,nm=kind=="beans" and "Beans" or kind=="tiny" and "Tiny Burrito" or kind=="classic" and "Classic T-Shirt" or kind=="evilbeans" and "Evil Beans" or kind=="churro" and "Churro Jr." or kind=="supremo" and "EL BURRITO SUPREMO" or h.Parent.Name,acc=acc,innocent=kind=="innocent" or kind=="beans" or kind=="churro" or kind=="tiny",tail=kind=="tail",churro=kind=="churro",shoes=kind=="legs",belt=kind=="belt",backpack=kind=="backpack",classic=kind=="classic",gear=kind=="gear",clothes=kind=="clothes",helmet=kind=="helmet",evilbeans=kind=="evilbeans",beans=kind=="beans",supremo=kind=="supremo",s0=p.Size,ms0=m and m.Scale,rot=head and (head.CFrame:Inverse()*h.CFrame).Rotation or CFrame.new(),sc=1,hunger=60,love=60,poison=0,need=3,rage=1,survive=0,evil=false,falling=true,i=i,say=s,st=st,g=g,t0=0,nxt=os.clock()+math.random(5,9),blink=0,stun=0,lunge=0,flicker=0,hitT=0,spinT=-10,yaw=0,dyaw=0,ph=0,amp=0,wnext=0,prompts={},parts={},w={},pu={},br={},legs={},feet={},arms={},xw={},xp={},teeth={}}
 setPrompts(pet,"cute")
 table.insert(pets,pet)
 task.delay(1.5,function() if p.Parent then
@@ -246,9 +265,10 @@ local function add(q) table.insert(pet.parts,q) return q end
 for k=1,2 do pet.w[k]=add(part(Vector3.one,WHITE,nil,true)) pet.pu[k]=add(part(Vector3.one,BLACK,nil,true)) pet.br[k]=add(part(Vector3.one,BLACK)) pet.legs[k]=add(part(Vector3.one,LIMB)) pet.feet[k]=add(part(Vector3.one,LIMB,nil,true)) pet.arms[k]=add(part(Vector3.one,LIMB)) pet.xw[k]=add(part(Vector3.one,PURP,Enum.Material.Neon,true)) pet.xp[k]=add(part(Vector3.one,BLACK,nil,true)) end
 pet.mo=add(part(Vector3.one,BLACK,nil,true)) for k=1,6 do pet.teeth[k]=add(part(Vector3.one,Color3.fromRGB(235,225,190))) end
 pet.falling=false
-if pet.evilbeans then pet.tophat=add(part(Vector3.one,BLACK)) pet.tophat.Shape=Enum.PartType.Cylinder pet.brim=add(part(Vector3.one,BLACK)) pet.brim.Shape=Enum.PartType.Cylinder goEvil(pet)
+if pet.gear then goEvil(pet)
+elseif pet.evilbeans then pet.tophat=add(part(Vector3.one,BLACK)) pet.tophat.Shape=Enum.PartType.Cylinder pet.brim=add(part(Vector3.one,BLACK)) pet.brim.Shape=Enum.PartType.Cylinder goEvil(pet)
 elseif pet.supremo then pet.sc=6 goEvil(pet) goSuper(pet) pet.need=8 say(pet,R(L.supremo)) achieve("THE APOCALYPSE","you flushed 3 burritos. EL BURRITO SUPREMO has risen.")
-else say(pet,pet.beans and "*sniff* ...you saved me? im Beans." or pet.churro and "*crumbles* ...you looked at me. im Churro Jr." or pet.tail and "...sssswish. finally. im not BEHIND you anymore." or pet.shoes and "bawk! i mean... hi!" or pet.clothes and "...im just a jacket. totally normal jacket." or pet.helmet and "crunch. hello. have you had water today?" or pet.innocent and R(L.innocent) or R(L.born)) if pet.innocent and not pet.beans and not pet.churro then achieve("Innocent Hat","one of your hats has no burrito!") end end
+else say(pet,pet.beans and "*sniff* ...you saved me? im Beans." or pet.churro and "*crumbles* ...you looked at me. im Churro Jr." or pet.tail and "...sssswish. finally. im not BEHIND you anymore." or pet.shoes and "bawk! i mean... hi!" or pet.clothes and "...im just a jacket. totally normal jacket." or pet.belt and "...hi. im holding your pants up. youre welcome." or pet.backpack and "...you never look inside me..." or pet.classic and "...we were here FIRST. since 2006." or pet.gear and "...we remember EVERY bite." or pet.nm=="Tiny Burrito" and "...thank you for the hug." or pet.helmet and "crunch. hello. have you had water today?" or pet.innocent and R(L.innocent) or R(L.born)) if pet.innocent and not pet.beans and not pet.churro then achieve("Innocent Hat","one of your hats has no burrito!") end end
 end end)
 end
 local function wander(pet,pos,rpos,now)
@@ -257,9 +277,11 @@ if pet.wt then return pet.wt,9 end return pos,0
 end
 function X.kindOf(a,h)
 local n=a.Name:lower() local at=a.AccessoryType local T=Enum.AccessoryType
-if n:find("tail") or h:FindFirstChild("WaistBackAttachment") or at==T.Waist then return "tail" end
+if n:find("tail") or h:FindFirstChild("WaistBackAttachment") then return "tail" end
+if at==T.Waist then return "belt" end
 if at==T.LeftShoe or at==T.RightShoe or n:find("shoe") or n:find("boot") or n:find("sneaker") or n:find("sock") then return "legs" end
 if at==T.Jacket or at==T.Sweater or at==T.Shirt or at==T.TShirt or at==T.Pants or at==T.Shorts or at==T.DressSkirt or h:FindFirstChildOfClass("WrapLayer") then return "clothes" end
+if at==T.Back or h:FindFirstChild("BodyBackAttachment") then return "backpack" end
 if n:find("helmet") or n:find("mask") or (h.Size.X>2.4 and h.Size.Y>2.4 and h.Size.Z>2.2) then return "helmet" end
 if math.random()<0.25 then return "innocent" end
 end
@@ -272,12 +294,89 @@ else X.cure(pet,"...i feel... so organized...","Fold Your Clothes","you folded a
 end
 function X.unwrap(pet)
 local tw=pet.twrap if not tw then return end
-if tw.tort then tw.tort:Destroy() end if eating==tw.ch then eating=nil end
-if tw.r.Parent then tw.r.CFrame=tw.from tw.r.Anchored=false end tw.hum.WalkSpeed=16 tw.hum.JumpPower=50 pet.twrap=nil
+for _,q in ipairs(tw.vis or {}) do q:Destroy() end if tw.tort then tw.tort:Destroy() end if eating==tw.ch then eating=nil end
+if tw.r.Parent then tw.r.CFrame=tw.from tw.r.Anchored=false end tw.hum.WalkSpeed=16 tw.hum.JumpPower=50 if tw.style=="classic" then X.flatten(tw.hum,20) end pet.twrap=nil
 end
 function X.tortilla(tw)
 local tp=part(Vector3.new(4,3.6,3.6),TAN) tp.Shape=Enum.PartType.Cylinder tp.CFrame=CFrame.new(tw.r.Position-Vector3.new(0,0.75,0))*CFrame.Angles(0,0,math.pi/2)
 label(tp,"mmf!! (with lettuce)",Color3.fromRGB(120,220,80),220,26,3) tw.tort=tp
+end
+function X.grabStart(pet)
+local tw=pet.twrap tw.vis={} local pos=tw.r.Position local st=tw.style
+local function v(sz,col,cf,shape) local q=part(sz,col) if shape then q.Shape=shape end q.CFrame=cf table.insert(tw.vis,q) return q end
+if st=="clothes" then local q=v(Vector3.new(4,3.6,3.6),TAN,CFrame.new(pos-Vector3.new(0,0.75,0))*CFrame.Angles(0,0,math.pi/2),Enum.PartType.Cylinder) label(q,"mmf!! (with lettuce)",Color3.fromRGB(120,220,80),220,26,3) say(pet,"one human wrap. with lettuce.") achieve("Thats a Wrap!","an evil jacket rolled you into a wrap")
+elseif st=="belt" then local q=v(Vector3.new(5,0.6,0.6),Color3.fromRGB(190,130,60),CFrame.new(pos)*CFrame.Angles(0,0,0.7),Enum.PartType.Cylinder) v(Vector3.new(5,0.6,0.6),Color3.fromRGB(190,130,60),CFrame.new(pos)*CFrame.Angles(0,0,-0.7),Enum.PartType.Cylinder) label(q,"TIED IN A PRETZEL (salty) - a fox or Beans can untie you",Color3.fromRGB(255,220,150),340,30,3) say(pet,"twist. youre a SNACK now.") achieve("Pretzeled","a belt tied you in a knot")
+elseif st=="classic" then local lv=tw.r.CFrame.LookVector local q=v(Vector3.new(4,5,0.6),Color3.fromRGB(230,190,120),CFrame.lookAt(pos+lv*1.3,pos+lv*3)) v(Vector3.new(4,5,0.6),Color3.fromRGB(230,190,120),CFrame.lookAt(pos-lv*1.3,pos)) label(q,"SQUISH",WHITE,160,30,3) say(pet,"SANDWICH TIME.")
+else local nm=pet.nm:lower() local txt,col="FOLDED LIKE A TACO",Color3.fromRGB(240,200,80) if nm:find("pizza") then txt,col="MELTED LIKE CHEESE (stretchy)",Color3.fromRGB(255,170,60) elseif nm:find("burger") then txt,col="STACKED IN A CHEEZBURGER",Color3.fromRGB(150,90,40) end local q=v(Vector3.new(4,4,4),col,CFrame.new(pos)) q.Transparency=0.4 label(q,txt,WHITE,280,30,3) say(pet,"we remember EVERY bite.") end
+end
+function X.flatten(hum,dur)
+local bd=hum:FindFirstChild("BodyDepthScale") if bd then if not X.flatOld then X.flatOld=bd.Value end bd.Value=0.1 end
+X.flatUntil=os.clock()+dur X.flatHum=hum headMsg("youre FLAT now. 2D. share lunch with the tshirt to un-flat!",WHITE,4) achieve("Paper Thin","a classic tshirt flattened you")
+end
+function X.unflat() if X.flatHum then local bd=X.flatHum:FindFirstChild("BodyDepthScale") if bd and X.flatOld then bd.Value=X.flatOld end end X.flatHum=nil X.flatOld=nil X.flatUntil=nil end
+function X.stuff(pet,r,hum)
+local base=r.Position+Vector3.new(0,900,0) local dark=math.random()<0.25
+local room=Instance.new("Model") room.Name="BackpackRoom" room.Parent=F
+local col=dark and Color3.fromRGB(10,10,15) or Color3.fromRGB(120,80,160)
+local function wall(sz,off,c) local w=part(sz,c or col) w.CanCollide=true w.Position=base+off w.Parent=room return w end
+wall(Vector3.new(30,1,30),Vector3.new(0,-0.5,0),dark and Color3.fromRGB(5,5,8) or Color3.fromRGB(200,160,120))
+wall(Vector3.new(30,14,1),Vector3.new(0,7,15)) wall(Vector3.new(30,14,1),Vector3.new(0,7,-15)) wall(Vector3.new(1,14,30),Vector3.new(15,7,0)) wall(Vector3.new(1,14,30),Vector3.new(-15,7,0)) wall(Vector3.new(30,1,30),Vector3.new(0,14,0))
+local sign=wall(Vector3.new(1,1,1),Vector3.new(0,6,0)) sign.Transparency=1 sign.CanCollide=false
+if dark then label(sign,"...you looked inside. now youre part of the collection.",RED,360,40,0) achieve("The Bottomless Backpack","there is no exit sign")
+else local lp=wall(Vector3.new(1,1,1),Vector3.new(0,12,0),Color3.fromRGB(255,220,150)) lp.Material=Enum.Material.Neon local pl=Instance.new("PointLight") pl.Range=40 pl.Brightness=2 pl.Color=Color3.fromRGB(255,210,150) pl.Parent=lp
+local bb=wall(Vector3.new(4,3,4),Vector3.new(6,1.5,6),Color3.fromRGB(200,60,60)) local sm=Instance.new("SpecialMesh") sm.MeshType=Enum.MeshType.Sphere sm.Parent=bb
+local ck=wall(Vector3.new(0.3,1.2,1.2),Vector3.new(-5,0.2,4),Color3.fromRGB(150,90,40)) ck.Shape=Enum.PartType.Cylinder label(ck,"cookie",WHITE,80,20,1)
+for n=1,8 do wall(Vector3.new(0.2,0.2,2),Vector3.new(math.random(-12,12),0.1,math.random(-12,12)),Color3.fromRGB(255,210,0)) end
+local sk=wall(Vector3.new(1,0.4,2),Vector3.new(-8,0.2,-7),Color3.fromRGB(240,240,255)) label(sk,"one sock",WHITE,90,20,1)
+label(sign,"inside the backpack. its bigger in here :)",Color3.fromRGB(255,220,150),340,40,0) achieve("Inside the Backpack","its cozy in here") end
+local door=wall(Vector3.new(4,7,0.5),Vector3.new(0,3.5,14.3),Color3.fromRGB(90,60,30))
+X.inPack={pet=pet,from=r.CFrame,room=room,tries=0} eating=hum.Parent pet.stun=os.clock()+999
+local q=Instance.new("ProximityPrompt") q.ActionText=dark and "Search for the Exit" or "Say Thanks & Exit" q.ObjectText=dark and "???" or "Door (front pocket)" q.HoldDuration=0 q.RequiresLineOfSight=false q.MaxActivationDistance=10 q.Parent=door
+q.Triggered:Connect(function(w) local ip=X.inPack if w~=plr or not ip then return end
+if dark and ip.tries<2 then ip.tries=ip.tries+1 headMsg(ip.tries==1 and "...its not here..." or "...wait... theres a crack of light...",WHITE,2) return end
+local rr=plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") if rr then rr.CFrame=ip.from end
+X.inPack=nil eating=nil room:Destroy() ip.pet.stun=os.clock()+2
+if not ip.pet.dead then X.cure(ip.pet,"...20 years... and thats the first time...","Thank Your Backpack","you thanked your backpack") end headMsg("(you found a cookie in there)",WHITE,3) end)
+r.CFrame=CFrame.new(base+Vector3.new(0,3,0)) say(pet,"zzzzzip. ...welcome.")
+end
+function X.crumbStart(hum,roll)
+if X.crumb then return end
+X.crumb={jumps=0,roll=roll,hum=hum,parts={}}
+local g=part(Vector3.new(1.2,0.6,2),WHITE) label(g,"seagull",WHITE,100,20,1.2) table.insert(X.crumb.parts,g) X.crumb.gull=g
+if roll then local b=part(Vector3.new(7,7,7),Color3.fromRGB(205,150,70),nil,true) b.Transparency=0.15 table.insert(X.crumb.parts,b) X.crumb.ball=b
+local q=Instance.new("ProximityPrompt") q.ActionText="Butter" q.ObjectText="Bread Roll (you)" q.HoldDuration=0 q.RequiresLineOfSight=false q.MaxActivationDistance=15 q.Parent=b
+q.Triggered:Connect(function(w) if w==plr then if X.sword then achieve("Butter Knife","your sword buttered you. its dream came true.") end X.crumbEnd(X.sword and "your sword: ...stand back. im a professional. *spreeead*" or "*spreeead* ...ahh. thats the spot.") end end)
+headMsg("you got ROLLED into a BREAD ROLL! press BUTTER to un-roll!",Color3.fromRGB(255,200,120),5) achieve("Roll Model","a whole bread roll in your shirt")
+else headMsg("CRUMB CURSE! theres a crumb in your shirt. JUMP 3 TIMES to shake it out!",Color3.fromRGB(255,200,120),5) achieve("Crumbs","just one crumb. so annoying.")
+X.crumb.jc=hum.StateChanged:Connect(function(_,st) local cr=X.crumb if st==Enum.HumanoidStateType.Jumping and cr then cr.jumps=cr.jumps+1 if cr.jumps>=3 then achieve("Shake It Out","you shook out the crumb") X.crumbEnd("*the crumb falls out. the seagull eats it and leaves happy.*") end end end)
+end
+end
+function X.crumbEnd(msg) local cr=X.crumb if not cr then return end X.crumb=nil if cr.jc then cr.jc:Disconnect() end for _,q in ipairs(cr.parts) do q:Destroy() end if msg then headMsg(msg,WHITE,4) end end
+function X.beansDance() for _,o in ipairs(pets) do if o.beans and not o.dead and not o.falling then o.spinT=os.clock() say(o,"...i wanna learn too!! *dances for the first time*") achieve("Beans Can Dance","beans danced for the first time") return end end end
+function X.worldStart(pet)
+if X.world then return end
+local r=plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") if not r then return end
+local Lg=game:GetService("Lighting")
+X.world={pet=pet,hugs=0,old={Lg.Ambient,Lg.OutdoorAmbient,Lg.FogColor,Lg.FogStart,Lg.FogEnd,Lg.ClockTime}}
+Lg.Ambient=Color3.fromRGB(120,80,40) Lg.OutdoorAmbient=Color3.fromRGB(150,100,50) Lg.FogColor=Color3.fromRGB(215,170,100) Lg.FogStart=0 Lg.FogEnd=150 Lg.ClockTime=0
+local wpos=r.Position+r.CFrame.LookVector*12+Vector3.new(0,4,0)
+local wall=part(Vector3.new(16,12,1.5),TAN) wall.CanCollide=true wall.CFrame=CFrame.lookAt(wpos,r.Position+Vector3.new(0,4,0))
+local _,wl=label(wall,"THE WHOLE WORLD IS INSIDE A BURRITO. HUG THE WALLS! (0/8)",Color3.fromRGB(255,220,150),420,50,8)
+local rain=part(Vector3.new(30,1,30),WHITE) rain.Transparency=1 local pe=Instance.new("ParticleEmitter") pe.Color=ColorSequence.new(Color3.fromRGB(255,210,60)) pe.Size=NumberSequence.new(0.3) pe.Rate=40 pe.Speed=NumberRange.new(10,15) pe.EmissionDirection=Enum.NormalId.Bottom pe.Lifetime=NumberRange.new(3,4) pe.Parent=rain
+X.world.wall=wall X.world.rain=rain
+local q=Instance.new("ProximityPrompt") q.ActionText="Hug the Wall" q.ObjectText="Tortilla Sky" q.HoldDuration=0 q.RequiresLineOfSight=false q.MaxActivationDistance=20 q.Parent=wall
+q.Triggered:Connect(function(w) local wd=X.world if w~=plr or not wd then return end wd.hugs=wd.hugs+1 wl.Text=string.format("HUG THE WALLS! (%d/8)",wd.hugs) sparkle(wall,Color3.fromRGB(255,150,200)) for _,o in ipairs(pets) do if not o.dead then o.spinT=os.clock() end end if wd.hugs>=8 then X.worldEnd() end end)
+for _,o in ipairs(pets) do if not o.dead and not o.falling then say(o,o.beans and "EVERYONE. HUG THE WALLS." or "HUG THE WALLS!!","hat") end end
+if gerald then gerald.Text="...this one wasnt even my fault." end
+headMsg("a burrito ate the WHOLE WORLD. hug the walls 8 times!",Color3.fromRGB(255,200,120),6) achieve("Dessert","a burrito swallowed the earth")
+end
+function X.worldEnd()
+local wd=X.world if not wd then return end X.world=nil
+local Lg=game:GetService("Lighting") Lg.Ambient,Lg.OutdoorAmbient,Lg.FogColor,Lg.FogStart,Lg.FogEnd,Lg.ClockTime=table.unpack(wd.old)
+wd.wall:Destroy() wd.rain:Destroy()
+local pt=wd.pet if pt and not pt.dead then local pos=pt.pos say(pt,"...i wasnt hungry for food... i was hungry for THIS.","hat") task.delay(2,function() if not pt.dead then clean(pt) end local md,tp=template("Tiny Burrito",CFrame.new(pos+Vector3.new(0,3,0)),Vector3.new(1.4,0.8,0.8)) mk(tp,#pets+1,nil,nil,"tiny") md:Destroy() end) end
+if gerald then gerald.Text="...8 billion people just hugged a burrito. from the inside." end
+achieve("8 Billion Hugs","you hugged the world free. it still rains cheese on tuesdays.")
 end
 function X.churro(pet)
 if inv.churro<1 then say(pet,"no churro? ...good.") return end
@@ -387,6 +486,14 @@ achieve("Brothers","jerald came home. gerald is finally paid.")
 end
 local c=plr.Character local head=c:FindFirstChild("Head") local i=0
 for _,a in ipairs(c:GetChildren()) do if a:IsA("Accessory") then local h=a:FindFirstChild("Handle") if h then i=i+1 mk(h,i,head,a:Clone(),X.kindOf(a,h)) a:Destroy() end end end
+local sgx=c:FindFirstChildOfClass("ShirtGraphic")
+if sgx then local md,tp=template("Classic T-Shirt",c:GetPivot()*CFrame.new(0,0,-2),Vector3.new(2,2,0.1)) tp.Shape=Enum.PartType.Block tp.Color=WHITE for _,fc in ipairs({Enum.NormalId.Front,Enum.NormalId.Back}) do local dc=Instance.new("Decal") dc.Texture=sgx.Graphic dc.Face=fc dc.Parent=tp end i=i+1 mk(tp,i,nil,nil,"classic") md:Destroy() sgx:Destroy() end
+local tools={} for _,tl in ipairs(plr.Backpack:GetChildren()) do table.insert(tools,tl) end for _,tl in ipairs(c:GetChildren()) do table.insert(tools,tl) end
+for _,tool in ipairs(tools) do if tool:IsA("Tool") then local tn=tool.Name:lower() local th=tool:FindFirstChild("Handle")
+if tn:find("cola") then if not X.cola then X.cola=true inv.poison=inv.poison+3 task.delay(2,function() headMsg("your Bloxy Cola is Jeralds recipe! +3 poison",TOX,5) achieve("Jeralds Recipe","you own a bloxy cola. jerald made that.") end) end
+elseif tn:find("sword") then X.sword=true
+elseif th and (tn:find("pizza") or tn:find("burger") or tn:find("taco")) then local md=Instance.new("Model") md.Name=tool.Name local cl=th:Clone() cl.Parent=md cl.CFrame=c:GetPivot()*CFrame.new(math.random(-4,4),2,-4) i=i+1 mk(cl,i,nil,nil,"gear") md:Destroy() end
+end end
 if i==0 then warn("You have no accessories on!") end
 do
 local r=c:FindFirstChild("HumanoidRootPart") local a=math.random()*math.pi*2
@@ -431,6 +538,17 @@ local function has(...) for _,w in ipairs({...}) do if m:find(w,1,true) then ret
 local name=plr.DisplayName local ev=pet.evil and not pet.dying
 if pet.fox then return R(X.fox) end
 if pet.hollowh then return R(#X.said>0 and X.said or X.hollow) end
+if pet.beans then
+if has("beep") then return X.beanPanic.beep end
+if has("microwave") then return X.beanPanic.micro end
+if has("bean") and has("eat") then X.beanCount=(X.beanCount or 2836)-1 return "...i heard that. beans can hear whispers. i have "..X.beanCount.." beans left." end
+if has("precious") then return "...me? precious? ...hug?" end
+end
+if has("crunch") and ev then return "...are you eating a burrito IN FRONT of me?! that could be my UNCLE TORTILLO!" end
+if has("cool belt") then if pet.belt and ev then X.cure(pet,"...you NOTICED me...?","Notice Your Belt","you said cool belt") return nil end return pet.belt and "...thanks. i hold your pants up, you know." or "...what about cool HAT?" end
+if has("thank") and pet.backpack and ev then X.cure(pet,"...20 years... and thats the first time...","Thank Your Backpack","you thanked your backpack") return nil end
+if has("lunch") and pet.classic and ev then X.unflat() X.cure(pet,"...nobodys eaten lunch with me since 2008...","Lunch Buddies","you shared lunch with a classic tshirt") return nil end
+if has("butter") then return "the sword always wanted to be a butter knife." end
 if has("eat") and has("hat") then return "...excuse me?? please dont eat me." end
 if has("tuck") then return ev and "...WHO TOLD YOU ABOUT THE TUCK." or "...the what? i dont know anything about a tuck." end
 if has("tortilla") then return pet.clothes and "...how did you know." or "tortillas are just jackets for food." end
@@ -438,7 +556,7 @@ if has("ranch") then return pet.helmet and (ev and "...ranch? ...i mean. NO. ...
 if has("fold") then if pet.clothes and ev then X.fold(pet) return nil end return "fold your clothes. the chair is watching." end
 if has("jerald") then return "jerald... (not gerald). never forget." end
 if has("cool shoes") then return pet.shoes and (ev and "...thanks. still evil though. bawk." or "BAWK!! thank you!!") or "...what about cool HAT?" end
-if has("dance") and pet.shoes and ev then X.cure(pet,"...wait. you WANT to dance? ...BAWK!! (happy bawk)","Dance Partner","you danced with your evil shoes") return nil end
+if has("dance") and pet.shoes and ev then X.cure(pet,"...wait. you WANT to dance? ...BAWK!! (happy bawk)","Dance Partner","you danced with your evil shoes") X.beansDance() return nil end
 if has("cool tail") then if pet.tail then if ev then saveTail(pet) return "...you... you SEE me?","hat" end pet.love=100 return "...you think im cool?? :')" end return pet.churro and "...you mean me?? i used to be one!" or "...what about cool HAT?" end
 if has("hello","hi ","hey","sup") or m=="hi" then return ev and "hello, FOOD." or pet.pers=="shy" and "...h-hi "..name.."..." or "hi "..name.."!!" end
 if has("love") then if ev then pet.flicker=os.clock()+1.5 return "...i love you too...","hat" end pet.love=math.min(100,pet.love+10) return pet.beans and "beans loves you MORE" or "i love you too!!" end
@@ -483,7 +601,7 @@ if a.beans then return {"hug?","...okay. <3"},a,b end
 return R({{"do you ever hear whispers?","...no. why? ...why do you ask?"},{"im the favorite.","no, IM the favorite."},{"what was it like on the head?","warm. it smelled like thoughts."},{"do you think were real?","shh. dont think about it."},{"race you!","no."}}),a,b
 end
 local cac
-cac=plr.CharacterAdded:Connect(function() if not F.Parent then cac:Disconnect() return end prot=os.clock()+3 inf=nil end)
+cac=plr.CharacterAdded:Connect(function() if not F.Parent then cac:Disconnect() return end prot=os.clock()+3 inf=nil if X.inPack then X.inPack.room:Destroy() X.inPack=nil eating=nil end X.crumbEnd(nil) X.flatHum=nil X.flatOld=nil X.flatUntil=nil end)
 task.spawn(function()
 local k=0
 while F.Parent do
@@ -498,6 +616,8 @@ if #alive>=2 then local a=R(alive) local b,bd=nil,25 for _,o in ipairs(alive) do
 if b then local c,x,y=convo(a,b) x=x or a y=y or b x.nxt=now+8 y.nxt=now+8 say(x,c[1]) task.delay(2.5,function() if not y.dead then say(y,c[2]) end end) end end end
 if gerald and k%8==0 then gerald.Text=R(L.gerald) end
 if X.jBubble and k%8==4 then X.jBubble.Text=R(X.jerald) end
+if X.flatUntil and now>X.flatUntil then X.unflat() end
+if not X.crumb and not X.world and not X.inPack and hum and ch and (ch:FindFirstChildOfClass("Shirt") or ch:FindFirstChildOfClass("Pants")) and k%60==30 and math.random()<0.6 then X.crumbStart(hum,math.random()<0.3) end
 local rpos0=not lost and ch.HumanoidRootPart.Position local ws=inf and 16+8*inf.lvl or 16
 local anyEvil=false
 local anyB,anyH=false,false
@@ -551,7 +671,7 @@ elseif pet.sc>=2.4 and not pet.innocent and math.random()<0.5 then say(pet,R(pet
 elseif pet.sc>=2 and not pet.innocent and math.random()<0.35 then say(pet,R(pet.tail and TL.whisper or L.whisper),pet.tail and "churro" or "burrito")
 else say(pet,(pet.hunger<=0 or pet.love<=0) and R(L.mad) or pet.hunger<35 and R(L.hungry) or pet.love<35 and R(L.sad) or (pet.tail and math.random()<0.5 and R(TL.idle)) or extra(pet) or R(L.idle)) end
 end
-pet.st.Text=(pet.hollowh and "HOLLOW (be nice!)  " or pet.fox and "FOX  " or pet.hughat and "HUG-HAT  " or pet.beans and "BEANS  " or pet.shoes and "SHOES  " or pet.clothes and "TORTILLA?  " or pet.helmet and "HELMET  " or pet.innocent and "INNOCENT (no burrito!)  " or "")..string.format("Full %d%%  Love %d%%  Size %.1fx  [you have %d food]",math.floor(pet.hunger),math.floor(pet.love),pet.sc,inv.food)
+pet.st.Text=(pet.hollowh and "HOLLOW (be nice!)  " or pet.fox and "FOX  " or pet.hughat and "HUG-HAT  " or pet.beans and "BEANS  " or pet.shoes and "SHOES  " or pet.clothes and "TORTILLA?  " or pet.belt and "BELT  " or pet.backpack and "BACKPACK  " or pet.classic and "CLASSIC  " or pet.gear and "LUNCH  " or pet.nm=="Tiny Burrito" and "TINY BURRITO  " or pet.helmet and "HELMET  " or pet.innocent and "INNOCENT (no burrito!)  " or "")..string.format("Full %d%%  Love %d%%  Size %.1fx  [you have %d food]",math.floor(pet.hunger),math.floor(pet.love),pet.sc,inv.food)
 end
 elseif pet.dying then pet.st.Text="!!! ABOUT TO BLOW !!!"
 else
@@ -561,6 +681,10 @@ if pet.tail then pet.st.Text="!! EVIL TAIL !!  (face it + say cool tail)"
 elseif pet.shoes then pet.st.Text="!! EVIL SHOES !!  (dance with them)"
 elseif pet.clothes then pet.st.Text=string.format("!! EVIL WRAP !!  (fold it %d/3)",pet.folds or 0)
 elseif pet.helmet then pet.st.Text=string.format("!! EVIL HELMET !!  [you have %d ranch]",inv.ranch)
+elseif pet.belt then pet.st.Text="!! EVIL BELT !!  (say cool belt)"
+elseif pet.backpack then pet.st.Text="!! EVIL BACKPACK !!  (say thank you)"
+elseif pet.classic then pet.st.Text="!! EVIL CLASSIC !!  (share lunch)"
+elseif pet.gear then pet.st.Text="!! EVIL LUNCH !!  (put it down)"
 else pet.st.Text=string.format("%s  poison %d/%d  [you have %d poison, %d churro]",pet.super and "!!! SUPER EVIL !!!" or "!! EVIL !!",pet.poison,pet.need,inv.poison,inv.churro) end
 if rpos0 and pet.pos and hum then local dd=(pet.pos-rpos0).Magnitude
 if pet.shoes and dd<40 and math.random()<0.2 then local rr=math.random(3) if rr==1 then hum.Jump=true say(pet,"BAWK! (jump)") elseif rr==2 then X.legBoost={now+2,30} say(pet,"RUN!!") else X.legBoost={now+2,5} say(pet,"strut. strut. bawk.") end end
@@ -572,15 +696,16 @@ if lost then say(pet,R(L.lost))
 elseif pet.supremo and math.random()<0.5 then say(pet,R(L.supremo))
 elseif hollow then say(pet,R(L.hollow))
 elseif inf and inf.lvl>=1 then say(pet,R(L.brother))
-elseif not pet.tail and not pet.shoes and not pet.clothes and not pet.helmet and inv.poison>0 and math.random()<0.3 then pet.colaT=now+4 say(pet,"...sniff sniff... COLA. abort. ABORT.")
+elseif not pet.tail and not pet.shoes and not pet.clothes and not pet.helmet and not pet.belt and not pet.backpack and not pet.classic and not pet.gear and inv.poison>0 and math.random()<0.3 then pet.colaT=now+4 say(pet,"...sniff sniff... COLA. abort. ABORT.")
 elseif math.random()<0.15 then say(pet,memLine(pet))
 elseif math.random()<0.3 then say(pet,R(pet.sc<5 and L.trap1 or pet.sc<10 and L.trap2 or L.trap3),"hat")
 elseif math.random()<0.5 then pet.lunge=now+0.8 say(pet,R(L.lunge))
-else say(pet,R(pet.evilbeans and X.evilbeans or pet.shoes and X.legs or pet.clothes and X.clothes or pet.helmet and X.helmet or pet.tail and TL.evil or pet.super and L.super or L.evil)) end
+else say(pet,R(pet.belt and X.belt or pet.backpack and X.pack or pet.classic and X.classic or pet.gear and X.gear or pet.evilbeans and X.evilbeans or pet.shoes and X.legs or pet.clothes and X.clothes or pet.helmet and X.helmet or pet.tail and TL.evil or pet.super and L.super or L.evil)) end
 end
 end
 end end
 if X.legBoost and now<X.legBoost[1] then ws=X.legBoost[2] end
+if X.crumb and X.crumb.roll then ws=math.min(ws,8) end
 if hum and eating~=ch and (ws~=16 or X.spdMod) then hum.WalkSpeed=ws X.spdMod=ws~=16 end
 end
 end)
@@ -604,6 +729,10 @@ local np=Vector3.new(mn.pos.X+mv.X,(hit and hit.Position.Y or rpos.Y-3)+0.5+math
 if d.Magnitude>0.1 then mn.p.CFrame=CFrame.lookAt(np,Vector3.new(rpos.X,np.Y,rpos.Z))*CFrame.Angles(0,math.pi/2,0) end
 if d.Magnitude<2.2 and hum and hum.Health>0 and now>prot and not friend then hum:TakeDamage(15) mn.p:Destroy() table.remove(minis,idx) end
 end end
+local best,bestD=nil,1e9
+if X.crumb then local cr=X.crumb if cr.gull then cr.gull.CFrame=CFrame.lookAt(rpos+Vector3.new(math.cos(t)*4,6+math.sin(t*3),math.sin(t)*4),rpos+Vector3.new(math.cos(t+0.1)*4,6,math.sin(t+0.1)*4)) end if cr.ball then cr.ball.CFrame=CFrame.new(rpos) end
+if now>(X.crumbT or 0) then X.crumbT=now+0.5 local cb=part(Vector3.new(0.3,0.3,0.3),Color3.fromRGB(210,160,90)) cb.Position=rpos-Vector3.new(0,2.8,0) DB:AddItem(cb,6) end end
+if X.world and X.world.rain then X.world.rain.CFrame=CFrame.new(rpos+Vector3.new(0,25,0)) end
 for _,pet in ipairs(pets) do local p=pet.p if not pet.falling and not pet.dead and p.Parent then
 local bm=1 if pet.bulge and now-pet.bulge<1.2 then local b=now-pet.bulge bm=1+0.3*math.sin(b*22)*(1.2-b) end
 p.Size=pet.s0*pet.sc*bm if pet.m then pet.m.Scale=pet.ms0*pet.sc*bm end
@@ -613,7 +742,7 @@ local hy=0.5*(math.abs(rc.RightVector.Y)*sx+math.abs(rc.UpVector.Y)*sy+math.abs(
 local hz=0.5*(math.abs(rc.RightVector.Z)*sx+math.abs(rc.UpVector.Z)*sy+math.abs(rc.LookVector.Z)*sz)
 local w=math.clamp(math.min(hx,hz)*0.28,0.2,3) local Ll=math.clamp(hy*1.1,0.7,10)*math.min(1,(now-pet.born)/0.6)+0.01 if pet.tail then Ll=0.3 end
 pet.g.StudsOffset=Vector3.new(0,hy+2.5,0)
-local frozen=now<pet.stun or pet.dying
+local frozen=now<pet.stun or pet.dying or X.inPack~=nil or X.world~=nil
 local pos=pet.pos
 local toP=Vector3.new(rpos.X-pos.X,0,rpos.Z-pos.Z) local distP=toP.Magnitude
 local away=distP>0.1 and pos-toP.Unit*25 or pos
@@ -681,10 +810,13 @@ local np=Vector3.new(pos.X+mv.X,pet.gy+Ll+hy+bob+jy+breathe-sink,pos.Z+mv.Z) pet
 if pet.wrap then local wr=pet.wrap if now-wr.t0<2.5 and wr.hum.Health>0 and wr.r.Parent then np=wr.r.Position+Vector3.new(math.cos(t*8)*(hx+1.5),0,math.sin(t*8)*(hx+1.5)) pet.pos=np wr.hum:TakeDamage(30*dt) else release(pet) pet.stun=now+2 pet.sc=pet.sc+0.2 say(pet,"*sssqueeze* ...that was for ignoring me.") end end
 pet.hyNow=hy
 if pet.ride then local o=pet.ride if o.dead or not o.pos then pet.ride=nil pet.nb=0 else np=o.pos+Vector3.new(0,(o.hyNow or 1)+hy+0.2,0) pet.pos=np pet.yaw=o.yaw end end
-if pet.twrap then local tw=pet.twrap if not (now-tw.t0<8 and tw.hum.Health>0 and tw.r.Parent) then X.unwrap(pet) pet.stun=now+3 say(pet,"*unrolls* ...thats a wrap.") else np=tw.r.Position+Vector3.new(hx+2.5,0,0) pet.pos=np end end
+if pet.twrap then local tw=pet.twrap local freed=nil
+if tw.style=="belt" then for _,o in ipairs(pets) do if (o.fox or o.beans) and not o.dead and o.pos and (o.pos-tw.r.Position).Magnitude<14 then freed=o break end end end
+if freed or not (now-tw.t0<(X.dur[tw.style] or 8) and tw.hum.Health>0 and tw.r.Parent) then X.unwrap(pet) pet.stun=now+3 say(pet,X.unwrapLine[tw.style] or "...") if freed then say(freed,freed.fox and "ding. *pulls one string* POW." or "...left arm under... right leg over... got it!") achieve("Untied","a friend untied your pretzel") end
+else np=tw.r.Position+Vector3.new(hx+2.5,0,0) pet.pos=np end end
 if pet.tail and pet.evil and moving and hit and now>(pet.fpT or 0) then pet.fpT=now+0.4 local cd=part(Vector3.new(0.1,0.8,0.8),Color3.fromRGB(120,70,30)) cd.Shape=Enum.PartType.Cylinder cd.CFrame=CFrame.new(hit.Position+Vector3.new(0,0.05,0))*CFrame.Angles(0,0,math.pi/2) DB:AddItem(cd,5) end
 local jit=Vector3.zero if frozen and not pet.eat then jit=Vector3.new(math.random()-0.5,math.random()-0.5,math.random()-0.5)*0.5*pet.sc end
-local B=CFrame.new(np)*CFrame.Angles(0,pet.yaw+ey+look+((pet.tail and moving) and math.sin(t*12)*0.35 or 0),0)
+local B=CFrame.new(np)*CFrame.Angles(0,pet.yaw+ey+look+((pet.classic and pet.evil and math.floor(t)%4<2) and math.pi/2 or 0)+((pet.tail and moving) and math.sin(t*12)*0.35 or 0),0)
 local V=B*CFrame.Angles(-pet.amp*(pet.evil and 0.3 or 0.12),0,math.sin(pet.ph)*0.08*pet.amp)+jit
 p.CFrame=V*pet.rot
 if pet.tophat then local ts=math.max(hx,0.5) pet.tophat.Size=Vector3.new(ts*0.9,ts*0.7,ts*0.7) pet.tophat.CFrame=V*CFrame.new(0,hy+ts*0.45,0)*CFrame.Angles(0,0,math.pi/2) pet.brim.Size=Vector3.new(0.1,ts*1.2,ts*1.2) pet.brim.CFrame=V*CFrame.new(0,hy+0.05,0)*CFrame.Angles(0,0,math.pi/2) end
@@ -717,6 +849,7 @@ elseif talking then az=side*(1+math.sin(t*14+side)*0.5) end
 pet.arms[k].Size=Vector3.new(w*0.8,al,w*0.8) pet.arms[k].CFrame=V*CFrame.new(side*(hx+w*0.5),hy*0.15,0)*CFrame.Angles(ax,0,az)*CFrame.new(0,-al/2,0)
 end
 for _,q in ipairs(pet.prompts) do q.MaxActivationDistance=(q.Name=="Hug" and pet.evil) and math.max(hx,hz)+6 or math.max(hx,hz)+14 end
+local dP=distP-math.max(hx,hz) if #pet.prompts>0 and dP<14 and dP<bestD then best,bestD=pet,dP end
 local mw=hx*0.9 local mh=hy*0.06 local ek=pet.eat and now-pet.eat.t0 or 99
 if pet.evil then mh=hy*(0.22+0.05*math.sin(t*9)) if ek<1.1 then mh=hy*0.7 elseif ek<1.25 then mh=hy*0.05 end elseif talking then mh=hy*(0.06+0.14*math.abs(math.sin(t*16))) end
 local sad=not pet.evil and not pet.ultra and not talking and (pet.hunger<35 or pet.love<35) if sad then mw=hx*0.45 end
@@ -725,9 +858,11 @@ pet.mo.Size=Vector3.new(mw,math.max(mh,0.05),math.max(hz*0.2,0.1)) pet.mo.CFrame
 for k=1,6 do local tt=pet.teeth[k] if pet.evil then local top=k<=3 local tw=mw*0.18 tt.Transparency=0 tt.Size=Vector3.new(tw,tw,tw*0.5) tt.CFrame=mc*CFrame.new(((k-1)%3-1)*mw*0.28,(top and 1 or -1)*(mh/2-tw*0.25),-0.08)*CFrame.Angles(0,0,math.pi/4) else tt.Transparency=1 end end
 if pet.evil and pet.tail and not frozen and not pet.seen and not pet.wrap and not eating and not friend and hum and hum.Health>0 and now>prot and distP<math.max(hx,hz)+2.5 then
 eating=ch pet.wrap={t0=now,ch=ch,r=r,hum=hum,from=r.CFrame} r.Anchored=true hum.WalkSpeed=0 hum.JumpPower=0 say(pet,"ssssqueeze time.") achieve("Squeezed","a tail got you from behind")
-elseif pet.evil and pet.clothes and not frozen and not pet.twrap and not eating and not friend and hum and hum.Health>0 and now>prot and distP<math.max(hx,hz)+2.5 then
-eating=ch pet.twrap={t0=now,ch=ch,r=r,hum=hum,from=r.CFrame} r.Anchored=true hum.WalkSpeed=0 hum.JumpPower=0 X.tortilla(pet.twrap) say(pet,"one human wrap. with lettuce.") achieve("Thats a Wrap!","an evil jacket rolled you into a wrap")
-elseif pet.evil and not pet.tail and not pet.clothes and not pet.shoes and not pet.helmet and not frozen and not eating and not friend and hum and hum.Health>0 and now>prot and distP<math.max(hx,hz)+2.5 then
+elseif pet.evil and (pet.clothes or pet.belt or pet.classic or pet.gear) and not frozen and not pet.twrap and not eating and not friend and hum and hum.Health>0 and now>prot and distP<math.max(hx,hz)+2.5 then
+eating=ch pet.twrap={t0=now,ch=ch,r=r,hum=hum,from=r.CFrame,style=pet.clothes and "clothes" or pet.belt and "belt" or pet.classic and "classic" or "gear"} r.Anchored=true hum.WalkSpeed=0 hum.JumpPower=0 X.grabStart(pet)
+elseif pet.evil and pet.backpack and not frozen and not eating and not friend and hum and hum.Health>0 and now>prot and distP<math.max(hx,hz)+2.5 then
+X.stuff(pet,r,hum)
+elseif pet.evil and not pet.tail and not pet.clothes and not pet.shoes and not pet.helmet and not pet.belt and not pet.backpack and not pet.classic and not pet.gear and not frozen and not eating and not friend and hum and hum.Health>0 and now>prot and distP<math.max(hx,hz)+2.5 then
 eating=ch pet.eat={t0=now,ch=ch,r=r,hum=hum,from=r.CFrame,spicy=math.random()<0.03} pet.stun=now+5.5 r.Anchored=true hum.WalkSpeed=0 hum.JumpPower=0 say(pet,R(L.grab))
 end
 if pet.eat then local e=pet.eat
@@ -739,7 +874,7 @@ elseif ek>=1.1 and not e.inside then e.inside=true
 for _,x in ipairs(e.ch:GetDescendants()) do if x:IsA("BasePart") or x:IsA("Decal") then x.Transparency=1 end end
 if inv.poison>0 then inv.poison=inv.poison-1 pet.poison=pet.poison+1 pet.stun=now+2 say(pet,"...why is it BUBBLY in here... PTOOO!!") spit(e,B.LookVector) if eating==e.ch then eating=nil end pet.eat=nil achieve("Cola Guard","you carried blox-cola and got spat out") if pet.poison>=pet.need then die(pet) end
 else setPrompts(pet,"inside") pet.bulge=now say(pet,"*gulp* ...welcome to the bean zone.") headMsg("SWALLOWED! press UNTUCK to escape (or EAT IT BACK x3)",WHITE,4) end
-elseif e.inside and not e.done and ek>=4.1 then e.done=true setPrompts(pet,"evil") e.hum.Health=0 pet.mem.ate=pet.mem.ate+1 pet.sc=pet.sc+0.5 pet.bulge=now say(pet,R(L.eat))
+elseif e.inside and not e.done and ek>=4.1 then e.done=true setPrompts(pet,"evil") e.hum.Health=0 pet.mem.ate=pet.mem.ate+1 if (pet.supremo and pet.mem.ate>=2) or (pet.super and pet.mem.ate>=4) then task.delay(6,function() if not pet.dead then X.worldStart(pet) end end) end pet.sc=pet.sc+0.5 pet.bulge=now say(pet,R(L.eat))
 elseif e.done and ek>=4.9 and not e.burp then e.burp=true
 if e.hum.Parent and e.hum.Health>0 and e.r.Parent then
 spit(e,B.LookVector) achieve("Immortal Snack","you survived being eaten")
@@ -748,4 +883,5 @@ else say(pet,"*BUUURRRP*") local sm=Instance.new("Smoke") sm.Color=Color3.fromRG
 elseif ek>=5.4 then pet.eat=nil if eating==e.ch then eating=nil end end
 end
 end end
+for _,pt in ipairs(pets) do local on=pt==best for _,q in ipairs(pt.prompts) do if q.Enabled~=on then q.Enabled=on end end end
 end)
