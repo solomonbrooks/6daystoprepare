@@ -286,6 +286,7 @@ elseif pet.evilbeans then pet.tophat=add(part(Vector3.one,BLACK)) pet.tophat.Sha
 elseif pet.supremo then pet.sc=6 goEvil(pet) goSuper(pet) pet.need=8 say(pet,R(L.supremo)) achieve("THE APOCALYPSE","you flushed 3 burritos. EL BURRITO SUPREMO has risen.")
 else say(pet,pet.beans and "*sniff* ...you saved me? im Beans." or pet.churro and "*crumbles* ...you looked at me. im Churro Jr." or pet.tail and "...sssswish. finally. im not BEHIND you anymore." or pet.shoes and "bawk! i mean... hi!" or pet.clothes and "...im just a jacket. totally normal jacket." or pet.belt and "...hi. im holding your pants up. youre welcome." or pet.backpack and "...you never look inside me..." or pet.classic and "...we were here FIRST. since 2006." or pet.gear and "...we remember EVERY bite." or pet.ball and "*boing* ...wanna play?" or pet.nm=="Tiny Burrito" and "...thank you for the hug." or pet.helmet and "crunch. hello. have you had water today?" or pet.innocent and R(L.innocent) or R(L.born)) if pet.innocent and not pet.beans and not pet.churro then achieve("Innocent Hat","one of your hats has no burrito!") end end
 end end)
+return pet
 end
 local function wander(pet,pos,rpos,now)
 if now>pet.wnext then pet.wnext=now+math.random(3,7) if math.random()<0.35 then pet.wt=nil else local a=math.random()*math.pi*2 local rr=math.random(6,22) pet.wt=rpos+Vector3.new(math.cos(a)*rr,0,math.sin(a)*rr) end end
@@ -558,6 +559,48 @@ if gerald then gerald.Text="...ill bring the salad. far away. very far away." en
 achieve("Burrito Festival","you threw a burrito festival. beanland raised its threat level.")
 return true
 end
+X.cmdHelp="!spawn: supremo, queso, evilbeans, burrito, super, evilfox, superfox, ball, helmet, shoes, belt, clothes, backpack, gear, tail, beans, world, lunch, binner, calvin, jerald, festival | also: !calm, !help"
+function X.cmd(m)
+if m:sub(1,1)~="!" then return false end
+local r=plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
+if m:find("^!help") or m:find("^!bosses") then headMsg(X.cmdHelp,WHITE,10) return true end
+if m:find("^!calm") then for _,o in ipairs(pets) do if o.evil and not o.dead and not o.dying then release(o) unEvil(o) end end headMsg("everyone calmed down.",WHITE,3) return true end
+local w=m:match("^!spawn%s+(%w+)") if not w then return false end
+if not r then return true end
+local function near(d) local a=math.random()*math.pi*2 return CFrame.new(r.Position+Vector3.new(math.cos(a)*(d or 14),6,math.sin(a)*(d or 14))) end
+local function test(name,kind,col,sz,after)
+local md,tp=template(name,near(),sz or Vector3.new(2,2,2)) tp.Shape=Enum.PartType.Block tp.Color=col or TAN
+local pet=mk(tp,#pets+1,nil,nil,kind) md:Destroy()
+task.delay(1.7,function() if pet and not pet.dead then if after then after(pet) elseif not pet.evil then goEvil(pet) end end end)
+return pet
+end
+local burr=function(name,after) local md,tp=template(name or "Summoned Burrito",near(),Vector3.new(2,1.1,1.1)) tp.Color=Color3.fromRGB(170,110,60) local pet=mk(tp,#pets+1,nil,nil,"summoned") md:Destroy() if after then task.delay(1.8,function() if pet and not pet.dead then after(pet) end end) end return pet end
+if w=="supremo" then spawnSupremo()
+elseif w=="queso" then X.spawnQueso()
+elseif w=="evilbeans" then X.spawnEvilBeans()
+elseif w=="burrito" then burr()
+elseif w=="super" then burr("Super Evil Burrito",function(p) p.sc=10 goSuper(p) end)
+elseif w=="evilfox" then test("Evil Fox",nil,Color3.fromRGB(230,110,30),Vector3.new(2.5,1,1),function(p) X.goEvilFox(p) end)
+elseif w=="superfox" then test("Super Evil Fox",nil,Color3.fromRGB(230,110,30),Vector3.new(2.5,1,1),function(p) X.goEvilFox(p) X.goSuperFox(p) end)
+elseif w=="ball" then local p=test("Cursed Basketball","ball",Color3.fromRGB(230,110,30)) p.p.Shape=Enum.PartType.Ball
+elseif w=="helmet" then test("Salad Helmet","helmet",Color3.fromRGB(90,170,70),Vector3.new(2.5,2.5,2.5))
+elseif w=="shoes" then test("Evil Shoe","legs",Color3.fromRGB(240,240,240),Vector3.new(1,0.8,2))
+elseif w=="belt" then test("Pretzel Belt","belt",Color3.fromRGB(150,100,50),Vector3.new(3,0.5,0.5))
+elseif w=="clothes" then test("Tortilla Jacket","clothes",TAN,Vector3.new(2,2,1))
+elseif w=="backpack" then test("Backpack","backpack",Color3.fromRGB(60,90,160),Vector3.new(2,2.4,1))
+elseif w=="gear" then test("Pizza","gear",Color3.fromRGB(255,170,60),Vector3.new(2,0.3,2))
+elseif w=="tail" then test("Evil Tail","tail",Color3.fromRGB(230,110,30),Vector3.new(3,0.6,0.6))
+elseif w=="beans" then adoptBeans(near(6))
+elseif w=="world" then burr("World Eater",function(p) p.sc=10 goSuper(p) X.worldStart(p) end)
+elseif w=="lunch" then X.greatLunch(true)
+elseif w=="binner" then X.greatLunch(false)
+elseif w=="calvin" then X.ritual("rise again clop")
+elseif w=="jerald" then if not X.jDone then X.jDone=true X.rescueJerald() end
+elseif w=="festival" then X.festival("burrito festival")
+else headMsg("unknown boss. "..X.cmdHelp,WHITE,8) return true end
+headMsg("spawned: "..w,Color3.fromRGB(255,220,150),2)
+return true
+end
 function X.churro(pet)
 if inv.churro<1 then say(pet,"no churro? ...good.") return end
 inv.churro=inv.churro-1 local now=os.clock()
@@ -764,6 +807,7 @@ chc=plr.Chatted:Connect(function(msg)
 if not F.Parent then chc:Disconnect() return end
 local r=plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") if not r then return end
 local m=msg:lower() local tg={}
+if X.cmd(m) then return end
 local mean,nice=X.words(m)
 for _,pet in ipairs(pets) do if not pet.dead and not pet.falling and pet.pos and (pet.pos-r.Position).Magnitude<60 then
 if mean and pet.innocent and not pet.beans and not pet.churro and not pet.fox and not pet.hughat and not pet.hollowh and not pet.tail and not pet.shoes and not pet.clothes and not pet.helmet then pet.meanness=(pet.meanness or 0)+1 if pet.meanness>=3 then X.goHollow(pet) end
