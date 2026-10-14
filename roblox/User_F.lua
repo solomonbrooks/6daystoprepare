@@ -6,24 +6,20 @@ local P=game:GetService("Players") local RunS=game:GetService("RunService") loca
 local KILL=true
 local MSG="LET ME IN"
 local old=workspace:FindFirstChild("User_F") if old then old:Destroy() end
-local WHITE=Color3.fromRGB(245,245,245) local GRAY=Color3.fromRGB(40,40,44)
+local WHITE=Color3.fromRGB(245,245,245) local GRAY=Color3.fromRGB(163,162,165)
 -- rig
 local hd=Instance.new("HumanoidDescription")
 hd.HeadColor=WHITE hd.LeftArmColor=WHITE hd.RightArmColor=WHITE hd.LeftLegColor=WHITE hd.RightLegColor=WHITE hd.TorsoColor=GRAY
-local rig=P:CreateHumanoidModelFromDescription(hd,Enum.HumanoidRigType.R15)
+local rig=P:CreateHumanoidModelFromDescription(hd,Enum.HumanoidRigType.R6)
 rig.Name="User_F"
 local hum=rig:FindFirstChildOfClass("Humanoid") local root=rig:WaitForChild("HumanoidRootPart") local head=rig:WaitForChild("Head")
 for _,v in ipairs(rig:GetDescendants()) do
-if v.Name=="Animate" or v:IsA("Accessory") or v:IsA("Clothing") or v:IsA("ShirtGraphic") or (v:IsA("Decal") and v.Name=="face") then v:Destroy()
-elseif v:IsA("BasePart") and v~=root then v.Color=(v.Name=="UpperTorso" or v.Name=="LowerTorso") and GRAY or WHITE end
+if v.Name=="Animate" or v:IsA("Accessory") or v:IsA("Clothing") or v:IsA("ShirtGraphic") then v:Destroy()
+elseif v:IsA("BasePart") and v~=root then v.Color=v.Name=="Torso" and GRAY or WHITE end
 end
 local bc=rig:FindFirstChildOfClass("BodyColors") if bc then bc.HeadColor3=WHITE bc.LeftArmColor3=WHITE bc.RightArmColor3=WHITE bc.LeftLegColor3=WHITE bc.RightLegColor3=WHITE bc.TorsoColor3=GRAY end
--- face: hollow black eyes + slit mouth
-for _,f in ipairs({{-0.22,0.15,0.2,0.32},{0.22,0.15,0.2,0.32},{0,-0.25,0.5,0.06}}) do
-local e=Instance.new("Part") e.Size=Vector3.new(f[3],f[4],0.1) e.Color=Color3.new(0,0,0) e.Material=Enum.Material.SmoothPlastic e.CanCollide=false e.CanQuery=false e.CanTouch=false e.Massless=true e.Name="UF_Face"
-e.CFrame=head.CFrame*CFrame.new(f[1],f[2],-head.Size.Z*0.58) e.Parent=rig
-local w=Instance.new("WeldConstraint") w.Part0=head w.Part1=e w.Parent=e
-end
+-- normal Roblox face
+if not head:FindFirstChildOfClass("Decal") then local fc=Instance.new("Decal") fc.Name="face" fc.Texture="rbxasset://textures/face.png" fc.Face=Enum.NormalId.Front fc.Parent=head end
 local glow=Instance.new("PointLight") glow.Color=Color3.new(1,0,0) glow.Brightness=2 glow.Range=10 glow.Parent=head
 hum.MaxHealth=1000 hum.Health=1000 hum.WalkSpeed=16 hum.BreakJointsOnDeath=false hum.HealthDisplayDistance=0
 local animator=hum:FindFirstChildOfClass("Animator") or Instance.new("Animator",hum)
@@ -37,6 +33,22 @@ local function isChar(x) for _,p in ipairs(P:GetPlayers()) do if p.Character and
 local function breakable(x) return x and x:IsA("BasePart") and not x:IsA("Terrain") and not x:IsA("SpawnLocation") and x.Name~="Baseplate" and x.Size.Magnitude<160 and not isChar(x) end
 local function isWin(x) local n=x.Name:lower() return x.Material==Enum.Material.Glass or n:find("window")~=nil or n:find("glass")~=nil or (x.Transparency>0.2 and x.Transparency<1) end
 local function snd(id,parent,vol,pitch) local s=Instance.new("Sound") s.SoundId=id s.Volume=vol or 1 s.PlaybackSpeed=pitch or 1 s.RollOffMaxDistance=250 s.Parent=parent s:Play() D:AddItem(s,6) end
+-- Roblox-style speech bubble (legacy chat games get the real Chat bubble)
+local okL,legacy=pcall(function() return game:GetService("TextChatService").ChatVersion==Enum.ChatVersion.LegacyChatService end) legacy=okL and legacy
+local bubbles=Instance.new("BillboardGui") bubbles.Name="UF_Bubbles" bubbles.Size=UDim2.fromOffset(420,220) bubbles.SizeOffset=Vector2.new(0,0.5) bubbles.StudsOffset=Vector3.new(0,1.6,0) bubbles.MaxDistance=120 bubbles.LightInfluence=0 bubbles.Adornee=head bubbles.Parent=head
+local bl=Instance.new("UIListLayout") bl.VerticalAlignment=Enum.VerticalAlignment.Bottom bl.HorizontalAlignment=Enum.HorizontalAlignment.Center bl.SortOrder=Enum.SortOrder.LayoutOrder bl.Padding=UDim.new(0,8) bl.Parent=bubbles
+local bn=0
+local function bubble(txt)
+if legacy then pcall(function() game:GetService("Chat"):Chat(head,txt,Enum.ChatColor.White) end) return end
+bn+=1
+for _,c in ipairs(bubbles:GetChildren()) do if c:IsA("Frame") then local tl=c:FindFirstChild("Tail") if tl then tl:Destroy() end if c.LayoutOrder<=bn-3 then c:Destroy() end end end
+local f=Instance.new("Frame") f.Name="Bubble" f.LayoutOrder=bn f.BackgroundColor3=Color3.new(1,1,1) f.BorderSizePixel=0 f.AutomaticSize=Enum.AutomaticSize.XY f.Size=UDim2.fromOffset(0,0)
+local cr=Instance.new("UICorner") cr.CornerRadius=UDim.new(0,12) cr.Parent=f
+local t=Instance.new("TextLabel") t.BackgroundTransparency=1 t.AutomaticSize=Enum.AutomaticSize.XY t.Size=UDim2.fromOffset(0,0) t.Font=Enum.Font.GothamMedium t.TextSize=18 t.TextColor3=Color3.fromRGB(57,59,61) t.Text=txt t.Parent=f
+local pd=Instance.new("UIPadding") pd.PaddingLeft=UDim.new(0,12) pd.PaddingRight=UDim.new(0,12) pd.PaddingTop=UDim.new(0,8) pd.PaddingBottom=UDim.new(0,8) pd.Parent=t
+local tl=Instance.new("Frame") tl.Name="Tail" tl.AnchorPoint=Vector2.new(0.5,0.5) tl.Position=UDim2.fromScale(0.5,1) tl.Size=UDim2.fromOffset(12,12) tl.Rotation=45 tl.BackgroundColor3=Color3.new(1,1,1) tl.BorderSizePixel=0 tl.Parent=f
+f.Parent=bubbles D:AddItem(f,5)
+end
 -- floating LET ME IN text above its head
 local function say(txt,n,big)
 for i=1,n or 1 do
@@ -44,7 +56,7 @@ local b=Instance.new("BillboardGui") b.Size=UDim2.fromOffset(big and 420 or 260,
 local t=Instance.new("TextLabel") t.Size=UDim2.fromScale(1,1) t.BackgroundTransparency=1 t.Text=txt t.TextScaled=true t.Font=Enum.Font.Creepster t.TextColor3=Color3.fromRGB(255,math.random(0,40),math.random(0,40)) t.TextStrokeTransparency=0 t.Rotation=math.random(-15,15) t.Parent=b
 b.Adornee=head b.Parent=head D:AddItem(b,0.6+math.random()*0.8)
 end
-pcall(function() game:GetService("Chat"):Chat(head,txt,Enum.ChatColor.Red) end)
+bubble(txt)
 end
 -- LET ME IN spam on a player's screen
 local function scream(plr,dur)
@@ -107,17 +119,19 @@ if d.Magnitude>0.1 then local r=workspace:Raycast(o,d.Unit*math.min(d.Magnitude,
 return best
 end
 -- procedural pose layer (on top of the walk/run/idle animations)
-local J={} for _,n in ipairs({"Neck","Waist","RightShoulder","LeftShoulder","RightElbow","LeftElbow"}) do local m=rig:FindFirstChild(n,true) if m and m:IsA("Motor6D") then J[n]={m=m,c0=m.C0,cur=CFrame.identity,last=CFrame.identity} end end
+local J={} for _,n in ipairs({"Neck","RootJoint","Right Shoulder","Left Shoulder"}) do local m=rig:FindFirstChild(n,true) if m and m:IsA("Motor6D") then J[n]={m=m,c0=m.C0,cur=CFrame.identity,last=CFrame.identity} end end
 local mode="idle" local twitch,twT=CFrame.identity,0
+-- R6 joint axes: Right Shoulder +X out / +Z forward, Left Shoulder -X out / -Z forward, Neck & RootJoint +X = bend forward
+local function arms(fr,fl,out) return {["Right Shoulder"]=ang(-(out or 0),0,fr),["Left Shoulder"]=ang(-(out or 0),0,-fl)} end
 local function pose(t)
 local p={}
 if mode=="bang" then local s1,s2=math.abs(math.sin(t*12)),math.abs(math.sin(t*12+1.6))
-p.RightShoulder=ang(95+s1*45,0,0) p.LeftShoulder=ang(95+s2*45,0,0) p.RightElbow=ang(20+s1*30,0,0) p.LeftElbow=ang(20+s2*30,0,0) p.Waist=ang(-15-s1*8,0,0) p.Neck=ang(-10+math.random(-6,6),math.random(-8,8),0)
+p=arms(95+s1*45,95+s2*45) p.RootJoint=ang(8+s1*5,0,0) p.Neck=ang(10+math.random(-6,6),0,math.random(-8,8))
 elseif mode=="scream" then local j=math.random(-10,10)
-p.Neck=ang(40+j,j,0) p.RightShoulder=ang(20,0,75+j) p.LeftShoulder=ang(20,0,-75-j) p.RightElbow=ang(30,0,0) p.LeftElbow=ang(30,0,0) p.Waist=ang(12,0,0)
+p=arms(20,20,75+j) p.Neck=ang(-40+j,0,j) p.RootJoint=ang(-8,0,0)
 elseif mode=="reach" then local w=math.sin(t*6)*12
-p.RightShoulder=ang(85+w,0,0) p.LeftShoulder=ang(85-w,0,0) p.RightElbow=ang(10,0,0) p.LeftElbow=ang(10,0,0) p.Waist=ang(-12,0,0) p.Neck=ang(-8,0,math.sin(t*3)*15)
-elseif mode=="chase" then p.Neck=ang(-10,0,0) p.Waist=ang(-10,0,0)
+p=arms(85+w,85-w) p.RootJoint=ang(8,0,0) p.Neck=ang(8,0,math.sin(t*3)*15)
+elseif mode=="chase" then p.Neck=ang(10,0,0) p.RootJoint=ang(6,0,0)
 end
 if twT>t then p.Neck=(p.Neck or CFrame.identity)*twitch end
 return p
@@ -129,10 +143,10 @@ local ps=P:GetPlayers() local sc=#ps>0 and ps[math.random(#ps)].Character
 if alive(sc) then local tr=sc.HumanoidRootPart local back=-tr.CFrame.LookVector local r=workspace:Raycast(tr.Position,back*35,params()) local pos=r and r.Position-back*2 or tr.Position+back*35
 local g=workspace:Raycast(pos+Vector3.new(0,3,0),Vector3.new(0,-60,0),params()) if g then pos=g.Position+Vector3.new(0,3.2,0) end spawnCF=CFrame.lookAt(pos,Vector3.new(tr.Position.X,pos.Y,tr.Position.Z)) end
 rig:PivotTo(spawnCF) rig.Parent=workspace pcall(function() root:SetNetworkOwner(nil) end)
--- animations (Roblox-owned Zombie pack, usable in any game)
-local T={} for k,id in pairs({idle=616158929,walk=616168032,run=616163682}) do local a=Instance.new("Animation") a.AnimationId="rbxassetid://"..id local ok,tr=pcall(function() return animator:LoadAnimation(a) end) if ok and tr then T[k]=tr end end
+-- animations (Roblox-owned R6 animations, usable in any game)
+local T={} for k,id in pairs({idle=180435571,walk=180426354,run=180426354}) do local a=Instance.new("Animation") a.AnimationId="rbxassetid://"..id local ok,tr=pcall(function() return animator:LoadAnimation(a) end) if ok and tr then T[k]=tr end end
 local curAnim
-local function play(n,v) local tr=T[n] if not tr then return end if curAnim~=n then for k,o in pairs(T) do if k~=n and o.IsPlaying then o:Stop(0.25) end end tr:Play(0.25) curAnim=n end if n~="idle" then tr:AdjustSpeed(math.clamp(v/(n=="run" and 22 or 12),0.6,2)) end end
+local function play(n,v) local tr=T[n] if not tr then return end if curAnim~=n then for k,o in pairs(T) do if k~=n and o.IsPlaying then o:Stop(0.25) end end tr:Play(0.25) curAnim=n end if n~="idle" then tr:AdjustSpeed(math.clamp(v/16,0.6,2)) end end
 local t0=os.clock()
 local hb hb=RunS.Heartbeat:Connect(function(dt)
 if not rig.Parent then hb:Disconnect() return end
@@ -145,7 +159,7 @@ if hum.Health<=0 then return end
 play((mode=="bang" or mode=="scream") and "idle" or (v>1 and (hum.WalkSpeed>=20 and "run" or "walk") or "idle"),v)
 end)
 -- abilities
-local function vis(on) for _,x in ipairs(rig:GetDescendants()) do if x:IsA("BasePart") and x~=root then x.Transparency=on and 0 or 1 end end end
+local function vis(on) for _,x in ipairs(rig:GetDescendants()) do if x:IsA("BasePart") and x~=root or x:IsA("Decal") then x.Transparency=on and 0 or 1 end end end
 local function blink(cf) for i=1,3 do vis(false) task.wait(0.05) vis(true) task.wait(0.05) end vis(false) say(MSG,3) rig:PivotTo(cf) root.AssemblyLinearVelocity=Vector3.zero task.wait(0.1) for i=1,3 do vis(true) task.wait(0.04) vis(false) task.wait(0.04) end vis(true) end
 local function behind(tr,d) local back=-tr.CFrame.LookVector local r=workspace:Raycast(tr.Position,back*d,params()) local p=r and r.Position-back*1.5 or tr.Position+back*d return CFrame.lookAt(p,Vector3.new(tr.Position.X,p.Y,tr.Position.Z)) end
 local function moveTo(pos,timeout) hum:MoveTo(pos) local e=os.clock()+(timeout or 1) local f=Vector3.new(1,0,1) while os.clock()<e and rig.Parent do if (root.Position*f-pos*f).Magnitude<2.5 then return true end task.wait() end return false end
