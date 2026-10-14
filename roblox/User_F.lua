@@ -132,6 +132,9 @@ p=arms(20,20,75+j) p.Neck=ang(-40+j,0,j) p.RootJoint=ang(-8,0,0)
 elseif mode=="reach" then local w=math.sin(t*6)*12
 p=arms(85+w,85-w) p.RootJoint=ang(8,0,0) p.Neck=ang(8,0,math.sin(t*3)*15)
 elseif mode=="chase" then p.Neck=ang(10,0,0) p.RootJoint=ang(6,0,0)
+elseif mode=="lift" then local j=math.random(-5,5) p=arms(150+j,150-j) p.Neck=ang(-20,0,0) p.RootJoint=ang(-6,0,0)
+elseif mode=="rip" then local j=math.sin(t*30)*25 p=arms(150+j,150-j,20+math.abs(j)) p.Neck=ang(-15+math.random(-8,8),0,math.random(-10,10)) p.RootJoint=ang(-8,0,0)
+elseif mode=="slam" then p=arms(40,40) p.RootJoint=ang(25,0,0) p.Neck=ang(20,0,0)
 end
 if twT>t then p.Neck=(p.Neck or CFrame.identity)*twitch end
 return p
@@ -156,18 +159,19 @@ local p=pose(t) local a=1-math.exp(-dt*14)
 for n,j in pairs(J) do if j.m.Parent then j.cur=j.cur:Lerp(p[n] or CFrame.identity,a) local _,d=(j.cur:Inverse()*j.last):ToAxisAngle() if d>0.003 then j.m.C0=j.c0*j.cur j.last=j.cur end end end
 local v=(root.AssemblyLinearVelocity*Vector3.new(1,0,1)).Magnitude
 if hum.Health<=0 then return end
-play((mode=="bang" or mode=="scream") and "idle" or (v>1 and (hum.WalkSpeed>=20 and "run" or "walk") or "idle"),v)
+play((mode=="bang" or mode=="scream" or mode=="lift" or mode=="rip" or mode=="slam") and "idle" or (v>1 and (hum.WalkSpeed>=20 and "run" or "walk") or "idle"),v)
 end)
 -- abilities
 local function vis(on) for _,x in ipairs(rig:GetDescendants()) do if x:IsA("BasePart") and x~=root or x:IsA("Decal") then x.Transparency=on and 0 or 1 end end end
 local function blink(cf) for i=1,3 do vis(false) task.wait(0.05) vis(true) task.wait(0.05) end vis(false) say(MSG,3) rig:PivotTo(cf) root.AssemblyLinearVelocity=Vector3.zero task.wait(0.1) for i=1,3 do vis(true) task.wait(0.04) vis(false) task.wait(0.04) end vis(true) end
 local function behind(tr,d) local back=-tr.CFrame.LookVector local r=workspace:Raycast(tr.Position,back*d,params()) local p=r and r.Position-back*1.5 or tr.Position+back*d return CFrame.lookAt(p,Vector3.new(tr.Position.X,p.Y,tr.Position.Z)) end
-local function moveTo(pos,timeout) hum:MoveTo(pos) local e=os.clock()+(timeout or 1) local f=Vector3.new(1,0,1) while os.clock()<e and rig.Parent do if (root.Position*f-pos*f).Magnitude<2.5 then return true end task.wait() end return false end
+local busy,breaching=false,false
+local function moveTo(pos,timeout) if busy then return false end hum:MoveTo(pos) local e=os.clock()+(timeout or 1) local f=Vector3.new(1,0,1) while os.clock()<e and rig.Parent and not busy do if (root.Position*f-pos*f).Magnitude<2.5 then return true end task.wait() end return false end
 local rage,begs=0,0
 local function breach(x,pos,plr)
 if not x.Parent then return end
 hum:MoveTo(root.Position) root.CFrame=CFrame.lookAt(root.Position,Vector3.new(pos.X,root.Position.Y,pos.Z))
-mode="bang" screamAll(pos,90,plr,3.2) flicker(pos,60)
+breaching=true mode="bang" screamAll(pos,90,plr,3.2) flicker(pos,60)
 local e=os.clock()+3 local ocf,shake=x.CFrame,x.Anchored and #x:GetJoints()==0
 while os.clock()<e and x.Parent and rig.Parent do
 say(MSG,math.random(2,4),math.random()<0.3) snd("rbxasset://sounds/collide.wav",x,3,math.random(5,9)/10)
@@ -175,7 +179,7 @@ if shake then x.CFrame=ocf*CFrame.new(math.random(-10,10)/60,math.random(-10,10)
 task.wait(0.18)
 end
 if x.Parent and shake then x.CFrame=ocf end
-if not rig.Parent then return end
+if not rig.Parent then breaching=false return end
 mode="scream" say(MSG,8,true) redSky(1)
 local dir=Vector3.new(pos.X-root.Position.X,0,pos.Z-root.Position.Z) dir=dir.Magnitude>0.01 and dir.Unit or root.CFrame.LookVector
 local ex=Instance.new("Explosion") ex.Position=pos ex.BlastRadius=4 ex.BlastPressure=0 ex.DestroyJointRadiusPercent=0 ex.ExplosionType=Enum.ExplosionType.NoCraters ex.Parent=workspace
@@ -183,7 +187,7 @@ snd("rbxasset://sounds/glassbreak.wav",root,3,1)
 if x.Parent then if isWin(x) then shatter(x,dir) else loosen(x,pos,dir) end end
 collapse(pos,14,dir)
 rage+=1 hum.WalkSpeed=math.min(16+rage*2,30)
-task.wait(0.8) mode="chase"
+task.wait(0.8) mode="chase" breaching=false
 end
 local function beg(plr)
 mode="reach" screamAll(root.Position,120,plr,2.5) flicker(root.Position,80)
@@ -199,9 +203,51 @@ g.Parent=pg TS:Create(t,TweenInfo.new(0.35,Enum.EasingStyle.Back),{Size=UDim2.fr
 task.spawn(function() for i=1,12 do f.BackgroundColor3=i%2==0 and Color3.new(0,0,0) or Color3.fromRGB(90,0,0) t.Rotation=math.random(-8,8) task.wait(0.08) end end)
 D:AddItem(g,1.8)
 end
+-- kill: pick the player up, rip their limbs off, toss them underground
+local function killSeq(plr)
+local c=plr.Character local h=alive(c) if not h then return end
+busy=true local tr=c.HumanoidRootPart local hold,lift=true,1
+local ok=pcall(function()
+hum:MoveTo(root.Position) root.CFrame=CFrame.lookAt(root.Position,Vector3.new(tr.Position.X,root.Position.Y,tr.Position.Z))
+jumpscare(plr) snd("rbxasset://sounds/collide.wav",root,5,0.4)
+h.PlatformStand=true tr.Anchored=true
+task.spawn(function() while hold and tr.Parent do tr.CFrame=root.CFrame*CFrame.new(math.random(-5,5)/50,lift,-2.6)*CFrame.Angles(0,math.pi,0)*CFrame.Angles(math.rad(math.random(-8,8)),0,math.rad(math.random(-8,8))) RunS.Heartbeat:Wait() end end)
+mode="lift" say(MSG,4,true)
+for i=1,20 do lift=1+i*0.2 task.wait(0.03) end
+task.wait(0.4) mode="rip"
+local limbs={}
+for _,n in ipairs(c:FindFirstChild("Torso") and {"Right Shoulder","Left Shoulder","Right Hip","Left Hip"} or {"RightShoulder","LeftShoulder","RightHip","LeftHip"}) do
+task.wait(0.55)
+local m=c:FindFirstChild(n,true)
+if m and m:IsA("Motor6D") and m.Part1 then local limb=m.Part1 m:Destroy()
+for _,x in ipairs(limb:GetConnectedParts(true)) do if x~=tr and not x.Anchored then x.CanCollide=true table.insert(limbs,x) end end
+pcall(function() limb:SetNetworkOwner(nil) end)
+local side=Vector3.new(limb.Position.X-tr.Position.X,0,limb.Position.Z-tr.Position.Z) side=side.Magnitude>0.01 and side.Unit or root.CFrame.RightVector
+limb.AssemblyLinearVelocity=side*math.random(30,50)+Vector3.new(0,math.random(25,40),0) limb.AssemblyAngularVelocity=Vector3.new(math.random(-25,25),math.random(-25,25),math.random(-25,25))
+snd("rbxasset://sounds/collide.wav",tr,4,math.random(3,6)/10) say(MSG,2)
+end
+end
+task.wait(0.5) mode="slam" say(MSG,6,true)
+local g=workspace:Raycast(root.Position,Vector3.new(0,-20,0),params()) local gy=g and g.Position.Y or root.Position.Y-3
+local fp=(root.CFrame*CFrame.new(0,0,-5)).Position local hitPos=Vector3.new(fp.X,gy,fp.Z)
+hold=false RunS.Heartbeat:Wait()
+for _,x in ipairs(c:GetDescendants()) do if x:IsA("BasePart") then x.CanCollide=false end end
+for _,x in ipairs(limbs) do x.CanCollide=false end
+local tw=TS:Create(tr,TweenInfo.new(0.45,Enum.EasingStyle.Quad,Enum.EasingDirection.In),{CFrame=CFrame.new(fp.X,gy-30,fp.Z)*CFrame.Angles(math.rad(90),0,0)}) tw:Play()
+task.wait(0.2)
+local ex=Instance.new("Explosion") ex.Position=hitPos ex.BlastRadius=3 ex.BlastPressure=0 ex.DestroyJointRadiusPercent=0 ex.ExplosionType=Enum.ExplosionType.NoCraters ex.Parent=workspace
+for i=1,12 do local d=Instance.new("Part") d.Size=Vector3.new(1,1,1)*math.random(4,10)/10 d.Material=Enum.Material.Ground d.Color=Color3.fromRGB(86,66,54) d.CFrame=CFrame.new(hitPos+Vector3.new(0,0.5,0)) d.Parent=workspace d.AssemblyLinearVelocity=Vector3.new(math.random(-20,20),math.random(20,40),math.random(-20,20)) D:AddItem(d,4) end
+tw.Completed:Wait()
+h.Health=0
+end)
+hold=false
+if not ok and h.Parent and h.Health>0 then h.Health=0 end
+mode="scream" say("I'M IN",6,true) task.wait(1) mode="chase" busy=false
+end
 -- catch players
 task.spawn(function() local cd={} while rig.Parent and hum.Health>0 do
-for _,p in ipairs(P:GetPlayers()) do local h=alive(p.Character) if h and (p.Character.HumanoidRootPart.Position-root.Position).Magnitude<4 and (cd[p] or 0)<os.clock() then cd[p]=os.clock()+6 jumpscare(p) snd("rbxasset://sounds/collide.wav",root,5,0.4) if KILL then h.Health=0 end task.spawn(function() mode="scream" say("I'M IN",6,true) task.wait(1) mode="chase" end) end end
+for _,p in ipairs(P:GetPlayers()) do local h=alive(p.Character) if h and not busy and not breaching and (p.Character.HumanoidRootPart.Position-root.Position).Magnitude<4 and (cd[p] or 0)<os.clock() then cd[p]=os.clock()+8
+if KILL then task.spawn(killSeq,p) else jumpscare(p) snd("rbxasset://sounds/collide.wav",root,5,0.4) task.spawn(function() mode="scream" say("I'M IN",6,true) task.wait(1) mode="chase" end) end end end
 task.wait(0.1) end end)
 hum.Died:Connect(function() mode="scream" say(MSG,10,true) redSky(1) task.delay(4,function() rig:Destroy() end) end)
 -- intro
@@ -209,6 +255,7 @@ redSky(1) flicker(root.Position,150) say(MSG,6,true) for _,p in ipairs(P:GetPlay
 -- brain
 task.spawn(function()
 while rig.Parent and hum.Health>0 do
+if busy then task.wait(0.1) continue end
 local plr,dist=nearest()
 if not plr then mode="idle" if math.random()<0.2 then say("let me in...",1) end task.wait(1)
 else
