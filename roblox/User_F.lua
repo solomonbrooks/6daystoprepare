@@ -22,7 +22,7 @@ local bc=rig:FindFirstChildOfClass("BodyColors") if bc then bc.HeadColor3=WHITE 
 if not head:FindFirstChildOfClass("Decal") then local fc=Instance.new("Decal") fc.Name="face" fc.Texture="rbxasset://textures/face.png" fc.Face=Enum.NormalId.Front fc.Parent=head end
 local glow=Instance.new("PointLight") glow.Color=Color3.new(1,0,0) glow.Brightness=2 glow.Range=10 glow.Parent=head
 hum.MaxHealth=1000 hum.Health=1000 hum.WalkSpeed=16 hum.BreakJointsOnDeath=false hum.HealthDisplayDistance=0 hum:SetStateEnabled(Enum.HumanoidStateType.Dead,false)
-local phase,downed,dead,killing=1,false,false,false local down
+local phase,downed,dead,killing,crawling=1,false,false,false,false local down
 local animator=hum:FindFirstChildOfClass("Animator") or Instance.new("Animator",hum)
 -- helpers
 local function ang(x,y,z) return CFrame.Angles(math.rad(x),math.rad(y),math.rad(z)) end
@@ -120,7 +120,7 @@ if d.Magnitude>0.1 then local r=workspace:Raycast(o,d.Unit*math.min(d.Magnitude,
 return best
 end
 -- procedural pose layer (on top of the walk/run/idle animations)
-local J={} for _,n in ipairs({"Neck","RootJoint","Right Shoulder","Left Shoulder"}) do local m=rig:FindFirstChild(n,true) if m and m:IsA("Motor6D") then J[n]={m=m,c0=m.C0,cur=CFrame.identity,last=CFrame.identity} end end
+local J={} for _,n in ipairs({"Neck","RootJoint","Right Shoulder","Left Shoulder","Right Hip","Left Hip"}) do local m=rig:FindFirstChild(n,true) if m and m:IsA("Motor6D") then J[n]={m=m,c0=m.C0,cur=CFrame.identity,last=CFrame.identity} end end
 local mode="idle" local twitch,twT=CFrame.identity,0
 -- R6 joint axes: Right Shoulder +X out / +Z forward, Left Shoulder -X out / -Z forward, Neck & RootJoint +X = bend forward
 local function arms(fr,fl,out) return {["Right Shoulder"]=ang(-(out or 0),0,fr),["Left Shoulder"]=ang(-(out or 0),0,-fl)} end
@@ -136,6 +136,10 @@ elseif mode=="chase" then p.Neck=ang(10,0,0) p.RootJoint=ang(6,0,0)
 elseif mode=="lift" then local j=math.random(-5,5) p=arms(150+j,150-j) p.Neck=ang(-20,0,0) p.RootJoint=ang(-6,0,0)
 elseif mode=="rip" then local j=math.sin(t*30)*25 p=arms(150+j,150-j,20+math.abs(j)) p.Neck=ang(-15+math.random(-8,8),0,math.random(-10,10)) p.RootJoint=ang(-8,0,0)
 elseif mode=="slam" then p=arms(40,40) p.RootJoint=ang(25,0,0) p.Neck=ang(20,0,0)
+elseif mode=="climb" then local s=math.sin(t*10)*30
+p=arms(160+s,160-s) p["Right Hip"]=ang(0,0,-s) p["Left Hip"]=ang(0,0,-s) p.Neck=ang(-30,0,math.sin(t*4)*10)
+elseif mode=="ceiling" then local s=math.sin(t*9)*25
+p=arms(90+s,90-s) p["Right Hip"]=ang(0,0,90-s) p["Left Hip"]=ang(0,0,-90-s) p.Neck=ang(math.random(-6,6),0,180+math.sin(t*2)*25)
 end
 if twT>t then p.Neck=(p.Neck or CFrame.identity)*twitch end
 return p
@@ -159,7 +163,7 @@ if math.random()<dt*0.4 then twitch=ang(math.random(-35,35),math.random(-50,50),
 local p=pose(t) local a=1-math.exp(-dt*14)
 for n,j in pairs(J) do if j.m.Parent then j.cur=j.cur:Lerp(p[n] or CFrame.identity,a) local _,d=(j.cur:Inverse()*j.last):ToAxisAngle() if d>0.003 then j.m.C0=j.c0*j.cur j.last=j.cur end end end
 local v=(root.AssemblyLinearVelocity*Vector3.new(1,0,1)).Magnitude
-if mode=="down" or dead then return end
+if mode=="down" or dead or crawling then for _,o in pairs(T) do if o.IsPlaying then o:Stop(0.1) end end curAnim=nil return end
 play((mode=="bang" or mode=="scream" or mode=="lift" or mode=="rip" or mode=="slam") and "idle" or (v>1 and (hum.WalkSpeed>=20 and "run" or "walk") or "idle"),v)
 end)
 -- abilities
@@ -204,6 +208,59 @@ g.Parent=pg TS:Create(t,TweenInfo.new(0.35,Enum.EasingStyle.Back),{Size=UDim2.fr
 task.spawn(function() for i=1,12 do f.BackgroundColor3=i%2==0 and Color3.new(0,0,0) or Color3.fromRGB(90,0,0) t.Rotation=math.random(-8,8) task.wait(0.08) end end)
 D:AddItem(g,1.8)
 end
+-- wall climbing + ceiling crawling (anchored and moved along surfaces with raycasts)
+local climbCD=0
+local function upright(pos,look) look=Vector3.new(look.X,0,look.Z) if look.Magnitude<0.05 then look=Vector3.new(0,0,-1) end return CFrame.lookAt(pos,pos+look.Unit) end
+local function wallNear(pref)
+local rp=params() local dirs={pref} local best
+for i=0,7 do local a=i*math.pi/4 table.insert(dirs,Vector3.new(math.cos(a),0,math.sin(a))) end
+for k,d in ipairs(dirs) do if d.Magnitude>0.01 then local r=workspace:Raycast(root.Position,d.Unit*12,rp)
+if r and math.abs(r.Normal.Y)<0.3 then if k==1 then return r end if not best or (r.Position-root.Position).Magnitude<(best.Position-root.Position).Magnitude then best=r end end end end
+return best
+end
+local function ceilingAbove() local r=workspace:Raycast(root.Position,Vector3.new(0,30,0),params()) return r and r.Normal.Y<-0.5 and r.Position.Y-root.Position.Y>6 end
+local function climb(w,plr)
+climbCD=os.clock()+6
+if (w.Position-root.Position).Magnitude>3 then moveTo(w.Position+w.Normal*1.5,2) end
+if busy or downed or dead then return end
+busy=true crawling=true mode="climb" root.Anchored=true
+local rp=params() local n=Vector3.new(w.Normal.X,0,w.Normal.Z).Unit
+local pos=Vector3.new(w.Position.X,root.Position.Y,w.Position.Z)+n*1.2
+local e=os.clock()+12 local result,ceil="fail",nil
+bubble("hehe...")
+while rig.Parent and not downed and os.clock()<e do
+local dt=RunS.Heartbeat:Wait()
+root.CFrame=CFrame.lookAt(pos,pos-n)
+local up=workspace:Raycast(pos,Vector3.new(0,3.5,0),rp) if up then result,ceil="ceiling",up break end
+if not workspace:Raycast(pos+Vector3.new(0,2,0),-n*3,rp) then result="top" break end
+pos+=Vector3.new(0,dt*(10+phase*2),0)
+if math.random()<dt*0.6 then snd("rbxasset://sounds/collide.wav",root,1,math.random(14,20)/10) end
+end
+if downed then return end
+local look=-n
+if result=="top" then
+local g=workspace:Raycast(pos+Vector3.new(0,5,0)-n*2,Vector3.new(0,-10,0),rp) if g then pos=g.Position+Vector3.new(0,3,0) end
+elseif result=="ceiling" then
+mode="ceiling" bubble("i see you.")
+local cpos=Vector3.new(pos.X,ceil.Position.Y-2.5,pos.Z)+n*2 local e2=os.clock()+20 local said=os.clock()
+while rig.Parent and not downed and os.clock()<e2 do
+local dt=RunS.Heartbeat:Wait()
+local c=plr.Character if not alive(c) then break end
+local tr=c.HumanoidRootPart local flat=Vector3.new(tr.Position.X-cpos.X,0,tr.Position.Z-cpos.Z)
+if flat.Magnitude<3 then break end
+local h=flat.Unit look=h
+if workspace:Raycast(cpos,h*2.5,rp) then break end
+local nxt=cpos+h*dt*(14+phase*2) local u=workspace:Raycast(nxt,Vector3.new(0,4,0),rp) if not u then break end
+cpos=Vector3.new(nxt.X,u.Position.Y-2.5,nxt.Z)
+root.CFrame=CFrame.fromMatrix(cpos,h:Cross(Vector3.new(0,-1,0)),h,Vector3.new(0,-1,0))
+if os.clock()-said>2.5 then said=os.clock() bubble(math.random()<0.5 and "LET ME IN" or "look up.") end
+end
+pos=cpos
+end
+if downed then return end
+root.CFrame=upright(pos,look) root.Anchored=false root.AssemblyLinearVelocity=Vector3.new(0,-30,0)
+crawling=false mode="chase" busy=false
+end
 -- phases: dies -> ragdolls -> gets back up and talks (speech bubbles only). Phase 3+ fakes losing its Humanoid (studs).
 local DIALOG={
 {"...that hurt.","you can't keep me out.","i'm still here.","LET ME IN"},
@@ -233,7 +290,7 @@ hum.DisplayDistanceType=on and Enum.HumanoidDisplayDistanceType.None or Enum.Hum
 end
 down=function()
 if downed or dead or not rig.Parent then return end
-downed=true busy=true mode="down" hum.Health=1 hum:MoveTo(root.Position)
+crawling=false root.Anchored=false downed=true busy=true mode="down" hum.Health=1 hum:MoveTo(root.Position)
 for _,o in pairs(T) do o:Stop(0.1) end curAnim=nil
 ragdoll(true)
 root.AssemblyLinearVelocity=-root.CFrame.LookVector*25+Vector3.new(0,15,0) root.AssemblyAngularVelocity=Vector3.new(math.random(-8,8),0,math.random(-8,8))
@@ -327,6 +384,7 @@ if wps[i].Action==Enum.PathWaypointAction.Jump then hum.Jump=true end
 if not moveTo(wps[i].Position,1.2) then break end
 local h2=obstacle(tr.Position) if h2 and isWin(h2.Instance) and (h2.Position-root.Position).Magnitude<5.5 then break end
 end
+if dist>15 and dist<70 and os.clock()>climbCD and math.random()<0.06 and ceilingAbove() then local w=wallNear(Vector3.new(tr.Position.X-root.Position.X,0,tr.Position.Z-root.Position.Z)) if w then climb(w,plr) end end
 if dist>30 and math.random()<0.05 then local d=Vector3.new(tr.Position.X-root.Position.X,0,tr.Position.Z-root.Position.Z).Unit if not workspace:Raycast(root.Position,d*14,params()) then local p=root.Position+d*12 blink(CFrame.lookAt(p,Vector3.new(tr.Position.X,p.Y,tr.Position.Z))) end end
 else
 mode="reach" hum.WalkSpeed=math.min(18+rage*2+(phase-1)*3,34)
@@ -334,9 +392,12 @@ if hit then
 if (hit.Position-root.Position).Magnitude>5.5 then moveTo(hit.Position-(hit.Position-root.Position).Unit*3,2) end
 if hit.Instance.Parent and (hit.Position-root.Position).Magnitude<12 then breach(hit.Instance,hit.Position,plr) end
 else
+local w=os.clock()>climbCD and wallNear(Vector3.new(tr.Position.X-root.Position.X,0,tr.Position.Z-root.Position.Z))
+if w then climb(w,plr) else
 moveTo(tr.Position,1.5) begs+=1
 if begs%3==0 then beg(plr) end
 if begs>=9 and alive(plr.Character) then begs=0 blink(behind(plr.Character.HumanoidRootPart,6)) end
+end
 end
 end
 end
