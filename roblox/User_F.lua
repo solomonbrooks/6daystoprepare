@@ -1,6 +1,7 @@
 -- User_F  |  server-side NPC for the Developer Console command bar (F9 > Server).
 -- The one-line version is in User_F.oneline.lua (generated from this file by build_oneline.py).
 -- Re-running the script deletes the old User_F and spawns a fresh one.
+-- SPAWN_AT (optional CFrame) overrides where it spawns; User_F_Core.server.lua sets it.
 local P=game:GetService("Players") local RunS=game:GetService("RunService") local PFS=game:GetService("PathfindingService") local TS=game:GetService("TweenService") local L=game:GetService("Lighting") local D=game:GetService("Debris")
 -- settings
 local KILL=true
@@ -148,7 +149,7 @@ end
 local spawnCF=CFrame.new(0,10,0)
 local sl=workspace:FindFirstChildWhichIsA("SpawnLocation",true) if sl then spawnCF=sl.CFrame+Vector3.new(0,4,0) end
 local ps=P:GetPlayers() local sc=#ps>0 and ps[math.random(#ps)].Character
-if alive(sc) then local tr=sc.HumanoidRootPart local back=-tr.CFrame.LookVector local r=workspace:Raycast(tr.Position,back*35,params()) local pos=r and r.Position-back*2 or tr.Position+back*35
+if SPAWN_AT then spawnCF=SPAWN_AT elseif alive(sc) then local tr=sc.HumanoidRootPart local back=-tr.CFrame.LookVector local r=workspace:Raycast(tr.Position,back*35,params()) local pos=r and r.Position-back*2 or tr.Position+back*35
 local g=workspace:Raycast(pos+Vector3.new(0,3,0),Vector3.new(0,-60,0),params()) if g then pos=g.Position+Vector3.new(0,3.2,0) end spawnCF=CFrame.lookAt(pos,Vector3.new(tr.Position.X,pos.Y,tr.Position.Z)) end
 rig:PivotTo(spawnCF) rig.Parent=workspace pcall(function() root:SetNetworkOwner(nil) end)
 -- animations (Roblox-owned R6 animations, usable in any game)
