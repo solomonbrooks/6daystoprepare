@@ -3,8 +3,13 @@
 -- Re-running the script deletes the old User_F and spawns a fresh one.
 -- SPAWN_AT (optional CFrame) overrides where it spawns; User_F_Core.server.lua sets it.
 local P=game:GetService("Players") local RunS=game:GetService("RunService") local PFS=game:GetService("PathfindingService") local TS=game:GetService("TweenService") local L=game:GetService("Lighting") local D=game:GetService("Debris")
--- settings
+-- settings (User_F_Core.server.lua ships with the effects outside the model turned off)
 local KILL=true
+local SCREEN_EFFECTS=true
+local LIGHTING_EFFECTS=true
+local BREAK_ANYTHING=true
+-- SCREEN_EFFECTS: LET ME IN spam + jumpscare on players' screens. LIGHTING_EFFECTS: red sky + light flicker.
+-- BREAK_ANYTHING=false: it only breaks parts named Window/Glass or with the attribute UserF_Breakable=true.
 local MSG="LET ME IN"
 local old=workspace:FindFirstChild("User_F") if old then old:Destroy() end
 local WHITE=Color3.fromRGB(245,245,245) local GRAY=Color3.fromRGB(163,162,165)
@@ -32,7 +37,8 @@ local function params() local rp=RaycastParams.new() rp.FilterType=Enum.RaycastF
 local function nearest() local best,bd=nil,1e9 for _,p in ipairs(P:GetPlayers()) do if alive(p.Character) then local d=(p.Character.HumanoidRootPart.Position-root.Position).Magnitude if d<bd then best,bd=p,d end end end return best,bd end
 local function near(pos,r) local t={} for _,p in ipairs(P:GetPlayers()) do if alive(p.Character) and (p.Character.HumanoidRootPart.Position-pos).Magnitude<=r then table.insert(t,p) end end return t end
 local function isChar(x) for _,p in ipairs(P:GetPlayers()) do if p.Character and x:IsDescendantOf(p.Character) then return true end end return x:IsDescendantOf(rig) end
-local function breakable(x) return x and x:IsA("BasePart") and not x:IsA("Terrain") and not x:IsA("SpawnLocation") and x.Name~="Baseplate" and x.Size.Magnitude<160 and not isChar(x) end
+local function allowed(x) local n=x.Name:lower() return BREAK_ANYTHING or x:GetAttribute("UserF_Breakable")==true or n:find("window")~=nil or n:find("glass")~=nil end
+local function breakable(x) return x and x:IsA("BasePart") and not x:IsA("Terrain") and not x:IsA("SpawnLocation") and x.Name~="Baseplate" and x.Size.Magnitude<160 and not isChar(x) and allowed(x) end
 local function isWin(x) local n=x.Name:lower() return x.Material==Enum.Material.Glass or n:find("window")~=nil or n:find("glass")~=nil or (x.Transparency>0.2 and x.Transparency<1) end
 local function snd(id,parent,vol,pitch) local s=Instance.new("Sound") s.SoundId=id s.Volume=vol or 1 s.PlaybackSpeed=pitch or 1 s.RollOffMaxDistance=250 s.Parent=parent s:Play() D:AddItem(s,6) end
 -- Roblox-style speech bubble (legacy chat games get the real Chat bubble)
@@ -62,6 +68,7 @@ bubble(txt)
 end
 -- LET ME IN spam on a player's screen
 local function scream(plr,dur)
+if not SCREEN_EFFECTS then return end
 local pg=plr and plr:FindFirstChildOfClass("PlayerGui") if not pg then return end
 local g=Instance.new("ScreenGui") g.Name="UF_LETMEIN" g.ResetOnSpawn=false g.IgnoreGuiInset=true g.DisplayOrder=999
 local f=Instance.new("Frame") f.Size=UDim2.fromScale(1,1) f.BackgroundColor3=Color3.new(1,0,0) f.BackgroundTransparency=0.85 f.BorderSizePixel=0 f.Parent=g
@@ -74,6 +81,7 @@ local function screamAll(pos,r,plr,dur) local done={} for _,p in ipairs(near(pos
 -- red sky for a moment
 local skyBusy=false
 local function redSky(dur)
+if not LIGHTING_EFFECTS then return end
 if skyBusy then return end skyBusy=true
 local cc=Instance.new("ColorCorrectionEffect") cc.TintColor=Color3.fromRGB(255,40,40) cc.Saturation=0.4 cc.Contrast=0.3 cc.Parent=L
 local oA,oO,oF=L.Ambient,L.OutdoorAmbient,L.FogColor
@@ -89,6 +97,7 @@ end)
 end
 -- light flicker
 local function flicker(pos,r)
+if not LIGHTING_EFFECTS then return end
 local ls={} for _,v in ipairs(workspace:GetDescendants()) do if v:IsA("Light") and v.Parent~=head then local pp=v.Parent local p=pp:IsA("BasePart") and pp.Position or pp:IsA("Attachment") and pp.WorldPosition if p and (p-pos).Magnitude<r then table.insert(ls,{v,v.Enabled}) end end end
 task.spawn(function() for i=1,10 do for _,x in ipairs(ls) do if x[1].Parent then x[1].Enabled=not x[1].Enabled end end task.wait(math.random(3,12)/100) end for _,x in ipairs(ls) do if x[1].Parent then x[1].Enabled=x[2] end end end)
 end
@@ -201,6 +210,7 @@ local e=os.clock()+2.5 while os.clock()<e and rig.Parent do say(MSG,math.random(
 if math.random()<0.5 then redSky(1) end
 end
 local function jumpscare(plr)
+if not SCREEN_EFFECTS then return end
 local pg=plr:FindFirstChildOfClass("PlayerGui") if not pg then return end
 local g=Instance.new("ScreenGui") g.Name="UF_Scare" g.IgnoreGuiInset=true g.ResetOnSpawn=false g.DisplayOrder=1000
 local f=Instance.new("Frame") f.Size=UDim2.fromScale(1,1) f.BackgroundColor3=Color3.new(0,0,0) f.BorderSizePixel=0 f.Parent=g
@@ -328,6 +338,7 @@ mode="lift" say(MSG,4,true)
 for i=1,20 do lift=1+i*0.2 task.wait(0.03) end
 task.wait(0.4) mode="rip"
 local limbs={}
+--@@GORE_BEGIN
 for _,n in ipairs(c:FindFirstChild("Torso") and {"Right Shoulder","Left Shoulder","Right Hip","Left Hip"} or {"RightShoulder","LeftShoulder","RightHip","LeftHip"}) do
 task.wait(0.55)
 local m=c:FindFirstChild(n,true)
@@ -339,6 +350,7 @@ limb.AssemblyLinearVelocity=side*math.random(30,50)+Vector3.new(0,math.random(25
 snd("rbxasset://sounds/collide.wav",tr,4,math.random(3,6)/10) say(MSG,2)
 end
 end
+--@@GORE_END
 task.wait(0.5) mode="slam" say(MSG,6,true)
 local g=workspace:Raycast(root.Position,Vector3.new(0,-20,0),params()) local gy=g and g.Position.Y or root.Position.Y-3
 local fp=(root.CFrame*CFrame.new(0,0,-5)).Position local hitPos=Vector3.new(fp.X,gy,fp.Z)
